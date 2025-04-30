@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import logoImage from "@/assets/logo.png";
 
 export default function HomePage() {
   const { isAuthenticated } = useAuth();
@@ -11,10 +12,8 @@ export default function HomePage() {
       <header className="bg-white dark:bg-slate-800 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary flex items-center justify-center rounded-md text-white">
-              <i className="ri-sun-line text-xl"></i>
-            </div>
-            <span className="text-lg font-semibold text-slate-800 dark:text-white">Prakash Energy</span>
+            <img src={logoImage} alt="Prakash Green Energy Logo" className="h-8 w-auto" />
+            <span className="text-lg font-semibold text-slate-800 dark:text-white">Prakash Green Energy</span>
           </div>
           
           <div className="flex items-center space-x-4">
@@ -132,10 +131,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-2 mb-6 md:mb-0">
-              <div className="w-8 h-8 bg-primary flex items-center justify-center rounded-md text-white">
-                <i className="ri-sun-line text-xl"></i>
-              </div>
-              <span className="text-lg font-semibold">Prakash Energy</span>
+              <img src={logoImage} alt="Prakash Green Energy Logo" className="h-8 w-auto" />
+              <span className="text-lg font-semibold">Prakash Green Energy</span>
             </div>
             
             <div className="flex flex-wrap justify-center md:justify-end gap-6">

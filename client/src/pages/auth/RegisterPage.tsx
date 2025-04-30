@@ -8,6 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/contexts/ThemeContext";
+import logoImage from "@/assets/logo.png";
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -66,15 +67,13 @@ export default function RegisterPage() {
       
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <div className="w-10 h-10 bg-primary flex items-center justify-center rounded-md text-white">
-            <i className="ri-sun-line text-2xl"></i>
-          </div>
+          <img src={logoImage} alt="Prakash Green Energy Logo" className="h-16 w-auto" />
         </div>
         <h2 className="mt-4 text-center text-3xl font-extrabold text-slate-900 dark:text-white">
           Create your account
         </h2>
         <p className="mt-2 text-center text-sm text-slate-500 dark:text-slate-400">
-          Join Prakash Energy Solar Management System
+          Join Prakash Green Energy - Channel Partner (MNRE)
         </p>
       </div>
 

@@ -60,15 +60,13 @@ export default function LoginPage() {
       
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <div className="w-10 h-10 bg-primary flex items-center justify-center rounded-md text-white">
-            <i className="ri-sun-line text-2xl"></i>
-          </div>
+          <img src={logoImage} alt="Prakash Green Energy Logo" className="h-16 w-auto" />
         </div>
         <h2 className="mt-4 text-center text-3xl font-extrabold text-slate-900 dark:text-white">
           Sign in to your account
         </h2>
         <p className="mt-2 text-center text-sm text-slate-500 dark:text-slate-400">
-          Welcome back to Prakash Energy Solar Management
+          Welcome back to Prakash Green Energy - Channel Partner (MNRE)
         </p>
       </div>
 
