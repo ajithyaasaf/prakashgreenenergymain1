@@ -102,11 +102,11 @@ export default function AttendancePage() {
     try {
       setLoading(true);
       const attendanceCollection = collection(firestore, "attendance");
+      // Query only by userId without orderBy to avoid needing a composite index
       const attendanceQuery = query(
         attendanceCollection,
         where("userId", "==", currentUser.uid),
-        orderBy("date", "desc"),
-        limit(10)
+        limit(30) // Fetch more to allow for client-side sorting
       );
       
       const attendanceDocs = await getDocs(attendanceQuery);
@@ -115,7 +115,12 @@ export default function AttendancePage() {
         ...doc.data()
       })) as Attendance[];
       
-      setRecentAttendance(attendanceData);
+      // Sort in JavaScript instead of using orderBy in the query
+      const sortedData = attendanceData
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, 10); // Take only the first 10 after sorting
+      
+      setRecentAttendance(sortedData);
     } catch (error) {
       console.error("Error fetching recent attendance:", error);
       toast({
@@ -133,10 +138,11 @@ export default function AttendancePage() {
     
     try {
       const leavesCollection = collection(firestore, "leaves");
+      // Query only by userId to avoid composite index requirements
       const leavesQuery = query(
         leavesCollection,
         where("userId", "==", currentUser.uid),
-        orderBy("createdAt", "desc")
+        limit(50) // Fetch more to allow for client-side sorting
       );
       
       const leavesDocs = await getDocs(leavesQuery);
@@ -145,7 +151,19 @@ export default function AttendancePage() {
         ...doc.data()
       })) as Leave[];
       
-      setLeaveHistory(leavesData);
+      // Sort in JavaScript instead of Firestore - using createdAt timestamp
+      const sortedData = leavesData.sort((a, b) => {
+        // Handle different timestamp formats
+        const getTime = (timestamp: any) => {
+          if (timestamp && timestamp.toDate) return timestamp.toDate().getTime();
+          if (timestamp) return new Date(timestamp).getTime();
+          return 0;
+        };
+        
+        return getTime(b.createdAt) - getTime(a.createdAt);
+      });
+      
+      setLeaveHistory(sortedData);
     } catch (error) {
       console.error("Error fetching leave history:", error);
       toast({
