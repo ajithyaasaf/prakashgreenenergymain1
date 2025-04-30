@@ -1,0 +1,185 @@
+# 🛠 PROJECT NAME: Prakash Energy – Smart Solar Business Management System
+
+## 📌 OVERVIEW:
+
+Build a **modern, full-featured business management system** for a solar energy company called **Prakash Energy**. The application must support **role-based access**, handle **customer/product/quotation/invoice/attendance** workflows, and include **analytics dashboards**.
+
+The goal is to **redesign the app from the ground up** with a **streamlined, responsive, and modular architecture**. Focus on simplicity, performance, clean UI/UX, and complete feature retention.
+
+---
+
+## 🔑 USER ROLES & PERMISSIONS:
+
+### 1. Employee
+
+- Can manage own attendance, customers, and create quotations
+
+### 2. Admin
+
+- Can manage attendance for all users and products
+
+### 3. Master Admin
+
+- Full access: attendance rules, user management, admin settings
+
+Use **role-based route guards** and component-level permission controls.
+
+---
+
+## 📋 PAGES AND CORE FEATURES
+
+### 1. Home (`/`)
+
+- Public landing page introducing Prakash Energy and solar benefits
+- Navigation to login/signup
+
+### 2. Auth (`/auth`)
+
+- Firebase-based login, signup, password reset
+
+### 3. Dashboard (`/dashboard`)
+
+- Summary of:
+  - Total customers, products, quotations, invoices
+  - Solar output, savings, revenue (dummy data first)
+- Role-based cards (e.g., Master Admin sees all)
+- Quick links to other modules
+
+### 4. Customers (`/customers`)
+
+- View/add/edit/delete/search customers
+- View customer history and contact info
+
+### 5. Products (`/products`)
+
+- Add/edit/delete/view products with details (name, voltage, etc.)
+- Stock tracking
+- Only Admins/Master Admins can modify
+
+### 6. Quotations (`/quotations`)
+
+- Create quotations from products
+- Set pricing, calculate totals
+- Status tracking (pending, approved, invoiced)
+- Convert to invoice
+
+### 7. Invoices (`/invoices`)
+
+- Create/view invoices
+- Export to PDF
+- Filter/search by date/status
+
+### 8. Attendance (`/attendance`)
+
+- Employees can check-in/out
+- Submit leave or permission request
+- View personal history
+
+### 9. Attendance Admin (`/attendance-admin`)
+
+- Admins can review/approve/reject leave/permission requests
+- Filter by user/date/status
+
+### 10. Attendance Settings (`/attendance-settings`)
+
+- Master Admin can configure:
+  - Working hours
+  - Leave types
+  - Holidays
+
+### 11. User Management (`/user-management`)
+
+- Master Admin manages:
+  - User creation
+  - Role assignment
+  - Password reset
+  - Disable accounts
+
+### 12. Settings (`/settings`)
+
+- Personal profile
+- Change password
+- Theme toggle (light/dark)
+
+### 13. Analytics
+
+#### a. `/analytics/attendance-overview`
+
+#### b. `/analytics/leave-analytics`
+
+#### c. `/analytics/permission-analytics`
+
+#### d. `/analytics/department-metrics`
+
+#### e. `/analytics/personal-attendance`
+
+- Show charts (Recharts) with filters for roles
+- Must pull data in real-time
+
+### 14. 404 Page
+
+- Friendly not found page
+- Log unknown route access attempts
+
+---
+
+## ⚙️ TECH STACK & ARCHITECTURE
+
+### 🔧 Frontend
+
+- React (with functional components)
+- React Router v6
+- TailwindCSS for styling
+- Recharts for graphs
+- React Hook Form + Yup (form validation)
+- Toast notifications (e.g., react-hot-toast)
+- Context API or Zustand for global state
+
+### ☁️ Backend / Auth / DB
+
+- Firebase Auth (email/password)
+- Firebase Firestore
+- Firebase rules for per-role access control
+
+---
+
+## ✅ MUST-HAVE FUNCTIONALITIES
+
+- Role-based route protection
+- Mobile-first, responsive UI
+- Persistent dark/light mode
+- Pagination, search, filters on lists
+- Form validation and feedback
+- Real-time updates (e.g., for attendance/invoices)
+- Export to PDF/CSV (where applicable)
+- Lazy loading routes/components for performance
+
+---
+
+## 🧠 WORKFLOW FOR BUILDING
+
+1. Setup Firebase + project structure
+2. Implement routing + role-based guards
+3. Build layout: sidebar, header, theme toggle
+4. Implement auth (login/signup)
+5. Create each page as a separate module (folder-based)
+6. Start with Customers > Products > Quotations > Invoices
+7. Add attendance logic (employee first, then admin)
+8. Add admin tools (settings, user management)
+9. Build analytics pages using Recharts
+10. Polish UI/UX for mobile
+11. Add 404 page + logging
+
+---
+
+## 🚀 GOAL:
+
+Deliver a clean, powerful, and modern web app that supports:
+
+- Fast navigation
+- Minimal user confusion
+- Fully retained features
+- Scalable for new features
+
+Focus on **clarity, speed, and reliability**.
+
