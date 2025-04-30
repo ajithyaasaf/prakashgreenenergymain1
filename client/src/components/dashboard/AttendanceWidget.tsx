@@ -47,38 +47,38 @@ export default function AttendanceWidget({ loading = false }: AttendanceWidgetPr
   
   if (loading || attendanceLoading) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-        <div className="p-6 border-b dark:border-slate-700">
+      <div className="bg-white dark:bg-black/20 rounded-xl shadow-sm">
+        <div className="p-6 border-b border-primary/10 dark:border-secondary/20">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-slate-800 dark:text-white">Today's Attendance</h3>
-            <div className="w-16 h-4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+            <h3 className="font-semibold text-secondary dark:text-primary">Today's Attendance</h3>
+            <div className="w-16 h-4 bg-primary/10 dark:bg-secondary/20 rounded animate-pulse"></div>
           </div>
         </div>
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 animate-pulse"></div>
+              <div className="w-12 h-12 rounded-full bg-primary/10 dark:bg-secondary/20 animate-pulse"></div>
               <div>
-                <div className="w-24 h-4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-2"></div>
-                <div className="w-32 h-3 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+                <div className="w-24 h-4 bg-primary/10 dark:bg-secondary/20 rounded animate-pulse mb-2"></div>
+                <div className="w-32 h-3 bg-primary/10 dark:bg-secondary/20 rounded animate-pulse"></div>
               </div>
             </div>
-            <div className="w-24 h-8 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+            <div className="w-24 h-8 bg-primary/10 dark:bg-secondary/20 rounded animate-pulse"></div>
           </div>
           
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="bg-slate-100 dark:bg-slate-700/30 rounded-lg p-3">
-              <div className="w-16 h-3 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-2"></div>
-              <div className="w-20 h-5 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+            <div className="bg-primary/5 dark:bg-secondary/10 rounded-lg p-3">
+              <div className="w-16 h-3 bg-primary/10 dark:bg-secondary/20 rounded animate-pulse mb-2"></div>
+              <div className="w-20 h-5 bg-primary/10 dark:bg-secondary/20 rounded animate-pulse"></div>
             </div>
-            <div className="bg-slate-100 dark:bg-slate-700/30 rounded-lg p-3">
-              <div className="w-16 h-3 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-2"></div>
-              <div className="w-20 h-5 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+            <div className="bg-primary/5 dark:bg-secondary/10 rounded-lg p-3">
+              <div className="w-16 h-3 bg-primary/10 dark:bg-secondary/20 rounded animate-pulse mb-2"></div>
+              <div className="w-20 h-5 bg-primary/10 dark:bg-secondary/20 rounded animate-pulse"></div>
             </div>
           </div>
           
           <div className="mt-6">
-            <div className="w-full h-10 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+            <div className="w-full h-10 bg-primary/10 dark:bg-secondary/20 rounded animate-pulse"></div>
           </div>
         </div>
       </div>
@@ -86,11 +86,11 @@ export default function AttendanceWidget({ loading = false }: AttendanceWidgetPr
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-      <div className="p-6 border-b dark:border-slate-700">
+    <div className="bg-white dark:bg-black/20 rounded-xl shadow-sm">
+      <div className="p-6 border-b border-primary/10 dark:border-secondary/20">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-slate-800 dark:text-white">Today's Attendance</h3>
-          <a href="/attendance" className="text-sm text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+          <h3 className="font-semibold text-secondary dark:text-primary">Today's Attendance</h3>
+          <a href="/attendance" className="text-sm text-primary hover:text-primary/80 dark:hover:text-primary/90">
             Details
           </a>
         </div>
@@ -99,28 +99,28 @@ export default function AttendanceWidget({ loading = false }: AttendanceWidgetPr
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-full bg-primary-100 dark:bg-primary-900/20 flex items-center justify-center text-primary-500">
+            <div className="w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary">
               <i className="ri-time-line text-xl"></i>
             </div>
             <div>
-              <div className="text-sm font-medium text-slate-800 dark:text-white">Your Status</div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">{formatDate(today)}</div>
+              <div className="text-sm font-medium text-secondary dark:text-primary">Your Status</div>
+              <div className="text-xs text-secondary/70 dark:text-primary/70">{formatDate(today)}</div>
             </div>
           </div>
           
           <div className="h-10">
             {isCheckedIn && !isCheckedOut && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-300">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary">
                 <i className="ri-checkbox-circle-line mr-1"></i> Checked In
               </span>
             )}
             {isCheckedOut && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary/10 text-secondary dark:bg-secondary/20 dark:text-secondary">
                 <i className="ri-checkbox-circle-line mr-1"></i> Checked Out
               </span>
             )}
             {!attendance && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-warning-100 text-warning-800 dark:bg-warning-900/30 dark:text-warning-300">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/20 text-primary dark:bg-primary/30 dark:text-primary">
                 <i className="ri-error-warning-line mr-1"></i> Not Checked In
               </span>
             )}
@@ -128,30 +128,30 @@ export default function AttendanceWidget({ loading = false }: AttendanceWidgetPr
         </div>
         
         <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="bg-slate-50 dark:bg-slate-700/30 rounded-lg p-3">
-            <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Check-in</div>
-            <div className="font-medium text-slate-800 dark:text-white">
+          <div className="bg-primary/5 dark:bg-secondary/10 rounded-lg p-3">
+            <div className="text-xs text-secondary/70 dark:text-primary/70 mb-1">Check-in</div>
+            <div className="font-medium text-secondary dark:text-primary">
               {attendance?.checkInTime ? formatTime(attendance.checkInTime) : '-'}
             </div>
           </div>
           
-          <div className="bg-slate-50 dark:bg-slate-700/30 rounded-lg p-3">
-            <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Expected out</div>
-            <div className="font-medium text-slate-800 dark:text-white">6:00 PM</div>
+          <div className="bg-primary/5 dark:bg-secondary/10 rounded-lg p-3">
+            <div className="text-xs text-secondary/70 dark:text-primary/70 mb-1">Expected out</div>
+            <div className="font-medium text-secondary dark:text-primary">6:00 PM</div>
           </div>
         </div>
         
         <div className="mt-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-slate-600 dark:text-slate-300">Team Attendance</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400">
+            <span className="text-xs font-medium text-secondary dark:text-primary">Team Attendance</span>
+            <span className="text-xs text-secondary/70 dark:text-primary/70">
               {teamAttendance.present}/{teamAttendance.total} present
             </span>
           </div>
           
-          <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5">
+          <div className="w-full bg-primary/10 dark:bg-secondary/20 rounded-full h-2.5">
             <div 
-              className="bg-success-500 h-2.5 rounded-full" 
+              className="bg-primary dark:bg-secondary h-2.5 rounded-full" 
               style={{ width: `${teamAttendance.percentage}%` }}
             ></div>
           </div>
@@ -162,7 +162,7 @@ export default function AttendanceWidget({ loading = false }: AttendanceWidgetPr
             <button
               onClick={handleCheckIn}
               disabled={attendanceLoading}
-              className="w-full py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors flex items-center justify-center space-x-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors flex items-center justify-center space-x-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {attendanceLoading ? (
                 <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
@@ -179,7 +179,7 @@ export default function AttendanceWidget({ loading = false }: AttendanceWidgetPr
             <button
               onClick={handleCheckOut}
               disabled={attendanceLoading}
-              className="w-full py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors flex items-center justify-center space-x-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full py-2 bg-secondary hover:bg-secondary/90 text-white rounded-lg transition-colors flex items-center justify-center space-x-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {attendanceLoading ? (
                 <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
@@ -195,7 +195,7 @@ export default function AttendanceWidget({ loading = false }: AttendanceWidgetPr
           {isCheckedOut && (
             <button
               disabled
-              className="w-full py-2 bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-lg flex items-center justify-center space-x-2 cursor-not-allowed"
+              className="w-full py-2 bg-primary/10 dark:bg-secondary/20 text-primary dark:text-secondary rounded-lg flex items-center justify-center space-x-2 cursor-not-allowed"
             >
               <i className="ri-check-double-line"></i>
               <span>Completed for Today</span>

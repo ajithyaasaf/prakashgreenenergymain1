@@ -65,12 +65,12 @@ export default function RecentActivities({ activities, loading = false }: Recent
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-      <div className="p-6 border-b dark:border-slate-700">
+    <div className="bg-white dark:bg-black/20 rounded-xl shadow-sm">
+      <div className="p-6 border-b border-primary/10 dark:border-secondary/20">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-slate-800 dark:text-white">Recent Activities</h3>
+          <h3 className="font-semibold text-secondary dark:text-primary">Recent Activities</h3>
           <div className="flex space-x-2">
-            <button className="text-sm text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+            <button className="text-sm text-primary hover:text-primary/80 dark:hover:text-primary/90">
               View All
             </button>
           </div>
@@ -85,18 +85,18 @@ export default function RecentActivities({ activities, loading = false }: Recent
                 <i className={`ri-${activity.icon}`}></i>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-slate-800 dark:text-slate-200 font-medium">
+                <p className="text-sm text-secondary dark:text-primary font-medium">
                   {activity.title}
                 </p>
                 <div className="flex items-center mt-1">
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                  <span className="text-xs text-secondary/70 dark:text-primary/70">
                     <i className="ri-time-line mr-1"></i> {formatRelativeTime(activity.time)}
                   </span>
                   {activity.user && (
                     <>
-                      <span className="mx-2 text-slate-300 dark:text-slate-600">•</span>
-                      <span className="text-xs text-slate-500 dark:text-slate-400">
-                        by <span className="font-medium">{activity.user}</span>
+                      <span className="mx-2 text-primary/20 dark:text-secondary/20">•</span>
+                      <span className="text-xs text-secondary/70 dark:text-primary/70">
+                        by <span className="font-medium text-secondary dark:text-primary">{activity.user}</span>
                       </span>
                     </>
                   )}

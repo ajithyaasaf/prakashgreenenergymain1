@@ -40,7 +40,7 @@ export function useAttendance() {
       toast({
         title: "Error",
         description: "Failed to fetch attendance data",
-        variant: "destructive",
+        variant: "secondary",
       });
       return null;
     } finally {
@@ -60,7 +60,7 @@ export function useAttendance() {
         toast({
           title: "Already Checked In",
           description: "You have already checked in today",
-          variant: "default",
+          variant: "primary",
         });
         return;
       }
