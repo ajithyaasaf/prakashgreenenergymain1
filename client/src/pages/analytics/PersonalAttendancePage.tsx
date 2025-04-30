@@ -359,19 +359,17 @@ export default function PersonalAttendancePage() {
               selected={selectedDate}
               onSelect={setSelectedDate}
               className="rounded-md border"
-              DayClassNameFn={(date) => {
-                const dateStr = date.toISOString().split('T')[0];
-                const status = calendarAttendance[dateStr];
-                
-                if (!status) {
-                  // Weekend check
-                  if (date.getDay() === 0 || date.getDay() === 6) {
-                    return weekendClass;
-                  }
-                  return absentClass;
-                }
-                
-                return presentClass;
+              modifiers={{
+                absent: Object.keys(calendarAttendance).length > 0 ? 
+                  date => !calendarAttendance[date.toISOString().split('T')[0]] && date.getDay() !== 0 && date.getDay() !== 6 :
+                  undefined,
+                present: date => !!calendarAttendance[date.toISOString().split('T')[0]],
+                weekend: date => date.getDay() === 0 || date.getDay() === 6
+              }}
+              modifiersStyles={{
+                absent: { backgroundColor: "#157fbe20", color: "#157fbe" },
+                present: { backgroundColor: "#a7ce3b20", color: "#a7ce3b" },
+                weekend: { backgroundColor: "#f1f5f9", color: "#94a3b8" }
               }}
               classNames={{
                 day: 'day-base',
