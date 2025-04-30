@@ -3,83 +3,83 @@
 @tailwind utilities;
 
 :root {
-      --background: 0 0% 100%;
---foreground: 20 14.3% 4.1%;
---muted: 60 4.8% 95.9%;
---muted-foreground: 25 5.3% 44.7%;
---popover: 0 0% 100%;
---popover-foreground: 20 14.3% 4.1%;
---card: 0 0% 100%;
---card-foreground: 20 14.3% 4.1%;
---border: 20 5.9% 90%;
---input: 20 5.9% 90%;
+      --background: 0 0% 100%; /* White */
+--foreground: 0 0% 0%; /* Black text for readability */
+--muted: 82 54% 95%; /* Very light green for muted backgrounds */
+--muted-foreground: 82 54% 30%; /* Darker green for muted text */
+--popover: 0 0% 100%; /* White */
+--popover-foreground: 0 0% 0%; /* Black for readability */
+--card: 0 0% 100%; /* White */
+--card-foreground: 0 0% 0%; /* Black for readability */
+--border: 82 54% 90%; /* Very light green border */
+--input: 0 0% 96%; /* Light gray for inputs */
 --primary: 82 54% 52%; /* #a7ce3b (green) */
---primary-foreground: 0 0% 100%;
+--primary-foreground: 0 0% 100%; /* White */
 --secondary: 203 80% 42%; /* #157fbe (blue) */
---secondary-foreground: 0 0% 100%;
---accent: 82 54% 52%;
---accent-foreground: 0 0% 100%;
---destructive: 0 84.2% 60.2%;
---destructive-foreground: 60 9.1% 97.8%;
---ring: 82 54% 52%;
+--secondary-foreground: 0 0% 100%; /* White */
+--accent: 82 54% 52%; /* #a7ce3b (green) - same as primary */
+--accent-foreground: 0 0% 100%; /* White */
+--destructive: 203 80% 42%; /* Using secondary blue for destructive */
+--destructive-foreground: 0 0% 100%; /* White */
+--ring: 82 54% 52%; /* #a7ce3b (green) */
 --radius: 0.5rem;
 
-/* Chart colors */
---chart-1: 82 54% 52%; /* Primary green */
---chart-2: 203 80% 42%; /* Secondary blue */
---chart-3: 45 93% 47%; /* Orange */
---chart-4: 262 83% 58%; /* Purple */
---chart-5: 191 91% 37%; /* Turquoise */
+/* Chart colors - only using the allowed colors */
+--chart-1: 82 54% 52%; /* Primary green - #a7ce3b */
+--chart-2: 203 80% 42%; /* Secondary blue - #157fbe */
+--chart-3: 82 54% 70%; /* Lighter green */
+--chart-4: 203 80% 70%; /* Lighter blue */
+--chart-5: 82 54% 30%; /* Darker green */
 
 /* Sidebar colors */
---sidebar-background: 0 0% 100%;
---sidebar-foreground: 20 14.3% 4.1%;
---sidebar-primary: 82 54% 52%;
---sidebar-primary-foreground: 0 0% 100%;
---sidebar-accent: 203 80% 42%;
---sidebar-accent-foreground: 0 0% 100%;
---sidebar-border: 20 5.9% 90%;
---sidebar-ring: 82 54% 52%;
+--sidebar-background: 0 0% 100%; /* White */
+--sidebar-foreground: 0 0% 0%; /* Black for readability */
+--sidebar-primary: 82 54% 52%; /* #a7ce3b */
+--sidebar-primary-foreground: 0 0% 100%; /* White */
+--sidebar-accent: 203 80% 42%; /* #157fbe */
+--sidebar-accent-foreground: 0 0% 100%; /* White */
+--sidebar-border: 82 54% 90%; /* Very light green */
+--sidebar-ring: 82 54% 52%; /* #a7ce3b */
   }
   
   .dark {
-      --background: 240 10% 3.9%;
---foreground: 0 0% 98%;
---muted: 240 3.7% 15.9%;
---muted-foreground: 240 5% 64.9%;
---popover: 240 10% 3.9%;
---popover-foreground: 0 0% 98%;
---card: 240 10% 3.9%;
---card-foreground: 0 0% 98%;
---border: 240 3.7% 15.9%;
---input: 240 3.7% 15.9%;
+      --background: 0 0% 10%; /* Near-black */
+--foreground: 0 0% 95%; /* Near-white text */
+--muted: 82 30% 20%; /* Dark green */
+--muted-foreground: 82 30% 80%; /* Light green text */
+--popover: 0 0% 10%; /* Near-black */
+--popover-foreground: 0 0% 95%; /* Near-white text */
+--card: 0 0% 10%; /* Near-black */
+--card-foreground: 0 0% 95%; /* Near-white text */
+--border: 82 30% 30%; /* Dark green border */
+--input: 0 0% 15%; /* Dark gray input */
 --primary: 82 54% 52%; /* #a7ce3b (green) */
---primary-foreground: 0 0% 100%;
+--primary-foreground: 0 0% 100%; /* White */
 --secondary: 203 80% 42%; /* #157fbe (blue) */
---secondary-foreground: 0 0% 100%;
---accent: 82 54% 52%;
---accent-foreground: 0 0% 100%;
---destructive: 0 62.8% 30.6%;
---destructive-foreground: 0 0% 98%;
---ring: 82 54% 52%;
+--secondary-foreground: 0 0% 100%; /* White */
+--accent: 82 54% 52%; /* #a7ce3b (green) - same as primary */
+--accent-foreground: 0 0% 100%; /* White */
+--destructive: 203 80% 42%; /* Using secondary blue for destructive */
+--destructive-foreground: 0 0% 100%; /* White */
+--ring: 82 54% 52%; /* #a7ce3b (green) */
 --radius: 0.5rem;
 
-/* Chart colors */
---chart-1: 82 54% 52%; /* Primary green */
---chart-2: 203 80% 42%; /* Secondary blue */
---chart-3: 45 93% 47%; /* Orange */
---chart-4: 262 83% 58%; /* Purple */
---chart-5: 191 91% 37%; /* Turquoise */
+/* Chart colors - only using the allowed colors */
+--chart-1: 82 54% 52%; /* Primary green - #a7ce3b */
+--chart-2: 203 80% 42%; /* Secondary blue - #157fbe */
+--chart-3: 82 54% 70%; /* Lighter green */
+--chart-4: 203 80% 70%; /* Lighter blue */
+--chart-5: 82 54% 30%; /* Darker green */
 
 /* Sidebar colors */
---sidebar-background: 240 10% 3.9%;
---sidebar-foreground: 0 0% 98%;
---sidebar-primary: 82 54% 52%;
---sidebar-primary-foreground: 0 0% 100%;
---sidebar-accent: 203 80% 42%;
---sidebar-accent-foreground: 0 0% 100%;
---sidebar-border: 240 3.7% 15.9%;
---sidebar-ring: 82 54% 52%;
+--sidebar-background: 0 0% 15%; /* Dark gray */
+--sidebar-foreground: 0 0% 95%; /* Near-white text */
+--sidebar-primary: 82 54% 52%; /* #a7ce3b */
+--sidebar-primary-foreground: 0 0% 100%; /* White */
+--sidebar-accent: 203 80% 42%; /* #157fbe */
+--sidebar-accent-foreground: 0 0% 100%; /* White */
+--sidebar-border: 82 30% 30%; /* Dark green */
+--sidebar-ring: 82 54% 52%; /* #a7ce3b */
   }
 
 @layer base {

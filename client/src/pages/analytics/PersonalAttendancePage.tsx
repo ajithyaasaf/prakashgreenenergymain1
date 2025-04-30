@@ -451,11 +451,11 @@ export default function PersonalAttendancePage() {
             </div>
             <div className="text-xs text-center text-slate-500 dark:text-slate-400 mt-2">
               <div className="flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-green-500 mr-1"></div>
+                <div className="w-2 h-2 rounded-full bg-primary mr-1"></div> {/* #a7ce3b */}
                 <span className="mr-4">Before 9:00 AM</span>
-                <div className="w-2 h-2 rounded-full bg-yellow-500 mr-1"></div>
+                <div className="w-2 h-2 rounded-full bg-secondary/70 mr-1"></div> {/* #157fbe lighter */}
                 <span className="mr-4">9:00-10:00 AM</span>
-                <div className="w-2 h-2 rounded-full bg-red-500 mr-1"></div>
+                <div className="w-2 h-2 rounded-full bg-secondary mr-1"></div> {/* #157fbe */}
                 <span>After 10:00 AM</span>
               </div>
             </div>
@@ -493,7 +493,7 @@ export default function PersonalAttendancePage() {
                       <Badge variant="destructive">Late</Badge>
                     )}
                     {record.checkOutTime && record.checkOutTime.split(':')[0] < '17' && (
-                      <Badge variant="secondary" className="bg-yellow-500 hover:bg-yellow-500/80">Early Out</Badge>
+                      <Badge variant="secondary">Early Out</Badge>
                     )}
                   </div>
                 </div>
