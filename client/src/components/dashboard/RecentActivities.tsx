@@ -7,24 +7,24 @@ interface RecentActivitiesProps {
 }
 
 export default function RecentActivities({ activities, loading = false }: RecentActivitiesProps) {
-  // Helper function to get status badge color
+  // Helper function to get status badge color - using only brand colors
   const getStatusBadgeClass = (statusType?: string) => {
-    if (statusType === "success") return "bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-300";
-    if (statusType === "warning") return "bg-warning-100 text-warning-800 dark:bg-warning-900/30 dark:text-warning-300";
-    if (statusType === "danger") return "bg-danger-100 text-danger-800 dark:bg-danger-900/30 dark:text-danger-300";
-    if (statusType === "primary") return "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300";
-    if (statusType === "secondary") return "bg-secondary-100 text-secondary-800 dark:bg-secondary-900/30 dark:text-secondary-300";
-    return "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300";
+    if (statusType === "success") return "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary";
+    if (statusType === "warning") return "bg-primary/20 text-primary dark:bg-primary/30 dark:text-primary";
+    if (statusType === "danger") return "bg-secondary/10 text-secondary dark:bg-secondary/20 dark:text-secondary";
+    if (statusType === "primary") return "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary";
+    if (statusType === "secondary") return "bg-secondary/10 text-secondary dark:bg-secondary/20 dark:text-secondary";
+    return "bg-primary/5 text-primary dark:bg-secondary/10 dark:text-secondary";
   };
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-        <div className="p-6 border-b dark:border-slate-700">
+      <div className="bg-white dark:bg-black/20 rounded-xl shadow-sm">
+        <div className="p-6 border-b border-primary/10 dark:border-secondary/20">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-slate-800 dark:text-white">Recent Activities</h3>
+            <h3 className="font-semibold text-secondary dark:text-primary">Recent Activities</h3>
             <div className="flex space-x-2">
-              <div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+              <div className="h-4 w-16 bg-primary/10 dark:bg-secondary/20 rounded animate-pulse"></div>
             </div>
           </div>
         </div>
@@ -32,12 +32,12 @@ export default function RecentActivities({ activities, loading = false }: Recent
           <div className="space-y-6">
             {[1, 2, 3, 4].map((item) => (
               <div key={item} className="flex items-start space-x-4">
-                <div className="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-700 animate-pulse"></div>
+                <div className="w-9 h-9 rounded-full bg-primary/10 dark:bg-secondary/20 animate-pulse"></div>
                 <div className="flex-1">
-                  <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4 mb-2 animate-pulse"></div>
-                  <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-1/2 animate-pulse"></div>
+                  <div className="h-4 bg-primary/10 dark:bg-secondary/20 rounded w-3/4 mb-2 animate-pulse"></div>
+                  <div className="h-3 bg-primary/10 dark:bg-secondary/20 rounded w-1/2 animate-pulse"></div>
                 </div>
-                <div className="w-16 h-5 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+                <div className="w-16 h-5 bg-primary/10 dark:bg-secondary/20 rounded animate-pulse"></div>
               </div>
             ))}
           </div>
@@ -48,16 +48,16 @@ export default function RecentActivities({ activities, loading = false }: Recent
 
   if (activities.length === 0) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-        <div className="p-6 border-b dark:border-slate-700">
+      <div className="bg-white dark:bg-black/20 rounded-xl shadow-sm">
+        <div className="p-6 border-b border-primary/10 dark:border-secondary/20">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-slate-800 dark:text-white">Recent Activities</h3>
+            <h3 className="font-semibold text-secondary dark:text-primary">Recent Activities</h3>
           </div>
         </div>
         <div className="p-6 text-center">
           <div className="py-6">
-            <i className="ri-calendar-event-line text-4xl text-slate-300 dark:text-slate-600 mb-2"></i>
-            <p className="text-slate-500 dark:text-slate-400">No recent activities found</p>
+            <i className="ri-calendar-event-line text-4xl text-primary/30 dark:text-secondary/30 mb-2"></i>
+            <p className="text-secondary/70 dark:text-primary/70">No recent activities found</p>
           </div>
         </div>
       </div>
