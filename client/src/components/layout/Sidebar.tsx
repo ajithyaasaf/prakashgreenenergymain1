@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { getInitials } from "@/utils/formatting";
 import { PERMISSIONS, hasPermission } from "@/utils/permissions";
 import { useToast } from "@/hooks/use-toast";
+import logoImage from "@/assets/logo.png";
 
 interface SidebarProps {
   open: boolean;
@@ -32,12 +33,9 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
     >
       <div className="flex flex-col h-full">
         {/* Logo */}
-        <div className="flex items-center justify-between h-16 px-6 border-b border-primary/20 dark:border-secondary/20">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary flex items-center justify-center rounded-md text-white">
-              <i className="ri-sun-line text-xl"></i>
-            </div>
-            <span className="text-lg font-semibold text-secondary dark:text-primary">Prakash Energy</span>
+        <div className="flex items-center justify-between h-20 px-4 border-b border-primary/20 dark:border-secondary/20">
+          <div className="flex items-center">
+            <img src={logoImage} alt="Prakash Green Energy Logo" className="h-12 w-auto" />
           </div>
           <button 
             onClick={closeSidebar}

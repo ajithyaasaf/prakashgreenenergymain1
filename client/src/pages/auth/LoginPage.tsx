@@ -8,6 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/contexts/ThemeContext";
+import logoImage from "@/assets/logo.png";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
