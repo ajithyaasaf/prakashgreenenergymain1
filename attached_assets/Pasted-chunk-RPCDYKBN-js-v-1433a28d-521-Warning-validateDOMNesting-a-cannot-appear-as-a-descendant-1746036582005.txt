@@ -1,0 +1,29 @@
+chunk-RPCDYKBN.js?v=1433a28d:521 Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a>.
+    at a
+    at a
+    at https://ff7c7dc0-2064-42ce-a204-1f5e4999bb59-00-1uxxfcft5q87k.picard.repl.c…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=1433a28d:337:18
+    at nav
+    at div
+    at aside
+    at Sidebar (https://ff7c7dc0-2064-42ce-a204-1f5e4999bb59-00-1uxxfcft5q87k.picard.repl.co/src/components/layout/Sidebar.tsx:22:35)
+    at div
+    at Layout (https://ff7c7dc0-2064-42ce-a204-1f5e4999bb59-00-1uxxfcft5q87k.picard.repl.co/src/components/layout/Layout.tsx:21:34)
+    at Suspense
+    at PrivateRoute (https://ff7c7dc0-2064-42ce-a204-1f5e4999bb59-00-1uxxfcft5q87k.picard.repl.co/src/routes/index.tsx?t=1746036458426:81:36)
+    at component
+    at Route (https://ff7c7dc0-2064-42ce-a204-1f5e4999bb59-00-1uxxfcft5q87k.picard.repl.c…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=1433a28d:323:16)
+    at Switch (https://ff7c7dc0-2064-42ce-a204-1f5e4999bb59-00-1uxxfcft5q87k.picard.repl.c…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=1433a28d:379:17)
+    at AppRoutes
+    at Provider (https://ff7c7dc0-2064-42ce-a204-1f5e4999bb59-00-1uxxfcft5q87k.picard.repl.c…unner/workspace/node_modules/.vite/deps/chunk-E7IAXTU4.js?v=1433a28d:38:15)
+    at TooltipProvider (https://ff7c7dc0-2064-42ce-a204-1f5e4999bb59-00-1uxxfcft5q87k.picard.repl.c…rkspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=1433a28d:61:5)
+    at App (https://ff7c7dc0-2064-42ce-a204-1f5e4999bb59-00-1uxxfcft5q87k.picard.repl.co/src/App.tsx?t=1746036458426&v=8GZcgF5LFIK4ha5y7GU1o:26:21)
+    at AuthProvider (https://ff7c7dc0-2064-42ce-a204-1f5e4999bb59-00-1uxxfcft5q87k.picard.repl.co/src/contexts/AuthContext.tsx:31:32)
+    at ThemeProvider (https://ff7c7dc0-2064-42ce-a204-1f5e4999bb59-00-1uxxfcft5q87k.picard.repl.co/src/contexts/ThemeContext.tsx:20:33)
+    at QueryClientProvider (https://ff7c7dc0-2064-42ce-a204-1f5e4999bb59-00-1uxxfcft5q87k.picard.repl.c…rkspace/node_modules/.vite/deps/@tanstack_react-query.js?v=1433a28d:2805:3)
+5
+useAttendance.ts:39 Error fetching today's attendance: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solar-energy-56bc8/firesto…GVuZGFuY2UvaW5kZXhlcy9fEAEaCgoGdXNlcklkEAEaCAoEZGF0ZRABGgwKCF9fbmFtZV9fEAE
+useAttendance.ts:39 Error fetching today's attendance: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solar-energy-56bc8/firesto…GVuZGFuY2UvaW5kZXhlcy9fEAEaCgoGdXNlcklkEAEaCAoEZGF0ZRABGgwKCF9fbmFtZV9fEAE
+21
+useAttendance.ts:39 Error fetching today's attendance: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solar-energy-56bc8/firesto…GVuZGFuY2UvaW5kZXhlcy9fEAEaCgoGdXNlcklkEAEaCAoEZGF0ZRABGgwKCF9fbmFtZV9fEAE
+﻿
+

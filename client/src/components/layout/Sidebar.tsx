@@ -48,104 +48,97 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
         {/* Navigation */}
         <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto hide-scrollbar">
           {/* Dashboard Link */}
-          <Link href="/dashboard">
-            <a 
-              className={`flex items-center px-3 py-2.5 rounded-lg ${
-                isActive("/dashboard")
-                  ? "bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
-                  : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700/50"
-              }`}
-            >
-              <i className="ri-dashboard-line mr-3 text-lg"></i>
-              <span>Dashboard</span>
-            </a>
+          <Link 
+            href="/dashboard"
+            className={`flex items-center px-3 py-2.5 rounded-lg ${
+              isActive("/dashboard")
+                ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
+                : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+            }`}
+          >
+            <i className="ri-dashboard-line mr-3 text-lg"></i>
+            <span>Dashboard</span>
           </Link>
           
           {/* Customers Link */}
-          <Link href="/customers">
-            <a 
-              className={`flex items-center px-3 py-2.5 rounded-lg ${
-                isActive("/customers")
-                  ? "bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
-                  : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700/50"
-              }`}
-            >
-              <i className="ri-user-line mr-3 text-lg"></i>
-              <span>Customers</span>
-            </a>
+          <Link 
+            href="/customers"
+            className={`flex items-center px-3 py-2.5 rounded-lg ${
+              isActive("/customers")
+                ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
+                : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+            }`}
+          >
+            <i className="ri-user-line mr-3 text-lg"></i>
+            <span>Customers</span>
           </Link>
           
           {/* Products Link - Visible to Admin and Master Admin */}
           {hasPermission(currentUser.role, PERMISSIONS.VIEW_PRODUCTS) && (
-            <Link href="/products">
-              <a 
-                className={`flex items-center px-3 py-2.5 rounded-lg ${
-                  isActive("/products")
-                    ? "bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
-                    : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700/50"
-                }`}
-              >
-                <i className="ri-boxes-line mr-3 text-lg"></i>
-                <span>Products</span>
-              </a>
+            <Link 
+              href="/products"
+              className={`flex items-center px-3 py-2.5 rounded-lg ${
+                isActive("/products")
+                  ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
+                  : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+              }`}
+            >
+              <i className="ri-boxes-line mr-3 text-lg"></i>
+              <span>Products</span>
             </Link>
           )}
           
           {/* Quotations Link */}
-          <Link href="/quotations">
-            <a 
-              className={`flex items-center px-3 py-2.5 rounded-lg ${
-                isActive("/quotations")
-                  ? "bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
-                  : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700/50"
-              }`}
-            >
-              <i className="ri-file-list-3-line mr-3 text-lg"></i>
-              <span>Quotations</span>
-            </a>
+          <Link 
+            href="/quotations"
+            className={`flex items-center px-3 py-2.5 rounded-lg ${
+              isActive("/quotations")
+                ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
+                : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+            }`}
+          >
+            <i className="ri-file-list-3-line mr-3 text-lg"></i>
+            <span>Quotations</span>
           </Link>
           
           {/* Invoices Link */}
-          <Link href="/invoices">
-            <a 
-              className={`flex items-center px-3 py-2.5 rounded-lg ${
-                isActive("/invoices")
-                  ? "bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
-                  : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700/50"
-              }`}
-            >
-              <i className="ri-bill-line mr-3 text-lg"></i>
-              <span>Invoices</span>
-            </a>
+          <Link 
+            href="/invoices"
+            className={`flex items-center px-3 py-2.5 rounded-lg ${
+              isActive("/invoices")
+                ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
+                : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+            }`}
+          >
+            <i className="ri-bill-line mr-3 text-lg"></i>
+            <span>Invoices</span>
           </Link>
           
           {/* Attendance Link */}
-          <Link href="/attendance">
-            <a 
-              className={`flex items-center px-3 py-2.5 rounded-lg ${
-                isActive("/attendance")
-                  ? "bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
-                  : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700/50"
-              }`}
-            >
-              <i className="ri-time-line mr-3 text-lg"></i>
-              <span>Attendance</span>
-            </a>
+          <Link 
+            href="/attendance"
+            className={`flex items-center px-3 py-2.5 rounded-lg ${
+              isActive("/attendance")
+                ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
+                : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+            }`}
+          >
+            <i className="ri-time-line mr-3 text-lg"></i>
+            <span>Attendance</span>
           </Link>
           
           {/* Attendance Admin Link - Visible to Admin and Master Admin */}
           {hasPermission(currentUser.role, PERMISSIONS.VIEW_ALL_ATTENDANCE) && (
-            <Link href="/attendance-admin">
-              <a 
-                className={`flex items-center px-3 py-2.5 rounded-lg ${
-                  isActive("/attendance-admin")
-                    ? "bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
-                    : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700/50"
-                }`}
-              >
-                <i className="ri-calendar-check-line mr-3 text-lg"></i>
-                <span>Attendance Admin</span>
-              </a>
+            <Link 
+              href="/attendance-admin"
+              className={`flex items-center px-3 py-2.5 rounded-lg ${
+                isActive("/attendance-admin")
+                  ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
+                  : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+              }`}
+            >
+              <i className="ri-calendar-check-line mr-3 text-lg"></i>
+              <span>Attendance Admin</span>
             </Link>
           )}
           
@@ -156,32 +149,30 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
           
           {/* Attendance Overview - Admin and Master Admin */}
           {hasPermission(currentUser.role, PERMISSIONS.VIEW_ALL_ANALYTICS) && (
-            <Link href="/analytics/attendance-overview">
-              <a 
-                className={`flex items-center px-3 py-2.5 rounded-lg ${
-                  isActive("/analytics/attendance-overview")
-                    ? "bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
-                    : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700/50"
-                }`}
-              >
-                <i className="ri-line-chart-line mr-3 text-lg"></i>
-                <span>Attendance Overview</span>
-              </a>
+            <Link 
+              href="/analytics/attendance-overview"
+              className={`flex items-center px-3 py-2.5 rounded-lg ${
+                isActive("/analytics/attendance-overview")
+                  ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
+                  : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+              }`}
+            >
+              <i className="ri-line-chart-line mr-3 text-lg"></i>
+              <span>Attendance Overview</span>
             </Link>
           )}
           
           {/* Personal Attendance Analytics */}
-          <Link href="/analytics/personal-attendance">
-            <a 
-              className={`flex items-center px-3 py-2.5 rounded-lg ${
-                isActive("/analytics/personal-attendance")
-                  ? "bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
-                  : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700/50"
-              }`}
-            >
-              <i className="ri-pie-chart-line mr-3 text-lg"></i>
-              <span>Personal Analytics</span>
-            </a>
+          <Link 
+            href="/analytics/personal-attendance"
+            className={`flex items-center px-3 py-2.5 rounded-lg ${
+              isActive("/analytics/personal-attendance")
+                ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
+                : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+            }`}
+          >
+            <i className="ri-pie-chart-line mr-3 text-lg"></i>
+            <span>Personal Analytics</span>
           </Link>
           
           {/* Master Admin Section */}
