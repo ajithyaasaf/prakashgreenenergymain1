@@ -177,7 +177,7 @@ export default function PersonalAttendancePage() {
     setDateRange(value);
   };
   
-  const getAttendanceClassForDay = (date: Date) => {
+  const getAttendanceClassForDay = (date: Date): string => {
     const dateStr = date.toISOString().split('T')[0];
     const status = calendarAttendance[dateStr];
     
@@ -371,7 +371,31 @@ export default function PersonalAttendancePage() {
               className="rounded-md border"
               classNames={{
                 day_selected: "bg-primary",
-                day: (date) => getAttendanceClassForDay(date.date)
+                day: "bg-white dark:bg-gray-900"
+              }}
+              modifiersClassNames={{
+                today: "bg-accent"
+              }}
+              modifiers={{
+                customDay: (date) => {
+                  const dateStr = date.toISOString().split('T')[0];
+                  const status = calendarAttendance[dateStr];
+                  
+                  if (!status) {
+                    // Weekend check
+                    if (date.getDay() === 0 || date.getDay() === 6) {
+                      return true;
+                    }
+                    return true;
+                  }
+                  
+                  return true;
+                }
+              }}
+              styles={{
+                day: (date) => {
+                  return { className: getAttendanceClassForDay(date) };
+                }
               }}
             />
             <div className="flex justify-between mt-4">
@@ -469,7 +493,7 @@ export default function PersonalAttendancePage() {
                       <Badge variant="destructive">Late</Badge>
                     )}
                     {record.checkOutTime && record.checkOutTime.split(':')[0] < '17' && (
-                      <Badge variant="warning">Early Out</Badge>
+                      <Badge variant="secondary" className="bg-yellow-500 hover:bg-yellow-500/80">Early Out</Badge>
                     )}
                   </div>
                 </div>
