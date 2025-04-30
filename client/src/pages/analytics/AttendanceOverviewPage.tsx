@@ -404,10 +404,10 @@ export default function AttendanceOverviewPage() {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="present" name="Present" stackId="a" fill="#0ea5e9" />
-                  <Bar dataKey="absent" name="Absent" stackId="a" fill="#ef4444" />
-                  <Bar dataKey="late" name="Late" stackId="a" fill="#f59e0b" />
-                  <Bar dataKey="leaveCount" name="Leave" stackId="a" fill="#10b981" />
+                  <Bar dataKey="present" name="Present" stackId="a" fill="#a7ce3b" />
+                  <Bar dataKey="absent" name="Absent" stackId="a" fill="#157fbe" />
+                  <Bar dataKey="late" name="Late" stackId="a" fill="#a7ce3b" opacity={0.7} />
+                  <Bar dataKey="leaveCount" name="Leave" stackId="a" fill="#157fbe" opacity={0.7} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -415,7 +415,7 @@ export default function AttendanceOverviewPage() {
         </CardContent>
       </Card>
       
-      <div className="text-sm text-slate-500 dark:text-slate-400 text-center mt-4">
+      <div className="text-sm text-secondary/70 dark:text-primary/70 text-center mt-4">
         Data shown is for the period: {formatDateFull(new Date(Date.now() - parseInt(dateRange) * 24 * 60 * 60 * 1000))} to {formatDateFull(new Date())}
       </div>
     </div>
