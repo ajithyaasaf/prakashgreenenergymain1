@@ -2,6 +2,7 @@ import { useLocation, Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { getInitials } from "@/utils/formatting";
 import { PERMISSIONS, hasPermission } from "@/utils/permissions";
+import { useToast } from "@/hooks/use-toast";
 
 interface SidebarProps {
   open: boolean;
@@ -10,7 +11,8 @@ interface SidebarProps {
 
 export default function Sidebar({ open, setOpen }: SidebarProps) {
   const [location] = useLocation();
-  const { currentUser, isAdmin, isMasterAdmin } = useAuth();
+  const { currentUser, isAdmin, isMasterAdmin, logout } = useAuth();
+  const { toast } = useToast();
   
   const isActive = (path: string) => {
     return location === path;
@@ -235,7 +237,21 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
           
           {/* Logout Button */}
           <button 
-            onClick={() => logout()}
+            onClick={async () => {
+              try {
+                await logout();
+                toast({
+                  title: "Successfully logged out",
+                  description: "You have been logged out of your account"
+                });
+              } catch (error) {
+                toast({
+                  title: "Error logging out",
+                  description: "There was a problem logging out",
+                  variant: "destructive"
+                });
+              }
+            }}
             className="mt-4 w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-secondary/10 hover:bg-secondary/20 text-secondary transition-colors"
           >
             <i className="ri-logout-box-line text-lg"></i>
