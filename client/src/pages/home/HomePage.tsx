@@ -145,7 +145,7 @@ export default function HomePage() {
           
           <div className="mt-8 pt-8 border-t border-slate-700 text-center md:text-left">
             <p className="text-slate-400">
-              &copy; {new Date().getFullYear()} Prakash Energy. All rights reserved.
+              &copy; {new Date().getFullYear()} Prakash Green Energy - Channel Partner (MNRE). All rights reserved.
             </p>
           </div>
         </div>
