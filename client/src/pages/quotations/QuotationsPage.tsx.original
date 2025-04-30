@@ -49,14 +49,14 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { collection, query, orderBy, where, addDoc, doc, updateDoc, getDoc, getDocs, serverTimestamp } from "firebase/firestore";
 import { firestore } from "@/firebase/config";
 
-// Define the quotation item schema for form validation
+// Schema for quotation items
 const quotationItemSchema = z.object({
   productId: z.string().min(1, "Please select a product"),
-  quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
-  unitPrice: z.coerce.number().min(0, "Unit price cannot be negative"),
+  quantity: z.coerce.number().int().positive("Quantity must be a positive number"),
+  unitPrice: z.coerce.number().int().positive("Unit price must be a positive number"),
 });
 
-// Define the quotation schema for form validation
+// Schema for the entire quotation form
 const quotationSchema = z.object({
   customerId: z.string().min(1, "Please select a customer"),
   items: z.array(quotationItemSchema).min(1, "Add at least one product"),
@@ -98,7 +98,6 @@ export default function QuotationsPage() {
       notes: "",
       validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0], // 30 days from now
       status: "draft",
-      templateId: 1,
     },
   });
   
@@ -170,8 +169,7 @@ export default function QuotationsPage() {
         let customer = undefined;
         const customerRef = doc.data().customerId;
         if (customerRef) {
-          const customerDocRef = doc(firestore, "customers", customerRef);
-          const customerDoc = await getDoc(customerDocRef);
+          const customerDoc = await getDoc(doc(firestore, "customers", customerRef));
           if (customerDoc.exists()) {
             customer = {
               id: customerDoc.id,
@@ -205,14 +203,9 @@ export default function QuotationsPage() {
     try {
       const customersCollection = collection(firestore, "customers");
       const customersQuery = query(customersCollection, orderBy("name", "asc"));
-      const customerDocs = await getDocs(customersQuery);
       
-      const fetchedCustomers = customerDocs.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Customer[];
-      
-      setCustomers(fetchedCustomers);
+      const { documents } = await useFirestore().useCollection<Customer>("customers", [orderBy("name", "asc")]);
+      setCustomers(documents || []);
     } catch (error) {
       console.error("Error fetching customers:", error);
     }
@@ -222,14 +215,9 @@ export default function QuotationsPage() {
     try {
       const productsCollection = collection(firestore, "products");
       const productsQuery = query(productsCollection, orderBy("name", "asc"));
-      const productDocs = await getDocs(productsQuery);
       
-      const fetchedProducts = productDocs.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Product[];
-      
-      setProducts(fetchedProducts);
+      const { documents } = await useFirestore().useCollection<Product>("products", [orderBy("name", "asc")]);
+      setProducts(documents || []);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -285,11 +273,11 @@ export default function QuotationsPage() {
       case "pending":
         return <Badge variant="secondary">Pending</Badge>;
       case "approved":
-        return <Badge className="bg-green-500 hover:bg-green-600">Approved</Badge>;
+        return <Badge variant="success">Approved</Badge>;
       case "rejected":
         return <Badge variant="destructive">Rejected</Badge>;
       case "invoiced":
-        return <Badge>Invoiced</Badge>;
+        return <Badge variant="default">Invoiced</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -436,27 +424,13 @@ export default function QuotationsPage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="text-center py-4">
-              <div className="inline-block animate-spin rounded-full h-6 w-6 border-2 border-primary border-r-transparent"></div>
-              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Loading quotations...</p>
+            // Skeleton loading state
+            <div className="space-y-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="h-12 bg-slate-100 dark:bg-slate-800 rounded animate-pulse"></div>
+              ))}
             </div>
-          ) : filteredQuotations.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
-                <i className="ri-file-list-3-line text-2xl text-slate-400"></i>
-              </div>
-              <h3 className="text-lg font-medium mb-2">No quotations found</h3>
-              <p className="text-slate-500 dark:text-slate-400">
-                {searchTerm ? "Try a different search term or filter" : "Create your first quotation to get started"}
-              </p>
-              {!searchTerm && (
-                <Button onClick={openAddDialog} className="mt-4">
-                  <i className="ri-add-line mr-2"></i>
-                  Create Quotation
-                </Button>
-              )}
-            </div>
-          ) : (
+          ) : filteredQuotations.length > 0 ? (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -466,43 +440,44 @@ export default function QuotationsPage() {
                     <TableHead>Date</TableHead>
                     <TableHead>Amount</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredQuotations.map((quotation) => (
-                    <TableRow key={quotation.id} className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                      <TableCell
-                        className="font-medium"
-                        onClick={() => viewQuotation(quotation)}
-                      >
-                        {quotation.quotationNumber}
-                      </TableCell>
-                      <TableCell onClick={() => viewQuotation(quotation)}>
-                        {quotation.customer?.name || "Unknown Customer"}
-                      </TableCell>
-                      <TableCell onClick={() => viewQuotation(quotation)}>
-                        {formatDate(quotation.createdAt)}
-                      </TableCell>
-                      <TableCell onClick={() => viewQuotation(quotation)}>
-                        {formatCurrency(quotation.total)}
-                      </TableCell>
-                      <TableCell onClick={() => viewQuotation(quotation)}>
-                        {getStatusBadge(quotation.status)}
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => viewQuotation(quotation)}
-                        >
-                          <i className="ri-eye-line text-slate-500"></i>
+                    <TableRow key={quotation.id} className="cursor-pointer" onClick={() => viewQuotation(quotation)}>
+                      <TableCell className="font-medium">{quotation.quotationNumber}</TableCell>
+                      <TableCell>{quotation.customer?.name || "Unknown Customer"}</TableCell>
+                      <TableCell>{formatDate(quotation.createdAt)}</TableCell>
+                      <TableCell>{formatCurrency(quotation.total)}</TableCell>
+                      <TableCell>{getStatusBadge(quotation.status)}</TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm">
+                          <i className="ri-eye-line"></i>
                         </Button>
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <i className="ri-file-list-3-line text-2xl text-slate-400"></i>
+              </div>
+              <h3 className="text-lg font-medium text-slate-800 dark:text-white mb-2">No quotations found</h3>
+              <p className="text-slate-500 dark:text-slate-400 mb-6">
+                {searchTerm || statusFilter !== "all"
+                  ? "No results match your search criteria"
+                  : "You haven't created any quotations yet."}
+              </p>
+              {!searchTerm && statusFilter === "all" && (
+                <Button onClick={openAddDialog}>
+                  <i className="ri-file-list-3-line mr-2"></i>
+                  Create Your First Quotation
+                </Button>
+              )}
             </div>
           )}
         </CardContent>
@@ -897,11 +872,12 @@ export default function QuotationsPage() {
                       </div>
                     )}
                     
-                    {currentQuotation.status === "pending" && hasPermission(currentUser?.role || "employee", PERMISSIONS.APPROVE_QUOTATION) && (
+                    {currentQuotation.status === "pending" && hasPermission(currentUser?.role || "", PERMISSIONS.APPROVE_QUOTATION) && (
                       <div className="flex flex-col gap-2">
                         <Button 
                           onClick={() => updateQuotationStatus(currentQuotation.id, "approved")}
-                          className="justify-start bg-green-500 hover:bg-green-600"
+                          className="justify-start"
+                          variant="success"
                         >
                           <i className="ri-check-line mr-2"></i>
                           Approve Quotation
