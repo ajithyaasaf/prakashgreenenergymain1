@@ -240,7 +240,13 @@ export default function AttendanceAdminPage() {
       // Sort by created date (newest first)
       filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       
-      setLeaveRequests(filtered);
+      // Ensure each item has the correct status type
+      const typedFiltered: LeaveRequest[] = filtered.map(item => ({
+        ...item,
+        status: item.status as 'pending' | 'approved' | 'rejected'
+      }));
+      
+      setLeaveRequests(typedFiltered);
       
     } catch (error) {
       console.error("Error fetching leave requests:", error);
@@ -315,11 +321,11 @@ export default function AttendanceAdminPage() {
       // });
       
       // For demo, update locally
-      const updatedRequests = leaveRequests.map(request => {
+      const updatedRequests: LeaveRequest[] = leaveRequests.map(request => {
         if (request.id === selectedLeaveRequest.id) {
           return {
             ...request,
-            status: action === 'approve' ? 'approved' : 'rejected',
+            status: (action === 'approve' ? 'approved' : 'rejected') as 'pending' | 'approved' | 'rejected',
           };
         }
         return request;
