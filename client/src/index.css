@@ -4,18 +4,25 @@
 
 @layer base {
   :root {
+    /* Base color definitions - Primary: #a7ce3b (green), Secondary: #157fbe (blue) */
     --background: 0 0% 100%;
     --foreground: 0 0% 0%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 0%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 0%;
+    
+    /* Primary - Green (#a7ce3b) */
     --primary: 82 54% 52%;
     --primary-foreground: 0 0% 100%;
+    
+    /* Secondary - Blue (#157fbe) */
     --secondary: 203 80% 42%;
     --secondary-foreground: 0 0% 100%;
+    
+    /* Reassign all other colors to either primary or secondary */
     --muted: 82 54% 95%;
-    --muted-foreground: 82 54% 30%;
+    --muted-foreground: 203 80% 42%;
     --accent: 82 54% 52%;
     --accent-foreground: 0 0% 100%;
     --destructive: 203 80% 42%;
@@ -28,9 +35,9 @@
     /* Chart colors - only using the allowed colors */
     --chart-1: 82 54% 52%;
     --chart-2: 203 80% 42%;
-    --chart-3: 82 54% 70%;
-    --chart-4: 203 80% 70%;
-    --chart-5: 82 54% 30%;
+    --chart-3: 82 54% 52%;
+    --chart-4: 203 80% 42%;
+    --chart-5: 82 54% 52%;
 
     /* Sidebar colors */
     --sidebar-background: 0 0% 100%;
@@ -50,12 +57,18 @@
     --card-foreground: 0 0% 95%;
     --popover: 0 0% 10%;
     --popover-foreground: 0 0% 95%;
+    
+    /* Primary - Green (#a7ce3b) */
     --primary: 82 54% 52%;
     --primary-foreground: 0 0% 100%;
+    
+    /* Secondary - Blue (#157fbe) */
     --secondary: 203 80% 42%;
     --secondary-foreground: 0 0% 100%;
+    
+    /* Reassign all other colors to either primary or secondary */
     --muted: 82 30% 20%;
-    --muted-foreground: 82 30% 80%;
+    --muted-foreground: 203 80% 42%;
     --accent: 82 54% 52%;
     --accent-foreground: 0 0% 100%;
     --destructive: 203 80% 42%;
@@ -67,9 +80,9 @@
     /* Chart colors - only using the allowed colors */
     --chart-1: 82 54% 52%;
     --chart-2: 203 80% 42%;
-    --chart-3: 82 54% 70%;
-    --chart-4: 203 80% 70%;
-    --chart-5: 82 54% 30%;
+    --chart-3: 82 54% 52%;
+    --chart-4: 203 80% 42%;
+    --chart-5: 82 54% 52%;
 
     /* Sidebar colors */
     --sidebar-background: 0 0% 15%;

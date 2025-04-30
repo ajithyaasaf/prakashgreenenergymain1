@@ -177,10 +177,10 @@ export default function PersonalAttendancePage() {
     setDateRange(value);
   };
   
-  // Custom styles for calendar days based on attendance status
+  // Custom styles for calendar days based on attendance status - only using brand colors
   const presentClass = "bg-primary/20 text-primary dark:bg-primary/20 dark:text-primary-foreground";
   const absentClass = "bg-secondary/20 text-secondary dark:bg-secondary/20 dark:text-secondary-foreground";
-  const weekendClass = "bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500";
+  const weekendClass = "bg-primary/5 text-secondary/50 dark:bg-secondary/10 dark:text-primary/50";
   
   const COLORS = ['#a7ce3b', '#157fbe', '#a7ce3b', '#157fbe'];
   
@@ -360,16 +360,17 @@ export default function PersonalAttendancePage() {
               onSelect={setSelectedDate}
               className="rounded-md border"
               modifiers={{
-                absent: Object.keys(calendarAttendance).length > 0 ? 
-                  date => !calendarAttendance[date.toISOString().split('T')[0]] && date.getDay() !== 0 && date.getDay() !== 6 :
-                  undefined,
-                present: date => !!calendarAttendance[date.toISOString().split('T')[0]],
-                weekend: date => date.getDay() === 0 || date.getDay() === 6
+                present: (date: Date) => !!calendarAttendance[date.toISOString().split('T')[0]],
+                weekend: (date: Date) => date.getDay() === 0 || date.getDay() === 6,
+                absent: (date: Date) => {
+                  const dateStr = date.toISOString().split('T')[0];
+                  return !calendarAttendance[dateStr] && date.getDay() !== 0 && date.getDay() !== 6;
+                }
               }}
               modifiersStyles={{
                 absent: { backgroundColor: "#157fbe20", color: "#157fbe" },
                 present: { backgroundColor: "#a7ce3b20", color: "#a7ce3b" },
-                weekend: { backgroundColor: "#f1f5f9", color: "#94a3b8" }
+                weekend: { backgroundColor: "#a7ce3b10", color: "#157fbe80" }
               }}
               classNames={{
                 day: 'day-base',
@@ -387,7 +388,7 @@ export default function PersonalAttendancePage() {
                 <span className="text-sm">Absent</span>
               </div>
               <div className="flex items-center">
-                <div className="w-3 h-3 rounded-full bg-slate-100 dark:bg-slate-800 mr-2"></div>
+                <div className="w-3 h-3 rounded-full bg-primary/10 dark:bg-secondary/10 mr-2"></div>
                 <span className="text-sm">Weekend/Holiday</span>
               </div>
             </div>
@@ -428,14 +429,14 @@ export default function PersonalAttendancePage() {
                 </ResponsiveContainer>
               )}
             </div>
-            <div className="text-xs text-center text-slate-500 dark:text-slate-400 mt-2">
+            <div className="text-xs text-center mt-2">
               <div className="flex items-center justify-center">
                 <div className="w-2 h-2 rounded-full bg-primary mr-1"></div> {/* #a7ce3b */}
-                <span className="mr-4">Before 9:00 AM</span>
+                <span className="mr-4 text-primary dark:text-primary">Before 9:00 AM</span>
                 <div className="w-2 h-2 rounded-full bg-secondary/70 mr-1"></div> {/* #157fbe lighter */}
-                <span className="mr-4">9:00-10:00 AM</span>
+                <span className="mr-4 text-secondary dark:text-secondary">9:00-10:00 AM</span>
                 <div className="w-2 h-2 rounded-full bg-secondary mr-1"></div> {/* #157fbe */}
-                <span>After 10:00 AM</span>
+                <span className="text-secondary dark:text-secondary">After 10:00 AM</span>
               </div>
             </div>
           </CardContent>
@@ -480,11 +481,11 @@ export default function PersonalAttendancePage() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
-                <i className="ri-calendar-line text-2xl text-slate-400"></i>
+              <div className="w-12 h-12 rounded-full bg-primary/10 dark:bg-secondary/10 mx-auto flex items-center justify-center mb-4">
+                <i className="ri-calendar-line text-2xl text-primary dark:text-secondary"></i>
               </div>
-              <h3 className="text-lg font-medium text-slate-800 dark:text-white mb-2">No attendance records</h3>
-              <p className="text-slate-500 dark:text-slate-400">
+              <h3 className="text-lg font-medium mb-2">No attendance records</h3>
+              <p className="text-secondary dark:text-primary/80">
                 No attendance records found for the selected period
               </p>
             </div>
@@ -492,7 +493,7 @@ export default function PersonalAttendancePage() {
         </CardContent>
       </Card>
       
-      <div className="text-sm text-slate-500 dark:text-slate-400 text-center mt-4">
+      <div className="text-sm text-secondary/70 dark:text-primary/70 text-center mt-4">
         Data shown is for the period: {formatDateFull(new Date(Date.now() - parseInt(dateRange) * 24 * 60 * 60 * 1000))} to {formatDateFull(new Date())}
       </div>
     </div>
