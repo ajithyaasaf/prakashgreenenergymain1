@@ -30,16 +30,16 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
     >
       <div className="flex flex-col h-full">
         {/* Logo */}
-        <div className="flex items-center justify-between h-16 px-6 border-b dark:border-slate-700">
+        <div className="flex items-center justify-between h-16 px-6 border-b border-primary/20 dark:border-secondary/20">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-primary flex items-center justify-center rounded-md text-white">
               <i className="ri-sun-line text-xl"></i>
             </div>
-            <span className="text-lg font-semibold text-slate-800 dark:text-white">Prakash Energy</span>
+            <span className="text-lg font-semibold text-secondary dark:text-primary">Prakash Energy</span>
           </div>
           <button 
             onClick={closeSidebar}
-            className="lg:hidden text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white"
+            className="lg:hidden text-secondary hover:text-primary dark:text-primary/70 dark:hover:text-primary"
           >
             <i className="ri-arrow-left-line text-xl"></i>
           </button>
@@ -144,7 +144,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
           
           {/* Analytics Section */}
           <div className="pt-2 pb-1">
-            <p className="px-3 text-xs font-medium text-slate-500 uppercase dark:text-slate-400">Analytics</p>
+            <p className="px-3 text-xs font-medium text-secondary/80 uppercase dark:text-primary/80">Analytics</p>
           </div>
           
           {/* Attendance Overview - Admin and Master Admin */}
@@ -179,58 +179,57 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
           {isMasterAdmin && (
             <>
               <div className="pt-2 pb-1">
-                <p className="px-3 text-xs font-medium text-slate-500 uppercase dark:text-slate-400">Administration</p>
+                <p className="px-3 text-xs font-medium text-secondary/80 uppercase dark:text-primary/80">Administration</p>
               </div>
               
               {/* User Management - Master Admin only */}
-              <Link href="/user-management">
-                <a 
-                  className={`flex items-center px-3 py-2.5 rounded-lg ${
-                    isActive("/user-management")
-                      ? "bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
-                      : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700/50"
-                  }`}
-                >
-                  <i className="ri-user-settings-line mr-3 text-lg"></i>
-                  <span>User Management</span>
-                </a>
+              <Link 
+                href="/user-management"
+                className={`flex items-center px-3 py-2.5 rounded-lg ${
+                  isActive("/user-management")
+                    ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
+                    : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                }`}
+              >
+                <i className="ri-user-settings-line mr-3 text-lg"></i>
+                <span>User Management</span>
               </Link>
               
               {/* Attendance Settings - Master Admin only */}
-              <Link href="/attendance-settings">
-                <a 
-                  className={`flex items-center px-3 py-2.5 rounded-lg ${
-                    isActive("/attendance-settings")
-                      ? "bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
-                      : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700/50"
-                  }`}
-                >
-                  <i className="ri-settings-4-line mr-3 text-lg"></i>
-                  <span>Attendance Settings</span>
-                </a>
+              <Link 
+                href="/attendance-settings"
+                className={`flex items-center px-3 py-2.5 rounded-lg ${
+                  isActive("/attendance-settings")
+                    ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
+                    : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                }`}
+              >
+                <i className="ri-settings-4-line mr-3 text-lg"></i>
+                <span>Attendance Settings</span>
               </Link>
             </>
           )}
         </nav>
         
         {/* User Profile Section */}
-        <div className="border-t dark:border-slate-700 p-4">
+        <div className="border-t border-primary/20 dark:border-secondary/20 p-4">
           <div className="flex items-center">
-            <div className="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center text-primary-700 dark:text-primary-300 font-medium">
+            <div className="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-primary font-medium">
               <span>{getInitials(currentUser.displayName || "User")}</span>
             </div>
             <div className="ml-3 flex-1 min-w-0">
-              <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">
+              <p className="text-sm font-medium text-secondary dark:text-primary truncate">
                 {currentUser.displayName || currentUser.email}
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+              <p className="text-xs text-secondary/70 dark:text-primary/70 truncate">
                 {currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1).replace('_', ' ')}
               </p>
             </div>
-            <Link href="/settings">
-              <a className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white">
-                <i className="ri-settings-3-line text-lg"></i>
-              </a>
+            <Link 
+              href="/settings"
+              className="text-secondary hover:text-primary dark:text-primary/70 dark:hover:text-primary"
+            >
+              <i className="ri-settings-3-line text-lg"></i>
             </Link>
           </div>
         </div>
