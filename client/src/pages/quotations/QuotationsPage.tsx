@@ -14,8 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import TemplateSelector from "@/components/common/TemplateSelector";
-import TemplatePreview from "@/components/common/TemplatePreview";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -49,14 +47,14 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { collection, query, orderBy, where, addDoc, doc, updateDoc, getDoc, getDocs, serverTimestamp } from "firebase/firestore";
 import { firestore } from "@/firebase/config";
 
-// Define the quotation item schema for form validation
+// Schema for quotation items
 const quotationItemSchema = z.object({
   productId: z.string().min(1, "Please select a product"),
-  quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
-  unitPrice: z.coerce.number().min(0, "Unit price cannot be negative"),
+  quantity: z.coerce.number().int().positive("Quantity must be a positive number"),
+  unitPrice: z.coerce.number().int().positive("Unit price must be a positive number"),
 });
 
-// Define the quotation schema for form validation
+// Schema for the entire quotation form
 const quotationSchema = z.object({
   customerId: z.string().min(1, "Please select a customer"),
   items: z.array(quotationItemSchema).min(1, "Add at least one product"),
@@ -67,7 +65,6 @@ const quotationSchema = z.object({
   notes: z.string().optional(),
   validUntil: z.string().optional(),
   status: z.enum(["draft", "pending", "approved", "rejected", "invoiced"]).default("draft"),
-  templateId: z.number().min(1, "Please select a template").default(1),
 });
 
 type QuotationFormValues = z.infer<typeof quotationSchema>;
@@ -82,7 +79,6 @@ export default function QuotationsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentQuotation, setCurrentQuotation] = useState<Quotation | null>(null);
-  const [selectedTemplateId, setSelectedTemplateId] = useState<number>(1);
   const { currentUser } = useAuth();
   const { toast } = useToast();
   
@@ -98,7 +94,6 @@ export default function QuotationsPage() {
       notes: "",
       validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0], // 30 days from now
       status: "draft",
-      templateId: 1,
     },
   });
   
@@ -170,8 +165,7 @@ export default function QuotationsPage() {
         let customer = undefined;
         const customerRef = doc.data().customerId;
         if (customerRef) {
-          const customerDocRef = doc(firestore, "customers", customerRef);
-          const customerDoc = await getDoc(customerDocRef);
+          const customerDoc = await getDoc(doc(firestore, "customers", customerRef));
           if (customerDoc.exists()) {
             customer = {
               id: customerDoc.id,
@@ -205,14 +199,9 @@ export default function QuotationsPage() {
     try {
       const customersCollection = collection(firestore, "customers");
       const customersQuery = query(customersCollection, orderBy("name", "asc"));
-      const customerDocs = await getDocs(customersQuery);
       
-      const fetchedCustomers = customerDocs.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Customer[];
-      
-      setCustomers(fetchedCustomers);
+      const { documents } = await useFirestore().useCollection<Customer>("customers", [orderBy("name", "asc")]);
+      setCustomers(documents || []);
     } catch (error) {
       console.error("Error fetching customers:", error);
     }
@@ -222,14 +211,9 @@ export default function QuotationsPage() {
     try {
       const productsCollection = collection(firestore, "products");
       const productsQuery = query(productsCollection, orderBy("name", "asc"));
-      const productDocs = await getDocs(productsQuery);
       
-      const fetchedProducts = productDocs.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Product[];
-      
-      setProducts(fetchedProducts);
+      const { documents } = await useFirestore().useCollection<Product>("products", [orderBy("name", "asc")]);
+      setProducts(documents || []);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -267,9 +251,7 @@ export default function QuotationsPage() {
       notes: "",
       validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
       status: "draft",
-      templateId: 1
     });
-    setSelectedTemplateId(1);
     setIsAddDialogOpen(true);
   };
 
@@ -285,11 +267,11 @@ export default function QuotationsPage() {
       case "pending":
         return <Badge variant="secondary">Pending</Badge>;
       case "approved":
-        return <Badge className="bg-green-500 hover:bg-green-600">Approved</Badge>;
+        return <Badge variant="success">Approved</Badge>;
       case "rejected":
         return <Badge variant="destructive">Rejected</Badge>;
       case "invoiced":
-        return <Badge>Invoiced</Badge>;
+        return <Badge variant="default">Invoiced</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -327,7 +309,6 @@ export default function QuotationsPage() {
         total: data.total,
         notes: data.notes,
         validUntil: data.validUntil ? new Date(data.validUntil) : null,
-        templateId: data.templateId,
         createdBy: currentUser.uid,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -436,27 +417,13 @@ export default function QuotationsPage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="text-center py-4">
-              <div className="inline-block animate-spin rounded-full h-6 w-6 border-2 border-primary border-r-transparent"></div>
-              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Loading quotations...</p>
+            // Skeleton loading state
+            <div className="space-y-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="h-12 bg-slate-100 dark:bg-slate-800 rounded animate-pulse"></div>
+              ))}
             </div>
-          ) : filteredQuotations.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
-                <i className="ri-file-list-3-line text-2xl text-slate-400"></i>
-              </div>
-              <h3 className="text-lg font-medium mb-2">No quotations found</h3>
-              <p className="text-slate-500 dark:text-slate-400">
-                {searchTerm ? "Try a different search term or filter" : "Create your first quotation to get started"}
-              </p>
-              {!searchTerm && (
-                <Button onClick={openAddDialog} className="mt-4">
-                  <i className="ri-add-line mr-2"></i>
-                  Create Quotation
-                </Button>
-              )}
-            </div>
-          ) : (
+          ) : filteredQuotations.length > 0 ? (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -466,37 +433,20 @@ export default function QuotationsPage() {
                     <TableHead>Date</TableHead>
                     <TableHead>Amount</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredQuotations.map((quotation) => (
-                    <TableRow key={quotation.id} className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                      <TableCell
-                        className="font-medium"
-                        onClick={() => viewQuotation(quotation)}
-                      >
-                        {quotation.quotationNumber}
-                      </TableCell>
-                      <TableCell onClick={() => viewQuotation(quotation)}>
-                        {quotation.customer?.name || "Unknown Customer"}
-                      </TableCell>
-                      <TableCell onClick={() => viewQuotation(quotation)}>
-                        {formatDate(quotation.createdAt)}
-                      </TableCell>
-                      <TableCell onClick={() => viewQuotation(quotation)}>
-                        {formatCurrency(quotation.total)}
-                      </TableCell>
-                      <TableCell onClick={() => viewQuotation(quotation)}>
-                        {getStatusBadge(quotation.status)}
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => viewQuotation(quotation)}
-                        >
-                          <i className="ri-eye-line text-slate-500"></i>
+                    <TableRow key={quotation.id} className="cursor-pointer" onClick={() => viewQuotation(quotation)}>
+                      <TableCell className="font-medium">{quotation.quotationNumber}</TableCell>
+                      <TableCell>{quotation.customer?.name || "Unknown Customer"}</TableCell>
+                      <TableCell>{formatDate(quotation.createdAt)}</TableCell>
+                      <TableCell>{formatCurrency(quotation.total)}</TableCell>
+                      <TableCell>{getStatusBadge(quotation.status)}</TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm">
+                          <i className="ri-eye-line"></i>
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -504,13 +454,31 @@ export default function QuotationsPage() {
                 </TableBody>
               </Table>
             </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 mx-auto flex items-center justify-center mb-4">
+                <i className="ri-file-list-3-line text-2xl text-slate-400"></i>
+              </div>
+              <h3 className="text-lg font-medium text-slate-800 dark:text-white mb-2">No quotations found</h3>
+              <p className="text-slate-500 dark:text-slate-400 mb-6">
+                {searchTerm || statusFilter !== "all"
+                  ? "No results match your search criteria"
+                  : "You haven't created any quotations yet."}
+              </p>
+              {!searchTerm && statusFilter === "all" && (
+                <Button onClick={openAddDialog}>
+                  <i className="ri-file-list-3-line mr-2"></i>
+                  Create Your First Quotation
+                </Button>
+              )}
+            </div>
           )}
         </CardContent>
       </Card>
 
       {/* Create Quotation Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="sm:max-w-4xl">
+        <DialogContent className="sm:max-w-3xl">
           <DialogHeader>
             <DialogTitle>Create New Quotation</DialogTitle>
             <DialogDescription>
@@ -519,260 +487,206 @@ export default function QuotationsPage() {
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmitQuotation)} className="space-y-6">
-              <Tabs defaultValue="details">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="details">Quote Details</TabsTrigger>
-                  <TabsTrigger value="template">Template</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="details" className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="customerId"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Customer *</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a customer" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {customers.map((customer) => (
-                                <SelectItem key={customer.id} value={customer.id}>
-                                  {customer.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="validUntil"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Valid Until</FormLabel>
-                          <FormControl>
-                            <Input type="date" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div>
-                    <h3 className="font-medium mb-2">Products</h3>
-                    <div className="space-y-4">
-                      {fields.map((field, index) => (
-                        <div key={field.id} className="flex flex-wrap gap-4 items-end p-4 border rounded-md">
-                          <div className="flex-1 min-w-[200px]">
-                            <FormField
-                              control={form.control}
-                              name={`items.${index}.productId`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Product</FormLabel>
-                                  <Select
-                                    onValueChange={(value) => {
-                                      field.onChange(value);
-                                      handleProductChange(index, value);
-                                    }}
-                                    defaultValue={field.value}
-                                  >
-                                    <FormControl>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="Select a product" />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      {products.map((product) => (
-                                        <SelectItem key={product.id} value={product.id}>
-                                          {product.name} - {formatCurrency(product.price)}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                          <div className="w-20">
-                            <FormField
-                              control={form.control}
-                              name={`items.${index}.quantity`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Qty</FormLabel>
-                                  <FormControl>
-                                    <Input type="number" min="1" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                          <div className="w-24">
-                            <FormField
-                              control={form.control}
-                              name={`items.${index}.unitPrice`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Unit Price</FormLabel>
-                                  <FormControl>
-                                    <Input type="number" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                          <div className="w-24">
-                            <FormLabel>Total</FormLabel>
-                            <div className="h-10 px-3 py-2 rounded-md border bg-slate-50 dark:bg-slate-800 text-slate-500">
-                              {formatCurrency(
-                                (form.watch(`items.${index}.quantity`) || 0) * 
-                                (form.watch(`items.${index}.unitPrice`) || 0)
-                              )}
-                            </div>
-                          </div>
-                          <div>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => remove(index)}
-                              disabled={fields.length === 1}
-                            >
-                              <i className="ri-delete-bin-line text-red-500"></i>
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => append({ productId: "", quantity: 1, unitPrice: 0 })}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="customerId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Customer *</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
                       >
-                        <i className="ri-add-line mr-1"></i>
-                        Add Product
-                      </Button>
-                    </div>
-                  </div>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a customer" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {customers.map((customer) => (
+                            <SelectItem key={customer.id} value={customer.id}>
+                              {customer.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="validUntil"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Valid Until</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <FormField
-                        control={form.control}
-                        name="notes"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Notes</FormLabel>
-                            <FormControl>
-                              <textarea
-                                {...field}
-                                className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                placeholder="Additional notes for the quotation"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <div className="space-y-4">
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Subtotal:</span>
-                        <span className="font-medium">{formatCurrency(form.watch("subtotal"))}</span>
+              <div>
+                <h3 className="font-medium mb-2">Products</h3>
+                <div className="space-y-4">
+                  {fields.map((field, index) => (
+                    <div key={field.id} className="flex flex-wrap gap-4 items-end p-4 border rounded-md">
+                      <div className="flex-1 min-w-[200px]">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.productId`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Product</FormLabel>
+                              <Select
+                                onValueChange={(value) => {
+                                  field.onChange(value);
+                                  handleProductChange(index, value);
+                                }}
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select a product" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {products.map((product) => (
+                                    <SelectItem key={product.id} value={product.id}>
+                                      {product.name} - {formatCurrency(product.price)}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Tax (18% GST):</span>
-                        <span className="font-medium">{formatCurrency(form.watch("tax"))}</span>
-                      </div>
-                      <FormField
-                        control={form.control}
-                        name="discount"
-                        render={({ field }) => (
-                          <FormItem>
-                            <div className="flex justify-between">
-                              <FormLabel className="text-slate-500">Discount:</FormLabel>
+                      <div className="w-20">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.quantity`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Qty</FormLabel>
                               <FormControl>
-                                <Input
-                                  type="number"
-                                  min="0"
-                                  {...field}
-                                  className="w-24 text-right"
-                                />
+                                <Input type="number" min="1" {...field} />
                               </FormControl>
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <div className="flex justify-between pt-2 border-t">
-                        <span className="font-semibold">Total:</span>
-                        <span className="font-semibold">{formatCurrency(form.watch("total"))}</span>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="w-24">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.unitPrice`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Unit Price</FormLabel>
+                              <FormControl>
+                                <Input type="number" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="w-24">
+                        <FormLabel>Total</FormLabel>
+                        <div className="h-10 px-3 py-2 rounded-md border bg-slate-50 dark:bg-slate-800 text-slate-500">
+                          {formatCurrency(
+                            (form.watch(`items.${index}.quantity`) || 0) * 
+                            (form.watch(`items.${index}.unitPrice`) || 0)
+                          )}
+                        </div>
+                      </div>
+                      <div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => remove(index)}
+                          disabled={fields.length === 1}
+                        >
+                          <i className="ri-delete-bin-line text-red-500"></i>
+                        </Button>
                       </div>
                     </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => append({ productId: "", quantity: 1, unitPrice: 0 })}
+                  >
+                    <i className="ri-add-line mr-1"></i>
+                    Add Product
+                  </Button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <FormField
+                    control={form.control}
+                    name="notes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Notes</FormLabel>
+                        <FormControl>
+                          <textarea
+                            {...field}
+                            className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            placeholder="Additional notes for the quotation"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Subtotal:</span>
+                    <span className="font-medium">{formatCurrency(form.watch("subtotal"))}</span>
                   </div>
-                </TabsContent>
-                
-                <TabsContent value="template" className="space-y-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div>
-                      <FormField
-                        control={form.control}
-                        name="templateId"
-                        render={({ field }) => (
-                          <FormItem>
-                            <TemplateSelector
-                              selectedTemplateId={selectedTemplateId}
-                              onSelectTemplate={(templateId) => {
-                                setSelectedTemplateId(templateId);
-                                field.onChange(templateId);
-                              }}
-                              documentType="quotation"
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Tax (18% GST):</span>
+                    <span className="font-medium">{formatCurrency(form.watch("tax"))}</span>
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="discount"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex justify-between">
+                          <FormLabel className="text-slate-500">Discount:</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min="0"
+                              {...field}
+                              className="w-24 text-right"
                             />
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <div>
-                      <TemplatePreview
-                        templateId={selectedTemplateId}
-                        documentType="quotation"
-                        data={{
-                          number: "QT-PREVIEW",
-                          date: new Date().toLocaleDateString(),
-                          customerName: customers.find(c => c.id === form.watch("customerId"))?.name || "Customer Name",
-                          items: form.watch("items").map(item => ({
-                            name: products.find(p => p.id === item.productId)?.name || "Product",
-                            quantity: item.quantity || 0,
-                            price: item.unitPrice || 0,
-                            total: (item.quantity || 0) * (item.unitPrice || 0)
-                          })),
-                          subtotal: form.watch("subtotal"),
-                          tax: form.watch("tax"),
-                          discount: form.watch("discount"),
-                          total: form.watch("total")
-                        }}
-                      />
-                    </div>
+                          </FormControl>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex justify-between pt-2 border-t">
+                    <span className="font-semibold">Total:</span>
+                    <span className="font-semibold">{formatCurrency(form.watch("total"))}</span>
                   </div>
-                </TabsContent>
-              </Tabs>
-              
+                </div>
+              </div>
+
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
                   Cancel
@@ -897,11 +811,12 @@ export default function QuotationsPage() {
                       </div>
                     )}
                     
-                    {currentQuotation.status === "pending" && hasPermission(currentUser?.role || "employee", PERMISSIONS.APPROVE_QUOTATION) && (
+                    {currentQuotation.status === "pending" && hasPermission(currentUser?.role || "", PERMISSIONS.APPROVE_QUOTATION) && (
                       <div className="flex flex-col gap-2">
                         <Button 
                           onClick={() => updateQuotationStatus(currentQuotation.id, "approved")}
-                          className="justify-start bg-green-500 hover:bg-green-600"
+                          className="justify-start"
+                          variant="success"
                         >
                           <i className="ri-check-line mr-2"></i>
                           Approve Quotation

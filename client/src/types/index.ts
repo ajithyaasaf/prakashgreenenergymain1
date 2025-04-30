@@ -122,7 +122,6 @@ export interface Leave {
   userId: string;
   startDate: string;
   endDate: string;
-  type?: 'sick' | 'casual' | 'personal';
   reason?: string;
   status: LeaveStatus;
   approvedBy?: string;
