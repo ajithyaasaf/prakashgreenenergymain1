@@ -18,10 +18,10 @@ export function useAttendance() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
+      // Using only userId as the filter to avoid composite index requirement
       const q = query(
         collection(firestore, "attendance"),
-        where("userId", "==", currentUser.uid),
-        where("date", ">=", today)
+        where("userId", "==", currentUser.uid)
       );
       
       const querySnapshot = await getDocs(q);
@@ -30,7 +30,18 @@ export function useAttendance() {
         return null;
       }
       
-      const attendanceDoc = querySnapshot.docs[0];
+      // Filter for today's date in memory instead of in the query
+      const todayStr = today.toDateString();
+      const todayDocs = querySnapshot.docs.filter(doc => {
+        const date = doc.data().date?.toDate?.();
+        return date && date.toDateString() === todayStr;
+      });
+      
+      if (todayDocs.length === 0) {
+        return null;
+      }
+      
+      const attendanceDoc = todayDocs[0];
       return {
         id: attendanceDoc.id,
         ...attendanceDoc.data()
@@ -40,7 +51,7 @@ export function useAttendance() {
       toast({
         title: "Error",
         description: "Failed to fetch attendance data",
-        variant: "destructive",
+        variant: "secondary", // Using secondary (blue) for errors as per brand guideline
       });
       return null;
     } finally {
@@ -60,7 +71,7 @@ export function useAttendance() {
         toast({
           title: "Already Checked In",
           description: "You have already checked in today",
-          variant: "default",
+          variant: "primary", // Using primary (green) for informational messages per brand guideline
         });
         return;
       }
@@ -77,13 +88,14 @@ export function useAttendance() {
       toast({
         title: "Checked In",
         description: `Successfully checked in at ${now.toLocaleTimeString()}`,
+        variant: "primary", // Using primary (green) for success messages per brand guideline
       });
     } catch (error) {
       console.error("Error checking in:", error);
       toast({
         title: "Check-in Failed",
         description: "An error occurred while checking in",
-        variant: "destructive",
+        variant: "secondary", // Using secondary (blue) for errors per brand guideline
       });
     } finally {
       setLoading(false);
@@ -101,7 +113,7 @@ export function useAttendance() {
         toast({
           title: "Not Checked In",
           description: "You have not checked in today",
-          variant: "destructive",
+          variant: "secondary", // Using secondary (blue) for errors per brand guideline
         });
         return;
       }
@@ -110,7 +122,7 @@ export function useAttendance() {
         toast({
           title: "Already Checked Out",
           description: "You have already checked out today",
-          variant: "default",
+          variant: "primary", // Using primary (green) for informational messages per brand guideline
         });
         return;
       }
@@ -125,13 +137,14 @@ export function useAttendance() {
       toast({
         title: "Checked Out",
         description: `Successfully checked out at ${now.toLocaleTimeString()}`,
+        variant: "primary", // Using primary (green) for success messages per brand guideline
       });
     } catch (error) {
       console.error("Error checking out:", error);
       toast({
         title: "Check-out Failed",
         description: "An error occurred while checking out",
-        variant: "destructive",
+        variant: "secondary", // Using secondary (blue) for errors per brand guideline
       });
     } finally {
       setLoading(false);
@@ -162,7 +175,7 @@ export function useAttendance() {
       toast({
         title: "Request Failed",
         description: "An error occurred while submitting your leave request",
-        variant: "destructive",
+        variant: "secondary", // Using secondary (blue) for errors per brand guideline
       });
     } finally {
       setLoading(false);
