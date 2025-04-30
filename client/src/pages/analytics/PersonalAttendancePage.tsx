@@ -177,20 +177,10 @@ export default function PersonalAttendancePage() {
     setDateRange(value);
   };
   
-  const getAttendanceClassForDay = (date: Date): string => {
-    const dateStr = date.toISOString().split('T')[0];
-    const status = calendarAttendance[dateStr];
-    
-    if (!status) {
-      // Weekend check
-      if (date.getDay() === 0 || date.getDay() === 6) {
-        return "bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500";
-      }
-      return "bg-secondary/20 text-secondary dark:bg-secondary/20 dark:text-secondary-foreground";
-    }
-    
-    return "bg-primary/20 text-primary dark:bg-primary/20 dark:text-primary-foreground";
-  };
+  // Custom styles for calendar days based on attendance status
+  const presentClass = "bg-primary/20 text-primary dark:bg-primary/20 dark:text-primary-foreground";
+  const absentClass = "bg-secondary/20 text-secondary dark:bg-secondary/20 dark:text-secondary-foreground";
+  const weekendClass = "bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500";
   
   const COLORS = ['#a7ce3b', '#157fbe', '#a7ce3b', '#157fbe'];
   
@@ -304,7 +294,7 @@ export default function PersonalAttendancePage() {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey="hours" name="Working Hours" stroke="#0ea5e9" />
+                    <Line type="monotone" dataKey="hours" name="Working Hours" stroke="#157fbe" />
                   </LineChart>
                 </ResponsiveContainer>
               )}
@@ -369,42 +359,33 @@ export default function PersonalAttendancePage() {
               selected={selectedDate}
               onSelect={setSelectedDate}
               className="rounded-md border"
-              classNames={{
-                day_selected: "bg-primary",
-                day: "bg-white dark:bg-gray-900"
-              }}
-              modifiersClassNames={{
-                today: "bg-accent"
-              }}
-              modifiers={{
-                customDay: (date) => {
-                  const dateStr = date.toISOString().split('T')[0];
-                  const status = calendarAttendance[dateStr];
-                  
-                  if (!status) {
-                    // Weekend check
-                    if (date.getDay() === 0 || date.getDay() === 6) {
-                      return true;
-                    }
-                    return true;
+              DayClassNameFn={(date) => {
+                const dateStr = date.toISOString().split('T')[0];
+                const status = calendarAttendance[dateStr];
+                
+                if (!status) {
+                  // Weekend check
+                  if (date.getDay() === 0 || date.getDay() === 6) {
+                    return weekendClass;
                   }
-                  
-                  return true;
+                  return absentClass;
                 }
+                
+                return presentClass;
               }}
-              styles={{
-                day: (date) => {
-                  return { className: getAttendanceClassForDay(date) };
-                }
+              classNames={{
+                day: 'day-base',
+                day_selected: 'bg-primary text-primary-foreground',
+                day_today: 'bg-accent text-accent-foreground'
               }}
             />
             <div className="flex justify-between mt-4">
               <div className="flex items-center">
-                <div className="w-3 h-3 rounded-full bg-green-100 dark:bg-green-900/20 mr-2"></div>
+                <div className="w-3 h-3 rounded-full bg-primary/20 dark:bg-primary/20 mr-2"></div>
                 <span className="text-sm">Present</span>
               </div>
               <div className="flex items-center">
-                <div className="w-3 h-3 rounded-full bg-red-100 dark:bg-red-900/20 mr-2"></div>
+                <div className="w-3 h-3 rounded-full bg-secondary/20 dark:bg-secondary/20 mr-2"></div>
                 <span className="text-sm">Absent</span>
               </div>
               <div className="flex items-center">
@@ -444,7 +425,7 @@ export default function PersonalAttendancePage() {
                       }
                     />
                     <Legend />
-                    <Bar dataKey="time" name="Check-in Time" fill="#0ea5e9" />
+                    <Bar dataKey="time" name="Check-in Time" fill="#a7ce3b" />
                   </BarChart>
                 </ResponsiveContainer>
               )}
