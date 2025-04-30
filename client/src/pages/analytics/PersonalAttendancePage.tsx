@@ -186,13 +186,13 @@ export default function PersonalAttendancePage() {
       if (date.getDay() === 0 || date.getDay() === 6) {
         return "bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500";
       }
-      return "bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400";
+      return "bg-secondary/20 text-secondary dark:bg-secondary/20 dark:text-secondary-foreground";
     }
     
-    return "bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400";
+    return "bg-primary/20 text-primary dark:bg-primary/20 dark:text-primary-foreground";
   };
   
-  const COLORS = ['#0ea5e9', '#ef4444', '#f59e0b', '#10b981'];
+  const COLORS = ['#a7ce3b', '#157fbe', '#a7ce3b', '#157fbe'];
   
   // Weekly attendance data for chart
   const weeklyData = Array.from({ length: 8 }, (_, i) => {
