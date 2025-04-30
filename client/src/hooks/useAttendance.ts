@@ -169,6 +169,7 @@ export function useAttendance() {
       toast({
         title: "Leave Requested",
         description: "Your leave request has been submitted for approval",
+        variant: "primary", // Using primary (green) for success messages per brand guideline
       });
     } catch (error) {
       console.error("Error requesting leave:", error);
