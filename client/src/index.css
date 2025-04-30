@@ -13,17 +13,35 @@
 --card-foreground: 20 14.3% 4.1%;
 --border: 20 5.9% 90%;
 --input: 20 5.9% 90%;
---primary: 207 90% 54%;
---primary-foreground: 211 100% 99%;
---secondary: 60 4.8% 95.9%;
---secondary-foreground: 24 9.8% 10%;
---accent: 60 4.8% 95.9%;
---accent-foreground: 24 9.8% 10%;
+--primary: 82 54% 52%; /* #a7ce3b (green) */
+--primary-foreground: 0 0% 100%;
+--secondary: 203 80% 42%; /* #157fbe (blue) */
+--secondary-foreground: 0 0% 100%;
+--accent: 82 54% 52%;
+--accent-foreground: 0 0% 100%;
 --destructive: 0 84.2% 60.2%;
 --destructive-foreground: 60 9.1% 97.8%;
---ring: 20 14.3% 4.1%;
+--ring: 82 54% 52%;
 --radius: 0.5rem;
+
+/* Chart colors */
+--chart-1: 82 54% 52%; /* Primary green */
+--chart-2: 203 80% 42%; /* Secondary blue */
+--chart-3: 45 93% 47%; /* Orange */
+--chart-4: 262 83% 58%; /* Purple */
+--chart-5: 191 91% 37%; /* Turquoise */
+
+/* Sidebar colors */
+--sidebar-background: 0 0% 100%;
+--sidebar-foreground: 20 14.3% 4.1%;
+--sidebar-primary: 82 54% 52%;
+--sidebar-primary-foreground: 0 0% 100%;
+--sidebar-accent: 203 80% 42%;
+--sidebar-accent-foreground: 0 0% 100%;
+--sidebar-border: 20 5.9% 90%;
+--sidebar-ring: 82 54% 52%;
   }
+  
   .dark {
       --background: 240 10% 3.9%;
 --foreground: 0 0% 98%;
@@ -35,16 +53,33 @@
 --card-foreground: 0 0% 98%;
 --border: 240 3.7% 15.9%;
 --input: 240 3.7% 15.9%;
---primary: 207 90% 54%;
---primary-foreground: 211 100% 99%;
---secondary: 240 3.7% 15.9%;
---secondary-foreground: 0 0% 98%;
---accent: 240 3.7% 15.9%;
---accent-foreground: 0 0% 98%;
+--primary: 82 54% 52%; /* #a7ce3b (green) */
+--primary-foreground: 0 0% 100%;
+--secondary: 203 80% 42%; /* #157fbe (blue) */
+--secondary-foreground: 0 0% 100%;
+--accent: 82 54% 52%;
+--accent-foreground: 0 0% 100%;
 --destructive: 0 62.8% 30.6%;
 --destructive-foreground: 0 0% 98%;
---ring: 240 4.9% 83.9%;
+--ring: 82 54% 52%;
 --radius: 0.5rem;
+
+/* Chart colors */
+--chart-1: 82 54% 52%; /* Primary green */
+--chart-2: 203 80% 42%; /* Secondary blue */
+--chart-3: 45 93% 47%; /* Orange */
+--chart-4: 262 83% 58%; /* Purple */
+--chart-5: 191 91% 37%; /* Turquoise */
+
+/* Sidebar colors */
+--sidebar-background: 240 10% 3.9%;
+--sidebar-foreground: 0 0% 98%;
+--sidebar-primary: 82 54% 52%;
+--sidebar-primary-foreground: 0 0% 100%;
+--sidebar-accent: 203 80% 42%;
+--sidebar-accent-foreground: 0 0% 100%;
+--sidebar-border: 240 3.7% 15.9%;
+--sidebar-ring: 82 54% 52%;
   }
 
 @layer base {
