@@ -12,17 +12,13 @@ const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
-    // Get theme from localStorage or use system preference
+    // Get theme from localStorage or default to light mode
     const savedTheme = localStorage.getItem("prakash-theme") as Theme | null;
     if (savedTheme) {
       return savedTheme;
     }
     
-    // Check system preference
-    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      return "dark";
-    }
-    
+    // Always start with light mode by default
     return "light";
   });
 

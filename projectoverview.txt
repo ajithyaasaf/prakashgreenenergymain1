@@ -1,0 +1,168 @@
+# Prakash Energy Smart Solar Business Management System
+
+## Project Overview
+The Prakash Energy Smart Solar Business Management System is a comprehensive web application designed to streamline operations for a solar energy business. The platform integrates customer relationship management, inventory tracking, quotation generation, invoicing, employee attendance management, and business analytics into a single cohesive system.
+
+## Architecture
+The project follows a modern single-page application (SPA) architecture:
+- **Frontend**: React with TypeScript, Tailwind CSS, and shadcn UI components
+- **Backend**: Firebase for authentication, database, and analytics
+- **State Management**: React Context API and React Query for data fetching
+- **Routing**: Wouter for lightweight client-side routing
+
+## Tech Stack
+- **Frontend Framework**: React 18 with TypeScript
+- **Styling**: Tailwind CSS with custom theme configuration
+- **UI Component Library**: shadcn UI (based on Radix UI primitives)
+- **Authentication**: Firebase Authentication
+- **Database**: Firebase Firestore
+- **Analytics**: Firebase Analytics
+- **Form Handling**: React Hook Form with Zod for validation
+- **Data Fetching**: TanStack React Query (v5)
+- **Routing**: Wouter (lightweight alternative to React Router)
+- **Icons**: Lucide React and Remix Icons
+- **Charts**: Recharts for data visualization
+- **Date Handling**: date-fns
+
+## Brand Identity
+The application strictly adheres to the Prakash Energy brand colors:
+- **Primary Color (Green)**: #a7ce3b - Used for success states, primary actions, and active elements
+- **Secondary Color (Blue)**: #157fbe - Used for information, error states, and secondary actions
+
+No additional colors are used for UI components to maintain brand consistency.
+
+## Project Structure
+```
+├── client
+│   ├── src
+│   │   ├── components
+│   │   │   ├── dashboard - Dashboard-specific components
+│   │   │   ├── layout - Header, Sidebar, and Layout components
+│   │   │   └── ui - Reusable UI components (shadcn)
+│   │   ├── contexts - React Context providers for app state
+│   │   ├── firebase - Firebase configuration and utilities
+│   │   ├── hooks - Custom React hooks
+│   │   ├── lib - Utility libraries and configuration
+│   │   ├── pages - Page components organized by feature
+│   │   ├── routes - Routing configuration
+│   │   ├── types - TypeScript type definitions
+│   │   └── utils - Helper functions and utilities
+│   └── index.html - Main HTML entry point
+├── server - Express server (minimal, primarily for serving the app)
+└── shared - Shared types and schemas between client and server
+```
+
+## Core Features
+
+### 1. Authentication & User Management
+- **Role-based Access Control**:
+  - Master Admin: Full system access
+  - Admin: Management capabilities excluding user administration
+  - Employee: Basic operations (attendance, personal dashboard)
+- **Firebase Authentication**: Email/password and Google sign-in
+- **User Profile Management**: Update personal information
+
+### 2. Customer Management
+- **Customer Database**: Store and manage customer contact information
+- **Customer History**: View past quotations, invoices, and interactions
+- **Customer Segmentation**: Categorize customers by type, location, etc.
+
+### 3. Product Inventory
+- **Product Catalog**: Maintain a database of solar products with specifications
+- **Inventory Tracking**: Monitor stock levels and product availability
+- **Product Categories**: Organize products by type (panels, inverters, batteries, etc.)
+
+### 4. Quotation System
+- **Custom Quotation Generation**: Create professional quotations for customers
+- **Multiple Line Items**: Add various products with quantity and pricing
+- **Quotation Approval Workflow**: Draft, pending, approved, rejected, invoiced statuses
+
+### 5. Invoicing
+- **Invoice Generation**: Convert approved quotations to invoices
+- **Payment Tracking**: Record and track payment status
+- **Invoice Management**: View, filter, and manage all invoices (draft, sent, paid, overdue, cancelled)
+
+### 6. Attendance Management
+- **Check-in/Check-out System**: Employee time tracking
+- **Leave Management**: Request and approve leave
+- **Attendance Reports**: View attendance patterns and summaries
+- **Administrative Controls**: Configure working hours and holidays
+
+### 7. Analytics Dashboard
+- **Business Performance Metrics**: Sales, revenue, and customer acquisition
+- **Attendance Analytics**: Employee attendance patterns
+- **Sales Forecasting**: Predictive analytics for business planning
+
+## Database Schema
+The application uses Firebase Firestore with the following main collections:
+
+1. **users**: User accounts and profile information
+   - UID, email, displayName, role, createdAt
+
+2. **customers**: Customer information
+   - ID, name, email, phone, address, notes, createdBy, createdAt, updatedAt
+
+3. **products**: Product catalog
+   - ID, name, description, type, specs, price, stock, createdAt, updatedAt
+
+4. **quotations**: Customer quotations
+   - ID, quotationNumber, customerId, status, subtotal, tax, discount, total, notes, validUntil, items, createdBy, createdAt, updatedAt
+
+5. **invoices**: Customer invoices
+   - ID, invoiceNumber, quotationId, customerId, status, subtotal, tax, discount, total, notes, dueDate, paidDate, items, createdBy, createdAt, updatedAt
+
+6. **attendance**: Employee attendance records
+   - ID, userId, date, checkInTime, checkOutTime, status, notes
+
+7. **leaves**: Employee leave requests
+   - ID, userId, startDate, endDate, reason, status, approvedBy, createdAt, updatedAt
+
+8. **workingHours**: Company working hours configuration
+   - ID, dayOfWeek, startTime, endTime, isWorkingDay
+
+9. **holidays**: Company holidays
+   - ID, name, date, createdBy, createdAt
+
+## Firebase Configuration
+The application requires the following Firebase services:
+- **Authentication**: For user management
+- **Firestore**: For database functionality
+- **Analytics**: For usage tracking
+
+Configuration is managed through environment variables:
+- VITE_FIREBASE_API_KEY
+- VITE_FIREBASE_PROJECT_ID
+- VITE_FIREBASE_APP_ID
+
+## Best Practices
+1. **Component Organization**: Components are organized by feature and reusability
+2. **Code Splitting**: Pages and large components are lazy-loaded for performance
+3. **Error Handling**: Comprehensive error handling with user-friendly error messages
+4. **Form Validation**: All forms use Zod schemas for validation
+5. **Responsive Design**: Full mobile, tablet, and desktop responsiveness
+6. **Accessibility**: UI components follow WCAG guidelines for accessibility
+7. **Performance Optimization**: React Query for efficient data fetching and caching
+
+## Known Issues and Solutions
+1. **Firebase Index Requirements**: Some queries in attendance management require composite indexes. These can be created via the Firebase console or by modifying the queries to avoid index requirements.
+2. **DOM Nesting Issues**: Careful implementation of the Link component is required to avoid improper nesting of anchor tags.
+3. **Color Scheme Consistency**: All components have been updated to use only the brand colors, but new components should follow the same pattern.
+
+## Future Enhancements
+1. **Offline Support**: Implement service workers for offline functionality
+2. **Mobile Application**: Develop a companion mobile app for field staff
+3. **Advanced Reporting**: Expand analytics with exportable reports
+4. **Payment Gateway Integration**: Online payment processing for invoices
+5. **Email Notifications**: Automated notifications for quotations, invoices, and approvals
+6. **Customer Portal**: Self-service portal for customers to view quotations and invoices
+7. **Inventory Automation**: Automated stock level alerts and reordering
+
+## Getting Started for Developers
+1. Clone the repository
+2. Install dependencies with `npm install`
+3. Configure Firebase credentials in your `.env` file
+4. Start the development server with `npm run dev`
+5. Access the application at `http://localhost:5000`
+
+## Deployment
+The application can be deployed through Replit Deployments, which will handle building the application, hosting, TLS, and health checks. Once deployed, the app will be available under a `.replit.app` domain or a custom domain if configured.
