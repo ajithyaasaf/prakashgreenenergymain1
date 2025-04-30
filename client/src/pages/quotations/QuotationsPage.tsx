@@ -14,6 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import TemplateSelector from "@/components/common/TemplateSelector";
+import TemplatePreview from "@/components/common/TemplatePreview";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -65,6 +67,7 @@ const quotationSchema = z.object({
   notes: z.string().optional(),
   validUntil: z.string().optional(),
   status: z.enum(["draft", "pending", "approved", "rejected", "invoiced"]).default("draft"),
+  templateId: z.number().min(1, "Please select a template").default(1),
 });
 
 type QuotationFormValues = z.infer<typeof quotationSchema>;
@@ -79,6 +82,7 @@ export default function QuotationsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentQuotation, setCurrentQuotation] = useState<Quotation | null>(null);
+  const [selectedTemplateId, setSelectedTemplateId] = useState<number>(1);
   const { currentUser } = useAuth();
   const { toast } = useToast();
   
@@ -251,7 +255,9 @@ export default function QuotationsPage() {
       notes: "",
       validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
       status: "draft",
+      templateId: 1
     });
+    setSelectedTemplateId(1);
     setIsAddDialogOpen(true);
   };
 
@@ -309,6 +315,7 @@ export default function QuotationsPage() {
         total: data.total,
         notes: data.notes,
         validUntil: data.validUntil ? new Date(data.validUntil) : null,
+        templateId: data.templateId,
         createdBy: currentUser.uid,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -478,7 +485,7 @@ export default function QuotationsPage() {
 
       {/* Create Quotation Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="sm:max-w-3xl">
+        <DialogContent className="sm:max-w-4xl">
           <DialogHeader>
             <DialogTitle>Create New Quotation</DialogTitle>
             <DialogDescription>
@@ -487,7 +494,13 @@ export default function QuotationsPage() {
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmitQuotation)} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Tabs defaultValue="details">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="details">Quote Details</TabsTrigger>
+                  <TabsTrigger value="template">Template</TabsTrigger>
+                </TabsList>
+                <TabsContent value="details" className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="customerId"
