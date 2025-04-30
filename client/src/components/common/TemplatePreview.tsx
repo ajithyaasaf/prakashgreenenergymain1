@@ -2,10 +2,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import logoImage from "@/assets/logo.png";
 
 // Import all template images
-import template1Image from "@/assets/template1.jpeg";
-import template2Image from "@/assets/template2.jpeg";
-import template3Image from "@/assets/template3.jpeg";
-import template4Image from "@/assets/template4.jpeg";
+import template1Image from "@/assets/template 1.jpeg";
+import template2Image from "@/assets/template 2.jpeg";
+import template3Image from "@/assets/template 3.jpeg";
+import template4Image from "@/assets/template 4.jpeg";
 
 interface TemplatePreviewProps {
   templateId: number;
