@@ -4,6 +4,21 @@ import { getInitials } from "@/utils/formatting";
 import { PERMISSIONS, hasPermission } from "@/utils/permissions";
 import { useToast } from "@/hooks/use-toast";
 import logoImage from "@/assets/logo.png";
+import { 
+  TbGridDots, 
+  TbUser, 
+  TbPackage, 
+  TbFileText, 
+  TbReceipt, 
+  TbClock, 
+  TbCalendarTime, 
+  TbChartBar, 
+  TbChartPie,
+  TbUserCog,
+  TbSettings,
+  TbLogout,
+  TbArrowLeft
+} from "react-icons/tb";
 
 interface SidebarProps {
   open: boolean;
@@ -41,7 +56,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
             onClick={closeSidebar}
             className="lg:hidden text-secondary hover:text-primary dark:text-primary/70 dark:hover:text-primary"
           >
-            <i className="ri-arrow-left-line text-xl"></i>
+            <TbArrowLeft className="text-xl" />
           </button>
         </div>
         
@@ -56,7 +71,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
           >
-            <i className="ri-dashboard-line mr-3 text-lg"></i>
+            <TbGridDots className="mr-3 text-lg" />
             <span>Dashboard</span>
           </Link>
           
@@ -69,7 +84,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
           >
-            <i className="ri-user-line mr-3 text-lg"></i>
+            <TbUser className="mr-3 text-lg" />
             <span>Customers</span>
           </Link>
           
@@ -83,7 +98,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                   : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
               }`}
             >
-              <i className="ri-boxes-line mr-3 text-lg"></i>
+              <TbPackage className="mr-3 text-lg" />
               <span>Products</span>
             </Link>
           )}
@@ -97,7 +112,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
           >
-            <i className="ri-file-list-3-line mr-3 text-lg"></i>
+            <TbFileText className="mr-3 text-lg" />
             <span>Quotations</span>
           </Link>
           
@@ -110,7 +125,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
           >
-            <i className="ri-bill-line mr-3 text-lg"></i>
+            <TbReceipt className="mr-3 text-lg" />
             <span>Invoices</span>
           </Link>
           
@@ -123,7 +138,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
           >
-            <i className="ri-time-line mr-3 text-lg"></i>
+            <TbClock className="mr-3 text-lg" />
             <span>Attendance</span>
           </Link>
           
@@ -137,7 +152,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                   : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
               }`}
             >
-              <i className="ri-calendar-check-line mr-3 text-lg"></i>
+              <TbCalendarTime className="mr-3 text-lg" />
               <span>Attendance Admin</span>
             </Link>
           )}
@@ -157,7 +172,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                   : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
               }`}
             >
-              <i className="ri-line-chart-line mr-3 text-lg"></i>
+              <TbChartBar className="mr-3 text-lg" />
               <span>Attendance Overview</span>
             </Link>
           )}
@@ -171,7 +186,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
           >
-            <i className="ri-pie-chart-line mr-3 text-lg"></i>
+            <TbChartPie className="mr-3 text-lg" />
             <span>Personal Analytics</span>
           </Link>
           
@@ -191,7 +206,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                     : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
                 }`}
               >
-                <i className="ri-user-settings-line mr-3 text-lg"></i>
+                <TbUserCog className="mr-3 text-lg" />
                 <span>User Management</span>
               </Link>
               
@@ -204,7 +219,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                     : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
                 }`}
               >
-                <i className="ri-settings-4-line mr-3 text-lg"></i>
+                <TbSettings className="mr-3 text-lg" />
                 <span>Attendance Settings</span>
               </Link>
             </>
