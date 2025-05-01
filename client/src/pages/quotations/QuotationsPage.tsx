@@ -511,7 +511,7 @@ export default function QuotationsPage() {
 
       {/* Create Quotation Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="sm:max-w-3xl">
+        <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Create New Quotation</DialogTitle>
             <DialogDescription>
@@ -519,8 +519,8 @@ export default function QuotationsPage() {
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmitQuotation)} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={form.handleSubmit(onSubmitQuotation)} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="customerId"
@@ -568,88 +568,94 @@ export default function QuotationsPage() {
                 <div className="space-y-4">
                   {fields.map((field, index) => (
                     <div key={field.id} className="p-4 border rounded-md">
-                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                        <div className="md:col-span-5">
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.productId`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Product</FormLabel>
-                                <Select
-                                  onValueChange={(value) => {
-                                    field.onChange(value);
-                                    handleProductChange(index, value);
-                                  }}
-                                  defaultValue={field.value}
-                                >
+                      <div className="space-y-4">
+                        {/* Product Selection */}
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.productId`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Product</FormLabel>
+                              <Select
+                                onValueChange={(value) => {
+                                  field.onChange(value);
+                                  handleProductChange(index, value);
+                                }}
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select a product" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {products.map((product) => (
+                                    <SelectItem key={product.id} value={product.id}>
+                                      {product.name} - {formatCurrency(product.price)}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        {/* Quantity, Price and Total - Grid for smaller fields */}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                          <div>
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.quantity`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Quantity</FormLabel>
                                   <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select a product" />
-                                    </SelectTrigger>
+                                    <Input type="number" min="1" {...field} />
                                   </FormControl>
-                                  <SelectContent>
-                                    {products.map((product) => (
-                                      <SelectItem key={product.id} value={product.id}>
-                                        {product.name} - {formatCurrency(product.price)}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div className="md:col-span-2">
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.quantity`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Qty</FormLabel>
-                                <FormControl>
-                                  <Input type="number" min="1" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div className="md:col-span-2">
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.unitPrice`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Unit Price</FormLabel>
-                                <FormControl>
-                                  <Input type="number" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div className="md:col-span-2">
-                          <FormLabel>Total</FormLabel>
-                          <div className="h-10 px-3 py-2 rounded-md border bg-slate-50 dark:bg-slate-800 text-slate-500">
-                            {formatCurrency(
-                              (form.watch(`items.${index}.quantity`) || 0) * 
-                              (form.watch(`items.${index}.unitPrice`) || 0)
-                            )}
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div>
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.unitPrice`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Unit Price</FormLabel>
+                                  <FormControl>
+                                    <Input type="number" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="col-span-2 sm:col-span-1">
+                            <FormLabel>Total</FormLabel>
+                            <div className="h-10 px-3 py-2 rounded-md border bg-slate-50 dark:bg-slate-800 text-slate-500">
+                              {formatCurrency(
+                                (form.watch(`items.${index}.quantity`) || 0) * 
+                                (form.watch(`items.${index}.unitPrice`) || 0)
+                              )}
+                            </div>
                           </div>
                         </div>
-                        <div className="md:col-span-1 flex justify-end">
+                        
+                        {/* Delete Button - Shown at the bottom on mobile */}
+                        <div className="flex justify-end mt-2">
                           <Button
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="h-10 w-10 p-0"
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
                             onClick={() => remove(index)}
                             disabled={fields.length === 1}
                           >
-                            <i className="ri-delete-bin-line text-red-500"></i>
+                            <i className="ri-delete-bin-line mr-1"></i>
+                            Remove
                           </Button>
                         </div>
                       </div>
@@ -659,6 +665,7 @@ export default function QuotationsPage() {
                     type="button"
                     variant="outline"
                     size="sm"
+                    className="w-full sm:w-auto"
                     onClick={() => append({ productId: "", quantity: 1, unitPrice: 0 })}
                   >
                     <i className="ri-add-line mr-1"></i>
@@ -723,11 +730,21 @@ export default function QuotationsPage() {
                 </div>
               </div>
 
-              <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+              <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-0 pt-4">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setIsAddDialogOpen(false)}
+                  className="w-full sm:w-auto order-2 sm:order-1"
+                >
                   Cancel
                 </Button>
-                <Button type="submit">Create Quotation</Button>
+                <Button 
+                  type="submit"
+                  className="w-full sm:w-auto order-1 sm:order-2"
+                >
+                  Create Quotation
+                </Button>
               </DialogFooter>
             </form>
           </Form>
@@ -737,13 +754,15 @@ export default function QuotationsPage() {
       {/* View Quotation Dialog */}
       {currentQuotation && (
         <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-          <DialogContent className="sm:max-w-3xl">
+          <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                 <DialogTitle>Quotation {currentQuotation.quotationNumber}</DialogTitle>
-                {getStatusBadge(currentQuotation.status)}
+                <div className="self-start sm:self-auto">
+                  {getStatusBadge(currentQuotation.status)}
+                </div>
               </div>
-              <DialogDescription>
+              <DialogDescription className="mt-2">
                 Created on {formatDate(currentQuotation.createdAt)}
                 {currentQuotation.validUntil && ` • Valid until ${formatDate(currentQuotation.validUntil)}`}
               </DialogDescription>
