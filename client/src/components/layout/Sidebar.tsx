@@ -244,7 +244,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
               href="/settings"
               className="text-secondary hover:text-primary dark:text-primary/70 dark:hover:text-primary"
             >
-              <i className="ri-settings-3-line text-lg"></i>
+              <TbSettings className="text-lg" />
             </Link>
           </div>
           
@@ -267,7 +267,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
             }}
             className="mt-4 w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-secondary/10 hover:bg-secondary/20 text-secondary transition-colors"
           >
-            <i className="ri-logout-box-line text-lg"></i>
+            <TbLogout className="text-lg" />
             <span>Logout</span>
           </button>
         </div>
