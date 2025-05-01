@@ -417,7 +417,7 @@ export default function InvoicesPage() {
       case "sent":
         return <Badge variant="secondary">Sent</Badge>;
       case "paid":
-        return <Badge variant="success">Paid</Badge>;
+        return <Badge className="bg-green-500 hover:bg-green-600 text-white" variant="default">Paid</Badge>;
       case "overdue":
         return <Badge variant="destructive">Overdue</Badge>;
       case "cancelled":
@@ -1066,7 +1066,7 @@ export default function InvoicesPage() {
                         <Button 
                           onClick={() => updateInvoiceStatus(currentInvoice.id, "paid")}
                           className="justify-start"
-                          variant="success"
+                          variant="default" className="bg-green-500 hover:bg-green-600 text-white"
                         >
                           <i className="ri-check-line mr-2"></i>
                           Mark as Paid
@@ -1087,7 +1087,7 @@ export default function InvoicesPage() {
                         <Button 
                           onClick={() => updateInvoiceStatus(currentInvoice.id, "paid")}
                           className="justify-start"
-                          variant="success"
+                          variant="default" className="bg-green-500 hover:bg-green-600 text-white"
                         >
                           <i className="ri-check-line mr-2"></i>
                           Mark as Paid
