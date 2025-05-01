@@ -22,57 +22,109 @@ export function formatLargeNumber(num: number): string {
 
 // Format date to DD MMM YYYY
 export function formatDate(date: Date | string): string {
-  const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleDateString('en-IN', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric'
-  });
+  if (!date) return "N/A";
+  
+  try {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    
+    // Check if the date is valid
+    if (isNaN(d.getTime())) {
+      return "Invalid date";
+    }
+    
+    return d.toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return "Invalid date";
+  }
 }
 
 // Format date to full format (Monday, 05 Jun 2023)
 export function formatDateFull(date: Date | string): string {
-  const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleDateString('en-IN', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric'
-  });
+  if (!date) return "N/A";
+  
+  try {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    
+    // Check if the date is valid
+    if (isNaN(d.getTime())) {
+      return "Invalid date";
+    }
+    
+    return d.toLocaleDateString('en-IN', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  } catch (error) {
+    console.error("Error formatting full date:", error);
+    return "Invalid date";
+  }
 }
 
 // Format time to HH:MM AM/PM
 export function formatTime(date: Date | string): string {
-  const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleTimeString('en-IN', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true
-  });
+  if (!date) return "N/A";
+  
+  try {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    
+    // Check if the date is valid
+    if (isNaN(d.getTime())) {
+      return "Invalid time";
+    }
+    
+    return d.toLocaleTimeString('en-IN', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  } catch (error) {
+    console.error("Error formatting time:", error);
+    return "Invalid time";
+  }
 }
 
 // Format date to relative time (e.g., "2 hours ago", "Yesterday")
 export function formatRelativeTime(date: Date | string): string {
-  const d = typeof date === 'string' ? new Date(date) : date;
-  const now = new Date();
-  const diff = now.getTime() - d.getTime();
+  if (!date) return "N/A";
   
-  const minutes = Math.floor(diff / 60000);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-  
-  if (minutes < 1) {
-    return 'Just now';
-  } else if (minutes < 60) {
-    return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
-  } else if (hours < 24) {
-    return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
-  } else if (days < 2) {
-    return 'Yesterday';
-  } else if (days < 7) {
-    return `${days} days ago`;
-  } else {
-    return formatDate(d);
+  try {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    
+    // Check if the date is valid
+    if (isNaN(d.getTime())) {
+      return "Invalid date";
+    }
+    
+    const now = new Date();
+    const diff = now.getTime() - d.getTime();
+    
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    
+    if (minutes < 1) {
+      return 'Just now';
+    } else if (minutes < 60) {
+      return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
+    } else if (hours < 24) {
+      return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
+    } else if (days < 2) {
+      return 'Yesterday';
+    } else if (days < 7) {
+      return `${days} days ago`;
+    } else {
+      return formatDate(d);
+    }
+  } catch (error) {
+    console.error("Error formatting relative time:", error);
+    return "Invalid date";
   }
 }
 

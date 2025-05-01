@@ -286,7 +286,7 @@ export default function QuotationsPage() {
       case "pending":
         return <Badge variant="secondary">Pending</Badge>;
       case "approved":
-        return <Badge variant="success">Approved</Badge>;
+        return <Badge className="bg-green-500 hover:bg-green-600 text-white" variant="default">Approved</Badge>;
       case "rejected":
         return <Badge variant="destructive">Rejected</Badge>;
       case "invoiced":
