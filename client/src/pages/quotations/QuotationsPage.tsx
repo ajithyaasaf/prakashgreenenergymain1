@@ -165,7 +165,8 @@ export default function QuotationsPage() {
         let customer = undefined;
         const customerRef = doc.data().customerId;
         if (customerRef) {
-          const customerDoc = await getDoc(doc(firestore, "customers", customerRef));
+          const customerDocRef = doc(firestore, "customers", customerRef);
+          const customerDoc = await getDoc(customerDocRef);
           if (customerDoc.exists()) {
             customer = {
               id: customerDoc.id,

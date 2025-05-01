@@ -34,7 +34,7 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { collection, query, orderBy, addDoc, doc, updateDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, orderBy, addDoc, doc, updateDoc, deleteDoc, serverTimestamp, getDocs } from "firebase/firestore";
 import { firestore } from "@/firebase/config";
 
 const customerSchema = z.object({
