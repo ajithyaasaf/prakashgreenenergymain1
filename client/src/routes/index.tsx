@@ -1,5 +1,5 @@
 import { Route, Switch, useLocation, useRoute } from "wouter";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import Layout from "@/components/layout/Layout";
 import NotFound from "@/pages/not-found";
@@ -43,16 +43,22 @@ const PrivateRoute = ({ component: Component, roles = [] }: { component: React.C
   const { isAuthenticated, currentUser } = useAuth();
   const [_, navigate] = useLocation();
   
-  // If not authenticated, redirect to login
-  if (!isAuthenticated) {
-    navigate("/auth/login");
-    return null;
-  }
+  useEffect(() => {
+    // If not authenticated, redirect to login
+    if (!isAuthenticated) {
+      navigate("/auth/login");
+      return;
+    }
+    
+    // If roles are specified and user's role is not included, redirect to dashboard
+    if (roles.length && currentUser && !roles.includes(currentUser.role)) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, currentUser, navigate, roles]);
   
-  // If roles are specified and user's role is not included, redirect to dashboard
-  if (roles.length && currentUser && !roles.includes(currentUser.role)) {
-    navigate("/dashboard");
-    return null;
+  // If not authenticated, show loading until redirect happens
+  if (!isAuthenticated) {
+    return <Loading />;
   }
   
   return (
@@ -69,9 +75,15 @@ const AuthRoute = ({ component: Component }: { component: React.ComponentType<an
   const { isAuthenticated } = useAuth();
   const [_, navigate] = useLocation();
   
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
+  
+  // If authenticated, show loading until redirect happens
   if (isAuthenticated) {
-    navigate("/dashboard");
-    return null;
+    return <Loading />;
   }
   
   return (

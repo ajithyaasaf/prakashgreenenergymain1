@@ -94,8 +94,17 @@ export default function CustomersPage() {
       const customersCollection = collection(firestore, "customers");
       const customersQuery = query(customersCollection, orderBy("createdAt", "desc"));
       
-      const { documents } = await useFirestore().useCollection<Customer>("customers", [orderBy("createdAt", "desc")]);
-      setCustomers(documents || []);
+      const querySnapshot = await getDocs(customersQuery);
+      const customerList: Customer[] = [];
+      
+      querySnapshot.forEach((doc) => {
+        customerList.push({
+          id: doc.id,
+          ...doc.data()
+        } as Customer);
+      });
+      
+      setCustomers(customerList);
     } catch (error) {
       console.error("Error fetching customers:", error);
       toast({

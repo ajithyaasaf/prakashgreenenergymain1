@@ -1,0 +1,103 @@
+Warning: Cannot update a component (`PrivateRoute`) while rendering a different component (`PrivateRoute`). To locate the bad setState() call inside `PrivateRoute`, follow the stack trace as described in https://reactjs.org/link/setstate-in-render
+    at PrivateRoute (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/routes/index.tsx:81:36)
+    at component
+    at Route (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=44305966:323:16)
+    at Switch (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=44305966:379:17)
+    at AppRoutes
+    at Provider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-IKZDNW7I.js?v=44305966:43:15)
+    at TooltipProvider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=44305966:63:5)
+    at App (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/App.tsx?v=t2vwp5183KmFVF_HCdHph:26:21)
+    at AuthProvider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/contexts/AuthContext.tsx:31:32)
+    at ThemeProvider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/contexts/ThemeContext.tsx:20:33)
+    at QueryClientProvider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=44305966:2805:3)
+printWarning @ chunk-RPCDYKBN.js?v=44305966:521
+firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel?VER=8&database=projects%2Fsolar-energy-56bc8%2Fdatabases%2F(default)&gsessionid=xSEN4BshwvgPHA14JuGuXYEP20JSrwLfD8ocI_i64oQ&SID=6wEhQMTNkR5Fr4S1ObK4bw&RID=96822&TYPE=terminate&zx=ihkjzch7vf86:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+chunk-RPCDYKBN.js?v=44305966:521 Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a>.
+    at a
+    at a
+    at https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=44305966:337:18
+    at div
+    at div
+    at https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/components/ui/form.tsx:72:6
+    at Controller (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-4BFJKWC4.js?v=44305966:298:35)
+    at FormField (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/components/ui/form.tsx:33:6)
+    at form
+    at FormProvider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-4BFJKWC4.js?v=44305966:102:11)
+    at div
+    at div
+    at div
+    at LoginPage (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/pages/auth/LoginPage.tsx:35:25)
+    at Suspense
+    at AuthRoute (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/routes/index.tsx:115:33)
+    at component
+    at Route (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=44305966:323:16)
+    at Switch (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=44305966:379:17)
+    at AppRoutes
+    at Provider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-IKZDNW7I.js?v=44305966:43:15)
+    at TooltipProvider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=44305966:63:5)
+    at App (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/App.tsx?v=t2vwp5183KmFVF_HCdHph:26:21)
+    at AuthProvider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/contexts/AuthContext.tsx:31:32)
+    at ThemeProvider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/contexts/ThemeContext.tsx:20:33)
+    at QueryClientProvider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=44305966:2805:3)
+printWarning @ chunk-RPCDYKBN.js?v=44305966:521
+chunk-RPCDYKBN.js?v=44305966:521 Warning: Cannot update a component (`Route`) while rendering a different component (`AuthRoute`). To locate the bad setState() call inside `AuthRoute`, follow the stack trace as described in https://reactjs.org/link/setstate-in-render
+    at AuthRoute (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/routes/index.tsx:115:33)
+    at component
+    at Route (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=44305966:323:16)
+    at Switch (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=44305966:379:17)
+    at AppRoutes
+    at Provider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-IKZDNW7I.js?v=44305966:43:15)
+    at TooltipProvider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=44305966:63:5)
+    at App (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/App.tsx?v=t2vwp5183KmFVF_HCdHph:26:21)
+    at AuthProvider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/contexts/AuthContext.tsx:31:32)
+    at ThemeProvider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/src/contexts/ThemeContext.tsx:20:33)
+    at QueryClientProvider (https://9e115fc7-a317-4168-ae3d-d90d5c5ddbf6-00-1yyt1psc2021p.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=44305966:2805:3)
+printWarning @ chunk-RPCDYKBN.js?v=44305966:521
+firestore.googleapis.com/google.firestore.v1.Firestore/Write/channel?VER=8&database=projects%2Fsolar-energy-56bc8%2Fdatabases%2F(default)&gsessionid=0fEIn28WeI5Fg133hh4ayIoU6ML9SZRVamqvHjJs7Uk&SID=yexKPEcuJ9W0GtRxTuVS4A&RID=16126&TYPE=terminate&zx=e75fuq0v8ju:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+2CustomersPage.tsx:100 Error fetching customers: TypeError: useFirestore(...).useCollection is not a function
+    at fetchCustomers (CustomersPage.tsx:97:50)
+    at CustomersPage.tsx:80:5
+    at commitHookEffectListMount (chunk-RPCDYKBN.js?v=44305966:16915:34)
+    at commitPassiveMountOnFiber (chunk-RPCDYKBN.js?v=44305966:18156:19)
+    at commitPassiveMountEffects_complete (chunk-RPCDYKBN.js?v=44305966:18129:17)
+    at commitPassiveMountEffects_begin (chunk-RPCDYKBN.js?v=44305966:18119:15)
+    at commitPassiveMountEffects (chunk-RPCDYKBN.js?v=44305966:18109:11)
+    at flushPassiveEffectsImpl (chunk-RPCDYKBN.js?v=44305966:19490:11)
+    at flushPassiveEffects (chunk-RPCDYKBN.js?v=44305966:19447:22)
+    at performSyncWorkOnRoot (chunk-RPCDYKBN.js?v=44305966:18868:11)
+fetchCustomers @ CustomersPage.tsx:100
+CustomersPage.tsx:100 Error fetching customers: TypeError: useFirestore(...).useCollection is not a function
+    at fetchCustomers (CustomersPage.tsx:97:50)
+    at CustomersPage.tsx:80:5
+    at commitHookEffectListMount (chunk-RPCDYKBN.js?v=44305966:16915:34)
+    at commitPassiveMountOnFiber (chunk-RPCDYKBN.js?v=44305966:18156:19)
+    at commitPassiveMountEffects_complete (chunk-RPCDYKBN.js?v=44305966:18129:17)
+    at commitPassiveMountEffects_begin (chunk-RPCDYKBN.js?v=44305966:18119:15)
+    at commitPassiveMountEffects (chunk-RPCDYKBN.js?v=44305966:18109:11)
+    at flushPassiveEffectsImpl (chunk-RPCDYKBN.js?v=44305966:19490:11)
+    at flushPassiveEffects (chunk-RPCDYKBN.js?v=44305966:19447:22)
+    at performSyncWorkOnRoot (chunk-RPCDYKBN.js?v=44305966:18868:11)
+fetchCustomers @ CustomersPage.tsx:100
+(anonymous) @ CustomersPage.tsx:80
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=44305966:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=44305966:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=44305966:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=44305966:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=44305966:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=44305966:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=44305966:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=44305966:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=44305966:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=44305966:19432
+commitRoot @ chunk-RPCDYKBN.js?v=44305966:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=44305966:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=44305966:18718
+workLoop @ chunk-RPCDYKBN.js?v=44305966:197
+flushWork @ chunk-RPCDYKBN.js?v=44305966:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=44305966:384
