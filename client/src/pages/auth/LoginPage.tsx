@@ -66,7 +66,7 @@ export default function LoginPage() {
           Sign in to your account
         </h2>
         <p className="mt-2 text-center text-sm text-slate-500 dark:text-slate-400">
-          Welcome back to Prakash Green Energy - Channel Partner (MNRE)
+          Welcome back to Prakash Green Energy - Channel Partner (APN)
         </p>
       </div>
 

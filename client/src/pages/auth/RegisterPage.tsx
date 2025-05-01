@@ -4,21 +4,32 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/contexts/ThemeContext";
 import logoImage from "@/assets/logo.png";
 
-const registerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(6, "Confirm password must be at least 6 characters"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
+const registerSchema = z
+  .object({
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    email: z.string().email("Please enter a valid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z
+      .string()
+      .min(6, "Confirm password must be at least 6 characters"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
@@ -27,7 +38,7 @@ export default function RegisterPage() {
   const { register: registerUser } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [loading, setLoading] = useState(false);
-  
+
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -37,7 +48,7 @@ export default function RegisterPage() {
       confirmPassword: "",
     },
   });
-  
+
   const onSubmit = async (data: RegisterFormValues) => {
     try {
       setLoading(true);
@@ -64,16 +75,20 @@ export default function RegisterPage() {
           )}
         </button>
       </div>
-      
+
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <img src={logoImage} alt="Prakash Green Energy Logo" className="h-16 w-auto" />
+          <img
+            src={logoImage}
+            alt="Prakash Green Energy Logo"
+            className="h-16 w-auto"
+          />
         </div>
         <h2 className="mt-4 text-center text-3xl font-extrabold text-slate-900 dark:text-white">
           Create your account
         </h2>
         <p className="mt-2 text-center text-sm text-slate-500 dark:text-slate-400">
-          Join Prakash Green Energy - Channel Partner (MNRE)
+          Join Prakash Green Energy - Channel Partner (APN)
         </p>
       </div>
 
@@ -156,11 +171,7 @@ export default function RegisterPage() {
                 )}
               />
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={loading}
-              >
+              <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? (
                   <span className="flex items-center justify-center">
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
@@ -195,7 +206,7 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
-      
+
       <div className="mt-8 text-center">
         <Link href="/">
           <a className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300">

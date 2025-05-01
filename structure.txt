@@ -1,0 +1,146 @@
+# Prakash Energy Smart Solar Business Management System
+# Project Structure
+
+.
+├── client/                             # Frontend codebase
+│   ├── index.html                      # Main HTML entry point
+│   └── src/                            # Source files
+│       ├── assets/                     # Static assets
+│       │   ├── logo.png                # Application logo
+│       │   ├── template1.jpeg          # Invoice/Quotation template
+│       │   ├── template2.jpeg          # Invoice/Quotation template
+│       │   ├── template3.jpeg          # Invoice/Quotation template
+│       │   └── template4.jpeg          # Invoice/Quotation template
+│       ├── components/                 # Reusable components
+│       │   ├── dashboard/              # Dashboard-specific components
+│       │   │   ├── AttendanceWidget.tsx  # Employee attendance widget
+│       │   │   ├── KPICard.tsx         # Key Performance Indicator cards
+│       │   │   ├── QuickAction.tsx     # Quick action buttons
+│       │   │   ├── RecentActivities.tsx # Recent activity feed
+│       │   │   └── SalesChart.tsx      # Sales data visualization
+│       │   ├── invoices/               # Invoice-specific components
+│       │   │   └── templates/          # Invoice PDF templates
+│       │   ├── layout/                 # Layout components
+│       │   │   ├── Header.tsx          # Application header
+│       │   │   ├── Layout.tsx          # Main application layout wrapper
+│       │   │   └── Sidebar.tsx         # Navigation sidebar
+│       │   ├── quotations/             # Quotation-specific components
+│       │   │   └── templates/          # Quotation PDF templates
+│       │   └── ui/                     # UI component library (shadcn)
+│       │       ├── accordion.tsx       # Accordion component
+│       │       ├── alert-dialog.tsx    # Alert dialog component
+│       │       ├── alert.tsx           # Alert component
+│       │       ├── aspect-ratio.tsx    # Aspect ratio container
+│       │       ├── avatar.tsx          # User avatar component
+│       │       ├── badge.tsx           # Badge/label component
+│       │       ├── breadcrumb.tsx      # Breadcrumb navigation component
+│       │       ├── button.tsx          # Button component
+│       │       ├── calendar.tsx        # Calendar component
+│       │       ├── card.tsx            # Card container component
+│       │       ├── carousel.tsx        # Carousel/slider component
+│       │       ├── chart.tsx           # Chart visualization component
+│       │       ├── checkbox.tsx        # Checkbox input component
+│       │       ├── collapsible.tsx     # Collapsible container component
+│       │       ├── command.tsx         # Command palette component
+│       │       ├── context-menu.tsx    # Context menu component
+│       │       ├── dialog.tsx          # Dialog/modal component
+│       │       ├── drawer.tsx          # Slide-out drawer component
+│       │       ├── dropdown-menu.tsx   # Dropdown menu component
+│       │       ├── form.tsx            # Form components
+│       │       ├── hover-card.tsx      # Hover card component
+│       │       ├── input-otp.tsx       # One-time password input
+│       │       ├── input.tsx           # Text input component
+│       │       ├── label.tsx           # Form label component
+│       │       ├── menubar.tsx         # Menu bar navigation component
+│       │       ├── navigation-menu.tsx # Navigation menu component
+│       │       ├── pagination.tsx      # Pagination component
+│       │       ├── popover.tsx         # Popover component
+│       │       ├── progress.tsx        # Progress indicator component
+│       │       ├── radio-group.tsx     # Radio button group component
+│       │       ├── resizable.tsx       # Resizable container component
+│       │       ├── scroll-area.tsx     # Custom scrollable area component
+│       │       ├── select.tsx          # Select dropdown component
+│       │       ├── separator.tsx       # Visual separator component
+│       │       ├── sheet.tsx           # Sheet component
+│       │       ├── sidebar.tsx         # Sidebar navigation component
+│       │       ├── skeleton.tsx        # Loading skeleton component
+│       │       ├── slider.tsx          # Range slider component
+│       │       ├── switch.tsx          # Toggle switch component
+│       │       ├── table.tsx           # Data table component
+│       │       ├── tabs.tsx            # Tabbed interface component
+│       │       ├── textarea.tsx        # Multi-line text input
+│       │       ├── toast.tsx           # Toast notification component
+│       │       ├── toaster.tsx         # Toast notifications container
+│       │       ├── toggle-group.tsx    # Toggle button group component
+│       │       ├── toggle.tsx          # Toggle button component
+│       │       └── tooltip.tsx         # Tooltip component
+│       ├── contexts/                   # React contexts
+│       │   ├── AuthContext.tsx         # Authentication context provider
+│       │   └── ThemeContext.tsx        # Theme (light/dark) context provider
+│       ├── firebase/                   # Firebase configuration
+│       │   └── config.ts               # Firebase initialization and exports
+│       ├── hooks/                      # Custom React hooks
+│       │   ├── useAttendance.ts        # Hook for attendance functionality
+│       │   ├── useAuth.ts              # Hook for authentication functionality
+│       │   ├── useFirestore.ts         # Hook for Firestore database operations
+│       │   ├── use-mobile.tsx          # Hook for responsive design detection
+│       │   └── use-toast.ts            # Hook for toast notifications
+│       ├── lib/                        # Utility libraries
+│       │   ├── queryClient.ts          # React Query client setup
+│       │   └── utils.ts                # General utility functions
+│       ├── pages/                      # Application pages
+│       │   ├── admin/                  # Admin-specific pages
+│       │   │   ├── AttendanceAdminPage.tsx  # Attendance management for admins
+│       │   │   ├── AttendanceSettingsPage.tsx # Configure attendance settings
+│       │   │   └── UserManagementPage.tsx    # User management interface
+│       │   ├── analytics/              # Analytics/reporting pages
+│       │   │   ├── AttendanceOverviewPage.tsx # Company-wide attendance analytics
+│       │   │   └── PersonalAttendancePage.tsx # Individual attendance reports
+│       │   ├── attendance/             # Attendance tracking
+│       │   │   └── AttendancePage.tsx  # Employee attendance interface
+│       │   ├── auth/                   # Authentication pages
+│       │   │   ├── ForgotPasswordPage.tsx # Password recovery page
+│       │   │   ├── LoginPage.tsx       # User login page
+│       │   │   └── RegisterPage.tsx    # User registration page
+│       │   ├── customers/              # Customer management
+│       │   │   └── CustomersPage.tsx   # Customer list and management
+│       │   ├── dashboard/              # Dashboard pages
+│       │   │   └── DashboardPage.tsx   # Main dashboard with KPIs and widgets
+│       │   ├── home/                   # Public pages
+│       │   │   └── HomePage.tsx        # Public landing page
+│       │   ├── invoices/               # Invoice management
+│       │   │   └── InvoicesPage.tsx    # Invoice creation and management
+│       │   ├── products/               # Product management
+│       │   │   └── ProductsPage.tsx    # Product catalog management
+│       │   ├── quotations/             # Quotation management
+│       │   │   └── QuotationsPage.tsx  # Quotation creation and management
+│       │   ├── settings/               # Application settings
+│       │   │   └── SettingsPage.tsx    # User and application settings
+│       │   └── not-found.tsx           # 404 error page
+│       ├── routes/                     # Routing configuration
+│       │   └── index.tsx               # Main router setup with route definitions
+│       ├── types/                      # TypeScript type definitions
+│       │   └── index.ts                # Shared type definitions
+│       ├── utils/                      # Utility functions
+│       │   ├── formatting.ts           # Date, number, currency formatting
+│       │   └── permissions.ts          # User permission management
+│       ├── App.tsx                     # Main App component
+│       ├── index.css                   # Global styles
+│       └── main.tsx                    # Application entry point
+├── server/                             # Backend codebase
+│   ├── index.ts                        # Main server entry point
+│   ├── routes.ts                       # API route definitions
+│   ├── storage.ts                      # Data storage interface
+│   └── vite.ts                         # Vite development server setup
+├── shared/                             # Shared code between client and server
+│   └── schema.ts                       # Database schema definitions
+├── attached_assets/                    # Development assets
+├── components.json                     # shadcn UI components configuration
+├── drizzle.config.ts                   # Drizzle ORM configuration
+├── package.json                        # Node.js dependencies and scripts
+├── postcss.config.js                   # PostCSS configuration for styling
+├── projectoverview.txt                 # Project overview documentation
+├── structure.txt                       # This file - project structure documentation
+├── tailwind.config.ts                  # Tailwind CSS configuration
+├── tsconfig.json                       # TypeScript configuration
+└── vite.config.ts                      # Vite bundler configuration
