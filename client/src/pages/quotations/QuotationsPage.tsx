@@ -443,13 +443,13 @@ export default function QuotationsPage() {
               ))}
             </div>
           ) : filteredQuotations.length > 0 ? (
-            <div className="overflow-x-auto">
-              <Table>
+            <div className="overflow-x-auto -mx-6 px-6">
+              <Table className="min-w-full">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Quotation #</TableHead>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Date</TableHead>
+                    <TableHead className="whitespace-nowrap">Quotation #</TableHead>
+                    <TableHead className="hidden sm:table-cell">Customer</TableHead>
+                    <TableHead className="hidden md:table-cell">Date</TableHead>
                     <TableHead>Amount</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -457,14 +457,28 @@ export default function QuotationsPage() {
                 </TableHeader>
                 <TableBody>
                   {filteredQuotations.map((quotation) => (
-                    <TableRow key={quotation.id} className="cursor-pointer" onClick={() => viewQuotation(quotation)}>
-                      <TableCell className="font-medium">{quotation.quotationNumber}</TableCell>
-                      <TableCell>{quotation.customer?.name || "Unknown Customer"}</TableCell>
-                      <TableCell>{formatDate(quotation.createdAt)}</TableCell>
+                    <TableRow key={quotation.id} className="cursor-pointer group" onClick={() => viewQuotation(quotation)}>
+                      <TableCell className="font-medium">
+                        <div>
+                          {quotation.quotationNumber}
+                          <div className="text-xs text-muted-foreground sm:hidden">
+                            {quotation.customer?.name || "Unknown Customer"}
+                          </div>
+                          <div className="text-xs text-muted-foreground md:hidden sm:block">
+                            {formatDate(quotation.createdAt)}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">{quotation.customer?.name || "Unknown Customer"}</TableCell>
+                      <TableCell className="hidden md:table-cell">{formatDate(quotation.createdAt)}</TableCell>
                       <TableCell>{formatCurrency(quotation.total)}</TableCell>
                       <TableCell>{getStatusBadge(quotation.status)}</TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="sm">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="h-8 w-8 p-0 opacity-70 group-hover:opacity-100"
+                        >
                           <i className="ri-eye-line"></i>
                         </Button>
                       </TableCell>
@@ -553,88 +567,91 @@ export default function QuotationsPage() {
                 <h3 className="font-medium mb-2">Products</h3>
                 <div className="space-y-4">
                   {fields.map((field, index) => (
-                    <div key={field.id} className="flex flex-wrap gap-4 items-end p-4 border rounded-md">
-                      <div className="flex-1 min-w-[200px]">
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.productId`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Product</FormLabel>
-                              <Select
-                                onValueChange={(value) => {
-                                  field.onChange(value);
-                                  handleProductChange(index, value);
-                                }}
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select a product" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {products.map((product) => (
-                                    <SelectItem key={product.id} value={product.id}>
-                                      {product.name} - {formatCurrency(product.price)}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      <div className="w-20">
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.quantity`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Qty</FormLabel>
-                              <FormControl>
-                                <Input type="number" min="1" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      <div className="w-24">
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.unitPrice`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Unit Price</FormLabel>
-                              <FormControl>
-                                <Input type="number" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      <div className="w-24">
-                        <FormLabel>Total</FormLabel>
-                        <div className="h-10 px-3 py-2 rounded-md border bg-slate-50 dark:bg-slate-800 text-slate-500">
-                          {formatCurrency(
-                            (form.watch(`items.${index}.quantity`) || 0) * 
-                            (form.watch(`items.${index}.unitPrice`) || 0)
-                          )}
+                    <div key={field.id} className="p-4 border rounded-md">
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                        <div className="md:col-span-5">
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.productId`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Product</FormLabel>
+                                <Select
+                                  onValueChange={(value) => {
+                                    field.onChange(value);
+                                    handleProductChange(index, value);
+                                  }}
+                                  defaultValue={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select a product" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    {products.map((product) => (
+                                      <SelectItem key={product.id} value={product.id}>
+                                        {product.name} - {formatCurrency(product.price)}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
                         </div>
-                      </div>
-                      <div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => remove(index)}
-                          disabled={fields.length === 1}
-                        >
-                          <i className="ri-delete-bin-line text-red-500"></i>
-                        </Button>
+                        <div className="md:col-span-2">
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.quantity`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Qty</FormLabel>
+                                <FormControl>
+                                  <Input type="number" min="1" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.unitPrice`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Unit Price</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <FormLabel>Total</FormLabel>
+                          <div className="h-10 px-3 py-2 rounded-md border bg-slate-50 dark:bg-slate-800 text-slate-500">
+                            {formatCurrency(
+                              (form.watch(`items.${index}.quantity`) || 0) * 
+                              (form.watch(`items.${index}.unitPrice`) || 0)
+                            )}
+                          </div>
+                        </div>
+                        <div className="md:col-span-1 flex justify-end">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-10 w-10 p-0"
+                            onClick={() => remove(index)}
+                            disabled={fields.length === 1}
+                          >
+                            <i className="ri-delete-bin-line text-red-500"></i>
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}

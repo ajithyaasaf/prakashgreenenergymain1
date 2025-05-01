@@ -282,24 +282,31 @@ export default function CustomersPage() {
               ))}
             </div>
           ) : filteredCustomers.length > 0 ? (
-            <div className="overflow-x-auto">
-              <Table>
+            <div className="overflow-x-auto -mx-6 px-6">
+              <Table className="min-w-full">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Phone</TableHead>
-                    <TableHead>Location</TableHead>
+                    <TableHead className="whitespace-nowrap">Name</TableHead>
+                    <TableHead className="hidden sm:table-cell">Email</TableHead>
+                    <TableHead className="hidden md:table-cell">Phone</TableHead>
+                    <TableHead className="hidden md:table-cell">Location</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredCustomers.map((customer) => (
-                    <TableRow key={customer.id}>
-                      <TableCell className="font-medium">{customer.name}</TableCell>
-                      <TableCell>{customer.email || "-"}</TableCell>
-                      <TableCell>{customer.phone || "-"}</TableCell>
-                      <TableCell>
+                    <TableRow key={customer.id} className="group">
+                      <TableCell className="font-medium">
+                        <div>
+                          {customer.name}
+                          <div className="text-xs text-muted-foreground sm:hidden">
+                            {customer.email || "No email"}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">{customer.email || "-"}</TableCell>
+                      <TableCell className="hidden md:table-cell">{customer.phone || "-"}</TableCell>
+                      <TableCell className="hidden md:table-cell">
                         {customer.city && customer.state
                           ? `${customer.city}, ${customer.state}`
                           : customer.city || customer.state || "-"}
@@ -310,13 +317,14 @@ export default function CustomersPage() {
                             variant="ghost"
                             size="sm"
                             onClick={() => openEditDialog(customer)}
+                            className="h-8 w-8 p-0 opacity-70 group-hover:opacity-100"
                           >
                             <i className="ri-pencil-line"></i>
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-destructive hover:text-destructive/80"
+                            className="h-8 w-8 p-0 text-destructive hover:text-destructive/80 opacity-70 group-hover:opacity-100"
                             onClick={() => openDeleteDialog(customer)}
                           >
                             <i className="ri-delete-bin-line"></i>
