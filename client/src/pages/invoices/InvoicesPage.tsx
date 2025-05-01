@@ -216,8 +216,17 @@ export default function InvoicesPage() {
       const customersCollection = collection(firestore, "customers");
       const customersQuery = query(customersCollection, orderBy("name", "asc"));
       
-      const { documents } = await useFirestore().useCollection<Customer>("customers", [orderBy("name", "asc")]);
-      setCustomers(documents || []);
+      const querySnapshot = await getDocs(customersQuery);
+      const customerList: Customer[] = [];
+      
+      querySnapshot.forEach((doc) => {
+        customerList.push({
+          id: doc.id,
+          ...doc.data()
+        } as Customer);
+      });
+      
+      setCustomers(customerList);
     } catch (error) {
       console.error("Error fetching customers:", error);
     }
@@ -228,8 +237,17 @@ export default function InvoicesPage() {
       const productsCollection = collection(firestore, "products");
       const productsQuery = query(productsCollection, orderBy("name", "asc"));
       
-      const { documents } = await useFirestore().useCollection<Product>("products", [orderBy("name", "asc")]);
-      setProducts(documents || []);
+      const querySnapshot = await getDocs(productsQuery);
+      const productList: Product[] = [];
+      
+      querySnapshot.forEach((doc) => {
+        productList.push({
+          id: doc.id,
+          ...doc.data()
+        } as Product);
+      });
+      
+      setProducts(productList);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
