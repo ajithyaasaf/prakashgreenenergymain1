@@ -1,0 +1,32 @@
+chunk-RPCDYKBN.js?v=c532b37c:521 Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a>.
+    at a
+    at a
+    at https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.d…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=c532b37c:337:18
+    at div
+    at div
+    at https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.dev/src/components/ui/form.tsx:72:6
+    at Controller (https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.d…nner/workspace/node_modules/.vite/deps/chunk-4BFJKWC4.js?v=c532b37c:298:35)
+    at FormField (https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.dev/src/components/ui/form.tsx:33:6)
+    at form
+    at FormProvider (https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.d…nner/workspace/node_modules/.vite/deps/chunk-4BFJKWC4.js?v=c532b37c:102:11)
+    at div
+    at div
+    at div
+    at LoginPage (https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.dev/src/pages/auth/LoginPage.tsx:35:25)
+    at Suspense
+    at AuthRoute (https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.dev/src/routes/index.tsx:123:33)
+    at component
+    at Route (https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.d…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=c532b37c:323:16)
+    at Switch (https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.d…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=c532b37c:379:17)
+    at AppRoutes
+    at Provider (https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.d…unner/workspace/node_modules/.vite/deps/chunk-5AJU3CG7.js?v=c532b37c:38:15)
+    at TooltipProvider (https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.d…rkspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=c532b37c:63:5)
+    at App (https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.dev/src/App.tsx?v=t_LYok3Y_rfY-LmAClyam:26:21)
+    at AuthProvider (https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.dev/src/contexts/AuthContext.tsx:31:32)
+    at ThemeProvider (https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.dev/src/contexts/ThemeContext.tsx:20:33)
+    at QueryClientProvider (https://253c960e-60fe-4a96-874e-a47c1c34534e-00-2jy4kfyhyezyn.pike.replit.d…rkspace/node_modules/.vite/deps/@tanstack_react-query.js?v=c532b37c:2805:3)
+2
+ProductsPage.tsx:98 Error fetching products: TypeError: useFirestore(...).useCollection is not a function
+    at fetchProducts (ProductsPage.tsx:95:50)
+    at ProductsPage.tsx:78:5
+﻿

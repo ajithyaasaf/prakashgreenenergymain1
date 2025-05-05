@@ -89,11 +89,10 @@ export default function ProductsPage() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const productsCollection = collection(firestore, "products");
-      const productsQuery = query(productsCollection, orderBy("name", "asc"));
-      
-      const { documents } = await useFirestore().useCollection<Product>("products", [orderBy("name", "asc")]);
-      setProducts(documents || []);
+      // useCollection is a hook that should be used at the component level, not inside a function
+      // Using the firestoreService.getAll method instead
+      const products = await useFirestore().getAll<Product>("products", [orderBy("name", "asc")]);
+      setProducts(products || []);
     } catch (error) {
       console.error("Error fetching products:", error);
       toast({
