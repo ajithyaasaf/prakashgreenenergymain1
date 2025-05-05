@@ -26,15 +26,39 @@ export function useFirestoreCollection<T>(
   return useQuery({
     queryKey: ['firestore', collectionName, queryConstraints],
     queryFn: async () => {
-      const q = query(collection(firestore, collectionName), ...queryConstraints);
-      const querySnapshot = await getDocs(q);
-      
-      const results: T[] = [];
-      querySnapshot.forEach((doc) => {
-        results.push({ id: doc.id, ...doc.data() } as T);
-      });
-      
-      return results;
+      try {
+        const q = query(collection(firestore, collectionName), ...queryConstraints);
+        const querySnapshot = await getDocs(q);
+        
+        const results: T[] = [];
+        querySnapshot.forEach((doc) => {
+          results.push({ id: doc.id, ...doc.data() } as T);
+        });
+        
+        return results;
+      } catch (error: any) {
+        // Handle Firestore index errors with more useful information
+        if (error.code === 'failed-precondition' && error.message && error.message.includes('index')) {
+          console.error(`Firestore index error in collection "${collectionName}":`, error);
+          
+          // Attempt to extract the index creation URL from the error message
+          const indexUrlMatch = error.message.match(/(https:\/\/console\.firebase\.google\.com\/[^\s]+)/);
+          const indexUrl = indexUrlMatch ? indexUrlMatch[0] : null;
+          
+          if (indexUrl) {
+            throw new Error(
+              `This query requires a Firestore index. Please visit: ${indexUrl} to create it.`
+            );
+          } else {
+            throw new Error(
+              `This query requires a Firestore index. Please check the Firebase console to create the missing index.`
+            );
+          }
+        }
+        
+        // Re-throw the original error
+        throw error;
+      }
     },
     ...options
   });
@@ -138,16 +162,27 @@ export const firestoreQueryUtils = {
     collectionName: string,
     queryConstraints: QueryConstraint[] = []
   ) => {
-    const q = query(collection(firestore, collectionName), ...queryConstraints);
-    const querySnapshot = await getDocs(q);
-    
-    const results: T[] = [];
-    querySnapshot.forEach((doc) => {
-      results.push({ id: doc.id, ...doc.data() } as T);
-    });
-    
-    queryClient.setQueryData(['firestore', collectionName, queryConstraints], results);
-    return results;
+    try {
+      const q = query(collection(firestore, collectionName), ...queryConstraints);
+      const querySnapshot = await getDocs(q);
+      
+      const results: T[] = [];
+      querySnapshot.forEach((doc) => {
+        results.push({ id: doc.id, ...doc.data() } as T);
+      });
+      
+      queryClient.setQueryData(['firestore', collectionName, queryConstraints], results);
+      return results;
+    } catch (error: any) {
+      // Just log index errors during prefetching without throwing
+      if (error.code === 'failed-precondition' && error.message && error.message.includes('index')) {
+        console.warn(`Firestore index error while prefetching "${collectionName}":`, error.message);
+        return [] as T[];
+      }
+      
+      // Re-throw other errors
+      throw error;
+    }
   },
   
   // Prefetch a document
