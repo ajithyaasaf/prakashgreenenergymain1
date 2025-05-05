@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useFirestore } from "@/hooks/useFirestore";
+import { useFirestoreCollection, useAddDocument, useUpdateDocument, useDeleteDocument } from "@/hooks/useFirestoreQuery";
 import { useToast } from "@/hooks/use-toast";
 import { PERMISSIONS, hasPermission } from "@/utils/permissions";
 import { Product } from "@/types";
@@ -74,9 +75,38 @@ export default function ProductsPage() {
     },
   });
 
+  // Use the new React Query hook for better caching and performance
+  const { 
+    data: productData, 
+    isLoading, 
+    isError, 
+    refetch 
+  } = useFirestoreCollection<Product>(
+    "products", 
+    [orderBy("name", "asc")],
+    {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false,
+      onError: (error) => {
+        console.error("Error fetching products:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load products",
+          variant: "destructive",
+        });
+      }
+    }
+  );
+
   useEffect(() => {
-    fetchProducts();
-    
+    // Update the component state when data changes
+    if (productData) {
+      setProducts(productData);
+      setLoading(false);
+    }
+  }, [productData]);
+
+  useEffect(() => {
     // Check if we need to open the add dialog from URL parameter
     const params = new URLSearchParams(window.location.search);
     if (params.get("new") === "true") {
@@ -85,25 +115,6 @@ export default function ProductsPage() {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []);
-
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      // useCollection is a hook that should be used at the component level, not inside a function
-      // Using the firestoreService.getAll method instead
-      const products = await useFirestore().getAll<Product>("products", [orderBy("name", "asc")]);
-      setProducts(products || []);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load products",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -199,7 +210,7 @@ export default function ProductsPage() {
       });
       
       setIsAddDialogOpen(false);
-      fetchProducts();
+      refetch();
     } catch (error) {
       console.error("Error adding product:", error);
       toast({
@@ -234,7 +245,7 @@ export default function ProductsPage() {
       });
       
       setIsEditDialogOpen(false);
-      fetchProducts();
+      refetch();
     } catch (error) {
       console.error("Error updating product:", error);
       toast({
@@ -264,7 +275,7 @@ export default function ProductsPage() {
       });
       
       setIsDeleteDialogOpen(false);
-      fetchProducts();
+      refetch();
     } catch (error) {
       console.error("Error deleting product:", error);
       toast({

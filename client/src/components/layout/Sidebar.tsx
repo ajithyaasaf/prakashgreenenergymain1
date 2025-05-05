@@ -33,6 +33,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
   const [location] = useLocation();
   const { currentUser, isAdmin, isMasterAdmin, logout } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   
   const isActive = (path: string) => {
     return location === path;
@@ -41,6 +42,63 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
   const closeSidebar = () => {
     setOpen(false);
   };
+  
+  // Prefetch functions for different parts of the app
+  const prefetchProducts = useCallback(() => {
+    if (hasPermission(currentUser?.role, PERMISSIONS.VIEW_PRODUCTS)) {
+      firestoreQueryUtils.prefetchCollection(
+        queryClient,
+        "products",
+        [orderBy("name", "asc")]
+      );
+    }
+  }, [queryClient, currentUser?.role]);
+  
+  const prefetchDashboard = useCallback(() => {
+    // Prefetch data commonly needed on the dashboard
+    // This would ideally prefetch needed collections for KPIs and charts
+  }, [queryClient]);
+  
+  const prefetchCustomers = useCallback(() => {
+    firestoreQueryUtils.prefetchCollection(
+      queryClient,
+      "customers",
+      [orderBy("name", "asc")]
+    );
+  }, [queryClient]);
+  
+  const prefetchQuotations = useCallback(() => {
+    firestoreQueryUtils.prefetchCollection(
+      queryClient,
+      "quotations",
+      [orderBy("createdAt", "desc")]
+    );
+  }, [queryClient]);
+  
+  const prefetchInvoices = useCallback(() => {
+    firestoreQueryUtils.prefetchCollection(
+      queryClient,
+      "invoices",
+      [orderBy("createdAt", "desc")]
+    );
+  }, [queryClient]);
+  
+  const prefetchAttendance = useCallback(() => {
+    if (currentUser?.uid) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      firestoreQueryUtils.prefetchCollection(
+        queryClient,
+        "attendance",
+        [
+          where("userId", "==", currentUser.uid),
+          where("date", ">=", today.toISOString()),
+          orderBy("date", "desc")
+        ]
+      );
+    }
+  }, [queryClient, currentUser?.uid]);
 
   if (!currentUser) return null;
 
@@ -74,6 +132,8 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
                 : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
+            onMouseEnter={prefetchDashboard}
+            onFocus={prefetchDashboard}
           >
             <TbGridDots className="mr-3 text-lg" />
             <span>Dashboard</span>
@@ -87,6 +147,8 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
                 : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
+            onMouseEnter={prefetchCustomers}
+            onFocus={prefetchCustomers}
           >
             <TbUser className="mr-3 text-lg" />
             <span>Customers</span>
@@ -101,6 +163,8 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                   ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
                   : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
               }`}
+              onMouseEnter={prefetchProducts}
+              onFocus={prefetchProducts}
             >
               <TbPackage className="mr-3 text-lg" />
               <span>Products</span>
@@ -115,6 +179,8 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
                 : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
+            onMouseEnter={prefetchQuotations}
+            onFocus={prefetchQuotations}
           >
             <TbFileText className="mr-3 text-lg" />
             <span>Quotations</span>
@@ -128,6 +194,8 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
                 : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
+            onMouseEnter={prefetchInvoices}
+            onFocus={prefetchInvoices}
           >
             <TbReceipt className="mr-3 text-lg" />
             <span>Invoices</span>
@@ -141,6 +209,8 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
                 : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
+            onMouseEnter={prefetchAttendance}
+            onFocus={prefetchAttendance}
           >
             <TbClock className="mr-3 text-lg" />
             <span>Attendance</span>
