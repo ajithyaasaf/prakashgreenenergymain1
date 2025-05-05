@@ -87,7 +87,7 @@ export default function ProductsPage() {
     {
       staleTime: 5 * 60 * 1000, // 5 minutes
       refetchOnWindowFocus: false,
-      onError: (error) => {
+      onError: (error: unknown) => {
         console.error("Error fetching products:", error);
         toast({
           title: "Error",
