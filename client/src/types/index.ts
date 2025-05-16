@@ -4,10 +4,12 @@ export interface User {
   email: string | null;
   displayName: string | null;
   role: UserRole;
+  department?: Department;
   createdAt?: string;
 }
 
 export type UserRole = 'employee' | 'admin' | 'master_admin';
+export type Department = 'Sales' | 'Marketing' | 'CRE' | 'Accounts' | 'HR' | 'Technical';
 
 // Customer types
 export interface Customer {
@@ -103,30 +105,44 @@ export interface Invoice {
 
 // Attendance types
 export type AttendanceStatus = 'checked_in' | 'checked_out';
+export type WorkLocation = 'office' | 'off-site';
 
 export interface Attendance {
   id: string;
   userId: string;
-  date: string;
-  checkInTime: string;
-  checkOutTime?: string;
+  date: string | { toDate(): Date };
+  checkInTime: string | { toDate(): Date };
+  checkOutTime?: string | { toDate(): Date };
+  workLocation?: WorkLocation;
+  locationDetails?: string;
+  offSiteReason?: string;
+  customerDetails?: string;
+  lateReason?: string;
+  overtimeReason?: string;
+  isLate?: boolean;
+  isLateCheckout?: boolean;
+  isOvertime?: boolean;
   status: AttendanceStatus;
   notes?: string;
 }
 
 // Leave types
-export type LeaveStatus = 'pending' | 'approved' | 'rejected';
+export type LeaveStatus = 'pending' | 'approved' | 'rejected' | 'escalated';
+export type LeaveType = 'casual' | 'permission' | 'sick' | 'vacation';
 
 export interface Leave {
   id: string;
   userId: string;
-  startDate: string;
-  endDate: string;
+  leaveType: LeaveType;
+  startDate: string | { toDate(): Date };
+  endDate: string | { toDate(): Date };
   reason?: string;
   status: LeaveStatus;
   approvedBy?: string;
-  createdAt: string;
-  updatedAt: string;
+  approverNotes?: string;
+  escalatedTo?: string;
+  createdAt: string | { toDate(): Date };
+  updatedAt: string | { toDate(): Date };
 }
 
 // Working hours types
