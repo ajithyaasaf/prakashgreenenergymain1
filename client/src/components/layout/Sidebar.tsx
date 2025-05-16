@@ -201,7 +201,11 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
             <span>Invoices</span>
           </Link>
           
-          {/* Attendance Link */}
+          {/* Attendance Links */}
+          <div className="pt-2 pb-1">
+            <p className="px-3 text-xs font-medium text-secondary/80 uppercase dark:text-primary/80">Attendance</p>
+          </div>
+          
           <Link 
             href="/attendance"
             className={`flex items-center px-3 py-2.5 rounded-lg ${
@@ -213,22 +217,50 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
             onFocus={prefetchAttendance}
           >
             <TbClock className="mr-3 text-lg" />
-            <span>Attendance</span>
+            <span>Attendance Dashboard</span>
           </Link>
           
-          {/* Attendance Admin Link - Visible to Admin and Master Admin */}
+          <Link 
+            href="/attendance/calendar"
+            className={`flex items-center px-3 py-2.5 rounded-lg ${
+              isActive("/attendance/calendar")
+                ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
+                : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+            }`}
+          >
+            <TbCalendarTime className="mr-3 text-lg" />
+            <span>Attendance Calendar</span>
+          </Link>
+          
+          {/* Admin Attendance Links */}
           {hasPermission(currentUser.role, PERMISSIONS.VIEW_ALL_ATTENDANCE) && (
-            <Link 
-              href="/attendance-admin"
-              className={`flex items-center px-3 py-2.5 rounded-lg ${
-                isActive("/attendance-admin")
-                  ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
-                  : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
-              }`}
-            >
-              <TbCalendarTime className="mr-3 text-lg" />
-              <span>Attendance Admin</span>
-            </Link>
+            <>
+              <Link 
+                href="/attendance-admin"
+                className={`flex items-center px-3 py-2.5 rounded-lg ${
+                  isActive("/attendance-admin")
+                    ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
+                    : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                }`}
+              >
+                <TbCalendarTime className="mr-3 text-lg" />
+                <span>Attendance Admin</span>
+              </Link>
+              
+              {isMasterAdmin && (
+                <Link 
+                  href="/department-policies"
+                  className={`flex items-center px-3 py-2.5 rounded-lg ${
+                    isActive("/department-policies")
+                      ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
+                      : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                  }`}
+                >
+                  <TbSettings className="mr-3 text-lg" />
+                  <span>Department Policies</span>
+                </Link>
+              )}
+            </>
           )}
           
           {/* Analytics Section */}

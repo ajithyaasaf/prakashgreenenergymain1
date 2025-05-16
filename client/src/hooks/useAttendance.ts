@@ -539,6 +539,7 @@ export function useAttendance() {
     getUserDepartment,
     getDepartmentPolicy,
     getMonthlyAttendanceStats,
+    checkLeaveEligibility,
     refetchAttendance
   };
 }
