@@ -175,7 +175,9 @@ export default function AttendancePage() {
   };
   
   const handleCheckIn = async () => {
-    await checkIn();
+    await checkIn({
+      workLocation: "office" // Default to office location
+    });
     fetchTodayAttendance();
     fetchRecentAttendance();
   };
