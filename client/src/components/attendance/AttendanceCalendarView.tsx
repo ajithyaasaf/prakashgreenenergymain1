@@ -24,11 +24,14 @@ interface AttendanceCalendarProps {
   leaveRecords: Leave[];
 }
 
-const AttendanceCalendarView = () => {
-  const { attendanceRecords, getLeaveHistory, loading } = useAttendance();
+const AttendanceCalendarView = ({ 
+  month, 
+  onMonthChange, 
+  attendanceRecords, 
+  leaveRecords 
+}: AttendanceCalendarProps) => {
   const { toast } = useToast();
-  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
-  const [leaves, setLeaves] = useState<Leave[]>([]);
+  const [currentMonth, setCurrentMonth] = useState<Date>(month);
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [dayDetails, setDayDetails] = useState<{

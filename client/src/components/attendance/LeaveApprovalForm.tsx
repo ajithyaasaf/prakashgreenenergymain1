@@ -96,11 +96,12 @@ export default function LeaveApprovalForm({ leaveId, onApproved }: LeaveApproval
         
         // Check if current approver can handle this request or needs escalation
         const currentUserRole = currentUser.role;
+        const userRole = userDoc.data().role as UserRole || "employee";
         
         // Need escalation if requester role is equal or higher than approver's role
         if (
-          (requesterRole === "admin" && currentUserRole === "admin") ||
-          (requesterRole === "master_admin")
+          (userRole === "admin" && currentUserRole === "admin") ||
+          (userRole === "master_admin")
         ) {
           setNeedsEscalation(true);
           

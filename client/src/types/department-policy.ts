@@ -1,16 +1,17 @@
-import { Department } from "./index";
+import { departmentEnum } from "@/shared/schema";
 
-// Type definitions for department policies
+export type Department = "Sales" | "Marketing" | "CRE" | "Accounts" | "HR" | "Technical";
+
 export interface DepartmentPolicy {
-  id: number;
+  id: string;
   department: Department;
   requiredCheckInTime: string; // HH:MM format
   requiredCheckOutTime: string; // HH:MM format
-  allowsOffSiteWork: boolean | null;
-  overtimeAllowed: boolean | null;
+  allowsOffSiteWork: boolean;
+  overtimeAllowed: boolean;
   maxMonthlyPermissionHours: number;
   maxMonthlyCasualLeaves: number;
-  updatedBy: number | null;
+  updatedBy: string | null;
   updatedAt?: Date | string;
 }
 

@@ -17,6 +17,7 @@ interface UserData {
   email: string | null;
   displayName: string | null;
   role: 'employee' | 'admin' | 'master_admin';
+  department?: string;
 }
 
 interface AuthContextProps {
