@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Attendance, Leave } from "@/types";
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, isWeekend, getDate, addMonths, subMonths } from "date-fns";
 import { getDateFromTimestamp } from "@/types/firebase-types";
-import { TbArrowLeft, TbArrowRight, TbCheckCircle, TbAlarm, TbClock, TbClockOff, TbMapPin, TbCalendarOff } from "react-icons/tb";
+import { TbArrowLeft, TbArrowRight, TbCircleCheck, TbAlarm, TbClock, TbClockOff, TbMapPin, TbCalendarOff } from "react-icons/tb";
 
 // Custom rendering for attendance calendar
 interface AttendanceCalendarProps {
@@ -85,8 +85,8 @@ const AttendanceCalendarView = () => {
     setCurrentMonth(prevMonth => addMonths(prevMonth, 1));
   };
 
-  // Calendar day rendering
-  const renderDay = (day: Date) => {
+  // Helper function to check status of a particular date
+  const getDayStatus = (day: Date) => {
     // Check for attendance on this day
     const hasAttendance = attendanceRecords?.some(record => {
       const recordDate = getDateFromTimestamp(record.date);
@@ -114,43 +114,8 @@ const AttendanceCalendarView = () => {
 
     // Check if it's a weekend
     const isWeekendDay = isWeekend(day);
-
-    // Style based on status
-    let className = "relative h-9 w-9 p-0 font-normal aria-selected:opacity-100";
     
-    if (isWeekendDay) {
-      className += " bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300";
-    }
-    
-    if (hasLeave) {
-      className += " border-2 border-orange-400";
-    }
-    
-    if (hasAttendance) {
-      className += " font-medium";
-      if (hasOvertime) {
-        className += " border-b-2 border-indigo-500";
-      }
-      if (isLate) {
-        className += " text-amber-600";
-      }
-    }
-
-    return (
-      <div className={className}>
-        <time dateTime={format(day, 'yyyy-MM-dd')} className="mb-1">
-          {getDate(day)}
-        </time>
-        <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex gap-0.5">
-          {hasAttendance && (
-            <div className="h-1 w-1 rounded-full bg-green-500" />
-          )}
-          {hasLeave && (
-            <div className="h-1 w-1 rounded-full bg-orange-400" />
-          )}
-        </div>
-      </div>
-    );
+    return { hasAttendance, hasLeave, hasOvertime, isLate, isWeekendDay };
   };
 
   // Get days for current month
@@ -213,13 +178,6 @@ const AttendanceCalendarView = () => {
               month={currentMonth}
               onMonthChange={setCurrentMonth}
               className="rounded-md border"
-              components={{
-                Day: ({ day, ...props }) => (
-                  <button {...props}>
-                    {renderDay(day)}
-                  </button>
-                )
-              }}
             />
 
             {selectedDate && (
@@ -231,7 +189,7 @@ const AttendanceCalendarView = () => {
                 {dayDetails.attendance ? (
                   <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-md">
                     <h4 className="font-medium flex items-center text-green-700 dark:text-green-400 mb-2">
-                      <TbCheckCircle className="mr-2" /> Attendance Record
+                      <TbCircleCheck className="mr-2" /> Attendance Record
                     </h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center">
@@ -393,7 +351,7 @@ const AttendanceCalendarView = () => {
                     <div className="mt-2 flex flex-wrap gap-2">
                       {attendanceRecord && (
                         <div className="text-xs flex items-center bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2 py-0.5 rounded">
-                          <TbCheckCircle className="mr-1" />
+                          <TbCircleCheck className="mr-1" />
                           <span>
                             Present
                             {attendanceRecord.workLocation === 'off-site' && ' (Off-site)'}
