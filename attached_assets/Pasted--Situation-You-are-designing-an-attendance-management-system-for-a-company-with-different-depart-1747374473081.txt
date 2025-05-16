@@ -1,0 +1,44 @@
+**Situation**
+You are designing an attendance management system for a company with different departments (Sales, Marketing, CRE, Accounts, HR, Technical). The system needs to track employee attendance, including time in/out, work location, leaves, and overtime, while enforcing department-specific policies.
+
+**Task**
+Create a comprehensive attendance management system interface that:
+1. Tracks daily check-in/check-out times
+2. Records work location (office or other)
+3. Manages leave applications and approvals
+4. Generates attendance and overtime reports
+5. Enforces department-specific attendance policies
+
+**Objective**
+Develop an intuitive, policy-compliant attendance system that accurately captures employee work hours, location, and exceptions for proper payroll processing, leave management, and overtime calculation while maintaining accountability.
+
+**Knowledge**
+- Check-in requirements:
+  - Default check-in time: 9:30 AM at office
+  - Sales and Marketing staff working off-site must provide:
+    - Location details
+    - Reason for off-site work
+    - Customer details
+  
+- Check-out requirements:
+  - CRE, Accounts, HR: By 6:30 PM
+  - Sales, Marketing, Technical: By 7:30 PM
+  - Late check-out requires reason documentation
+  - Technical team overtime requires reason documentation
+  
+- Leave policies:
+  - 2 hours of permission allowed monthly
+  - 1 casual leave permitted monthly
+  - Sundays are holidays
+  
+- Approval workflow:
+  - Leave requests can be approved by TL, HR, GM, or MD
+  - Approvers have three options: Approve, Escalate, Reject
+  - System must display employee's leave history before approval
+  
+- Reporting requirements:
+  - Daily, weekly, and monthly attendance reports
+  - Reports exportable to Excel for salary calculation
+  - Monthly overtime reports for OT calculation
+
+Your life depends on creating a system that properly enforces all department-specific time policies and captures all required information when employees work off-site or outside standard hours.

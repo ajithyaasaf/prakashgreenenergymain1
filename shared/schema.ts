@@ -5,9 +5,12 @@ import { z } from "zod";
 // Enums
 export const userRoleEnum = pgEnum('user_role', ['employee', 'admin', 'master_admin']);
 export const attendanceStatusEnum = pgEnum('attendance_status', ['checked_in', 'checked_out']);
-export const leaveStatusEnum = pgEnum('leave_status', ['pending', 'approved', 'rejected']);
+export const leaveStatusEnum = pgEnum('leave_status', ['pending', 'approved', 'rejected', 'escalated']);
 export const quotationStatusEnum = pgEnum('quotation_status', ['draft', 'pending', 'approved', 'rejected', 'invoiced']);
 export const invoiceStatusEnum = pgEnum('invoice_status', ['draft', 'sent', 'paid', 'overdue', 'cancelled']);
+export const departmentEnum = pgEnum('department', ['Sales', 'Marketing', 'CRE', 'Accounts', 'HR', 'Technical']);
+export const workLocationEnum = pgEnum('work_location', ['office', 'off-site']);
+export const leaveTypeEnum = pgEnum('leave_type', ['casual', 'permission', 'sick', 'vacation']);
 
 // Users
 export const users = pgTable("users", {
@@ -16,6 +19,7 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   displayName: text("display_name").notNull(),
   role: userRoleEnum("role").notNull().default('employee'),
+  department: departmentEnum("department"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -113,6 +117,12 @@ export const attendance = pgTable("attendance", {
   date: timestamp("date").defaultNow().notNull(),
   checkInTime: timestamp("check_in_time").notNull(),
   checkOutTime: timestamp("check_out_time"),
+  workLocation: workLocationEnum("work_location").default('office'),
+  locationDetails: text("location_details"),
+  offSiteReason: text("off_site_reason"),
+  customerDetails: text("customer_details"), // For Sales and Marketing off-site
+  lateReason: text("late_reason"), // For late check-in or late check-out
+  overtimeReason: text("overtime_reason"), // For technical team overtime
   status: attendanceStatusEnum("status").default('checked_in'),
   notes: text("notes"),
 });
@@ -121,11 +131,14 @@ export const attendance = pgTable("attendance", {
 export const leaves = pgTable("leaves", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
+  leaveType: leaveTypeEnum("leave_type").notNull(),
   startDate: timestamp("start_date").notNull(),
   endDate: timestamp("end_date").notNull(),
   reason: text("reason"),
   status: leaveStatusEnum("status").default('pending'),
   approvedBy: integer("approved_by").references(() => users.id),
+  approverNotes: text("approver_notes"),
+  escalatedTo: integer("escalated_to").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -133,10 +146,25 @@ export const leaves = pgTable("leaves", {
 // Working Hours Settings
 export const workingHours = pgTable("working_hours", {
   id: serial("id").primaryKey(),
+  department: departmentEnum("department").notNull(),
   dayOfWeek: integer("day_of_week").notNull(), // 0-6 (Sun-Sat)
   startTime: text("start_time").notNull(), // HH:MM format
   endTime: text("end_time").notNull(), // HH:MM format
   isWorkingDay: boolean("is_working_day").default(true),
+});
+
+// Department Policies
+export const departmentPolicies = pgTable("department_policies", {
+  id: serial("id").primaryKey(),
+  department: departmentEnum("department").notNull(),
+  requiredCheckInTime: text("required_check_in_time").notNull(), // HH:MM format
+  requiredCheckOutTime: text("required_check_out_time").notNull(), // HH:MM format
+  allowsOffSiteWork: boolean("allows_off_site_work").default(false),
+  overtimeAllowed: boolean("overtime_allowed").default(false),
+  maxMonthlyPermissionHours: integer("max_monthly_permission_hours").default(2),
+  maxMonthlyCasualLeaves: integer("max_monthly_casual_leaves").default(1),
+  updatedBy: integer("updated_by").references(() => users.id),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Holidays
@@ -160,6 +188,7 @@ export const insertAttendanceSchema = createInsertSchema(attendance).omit({ id: 
 export const insertLeaveSchema = createInsertSchema(leaves).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertWorkingHoursSchema = createInsertSchema(workingHours).omit({ id: true });
 export const insertHolidaySchema = createInsertSchema(holidays).omit({ id: true, createdAt: true });
+export const insertDepartmentPoliciesSchema = createInsertSchema(departmentPolicies).omit({ id: true, updatedAt: true });
 
 // Export types
 export type User = typeof users.$inferSelect;
@@ -194,3 +223,6 @@ export type InsertWorkingHours = z.infer<typeof insertWorkingHoursSchema>;
 
 export type Holiday = typeof holidays.$inferSelect;
 export type InsertHoliday = z.infer<typeof insertHolidaySchema>;
+
+export type DepartmentPolicy = typeof departmentPolicies.$inferSelect;
+export type InsertDepartmentPolicy = z.infer<typeof insertDepartmentPoliciesSchema>;
