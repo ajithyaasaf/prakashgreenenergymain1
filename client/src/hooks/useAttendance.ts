@@ -4,9 +4,10 @@ import { firestore } from "@/firebase/config";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { collection, addDoc, doc, updateDoc, query, where, getDocs, Timestamp, serverTimestamp, getDoc } from "firebase/firestore";
-import { Attendance, Leave } from "@/types";
+import { Attendance, Leave, Department, LeaveType, WorkLocation } from "@/types";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { format } from "date-fns";
+import { FirestoreDepartmentPolicy, getDateFromTimestamp } from "@/types/firebase-types";
 
 interface CheckInParams {
   workLocation: "office" | "off-site";
@@ -33,13 +34,14 @@ export function useAttendance() {
   const { toast } = useToast();
 
   // Get user's department
-  const getUserDepartment = async (): Promise<string | null> => {
+  const getUserDepartment = async (): Promise<Department | null> => {
     if (!currentUser) return null;
 
     try {
       const userDoc = await getDoc(doc(firestore, "users", currentUser.uid));
       if (userDoc.exists()) {
-        return userDoc.data().department || null;
+        const department = userDoc.data().department;
+        return department as Department || null;
       }
       return null;
     } catch (error) {
@@ -49,7 +51,7 @@ export function useAttendance() {
   };
 
   // Get department policy based on the user's department
-  const getDepartmentPolicy = async () => {
+  const getDepartmentPolicy = async (): Promise<FirestoreDepartmentPolicy | null> => {
     const department = await getUserDepartment();
     if (!department) return null;
 
@@ -65,7 +67,7 @@ export function useAttendance() {
       return {
         id: querySnapshot.docs[0].id,
         ...querySnapshot.docs[0].data()
-      };
+      } as FirestoreDepartmentPolicy;
     } catch (error) {
       console.error("Error fetching department policy:", error);
       return null;
@@ -349,7 +351,7 @@ export function useAttendance() {
   };
 
   // Check if user has exceeded monthly leave/permission limits
-  const checkLeaveEligibility = async (leaveType: string): Promise<{eligible: boolean, reason?: string}> => {
+  const checkLeaveEligibility = async (leaveType: LeaveType): Promise<{eligible: boolean, reason?: string}> => {
     try {
       const currentMonth = new Date().getMonth();
       const currentYear = new Date().getFullYear();
@@ -362,7 +364,9 @@ export function useAttendance() {
       
       // Filter leaves by current month and approved status
       const monthlyLeaves = leaveHistory.filter(leave => {
-        const leaveDate = leave.startDate.toDate ? leave.startDate.toDate() : new Date(leave.startDate);
+        const leaveDate = getDateFromTimestamp(leave.startDate);
+        if (!leaveDate) return false;
+        
         return leaveDate.getMonth() === currentMonth && 
                leaveDate.getFullYear() === currentYear && 
                leave.status === "approved" &&
@@ -373,10 +377,13 @@ export function useAttendance() {
         // Calculate total permission hours used this month
         let hoursUsed = 0;
         monthlyLeaves.forEach(leave => {
-          const startDate = leave.startDate.toDate ? leave.startDate.toDate() : new Date(leave.startDate);
-          const endDate = leave.endDate.toDate ? leave.endDate.toDate() : new Date(leave.endDate);
-          const diffHours = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60);
-          hoursUsed += diffHours;
+          const startDate = getDateFromTimestamp(leave.startDate);
+          const endDate = getDateFromTimestamp(leave.endDate);
+          
+          if (startDate && endDate) {
+            const diffHours = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60);
+            hoursUsed += diffHours;
+          }
         });
         
         if (hoursUsed >= policy.maxMonthlyPermissionHours) {
@@ -472,10 +479,23 @@ export function useAttendance() {
       // Get all attendance records
       const records = attendanceRecords || await refetchAttendance().then(res => res.data || []);
       
+      if (!records || records.length === 0) {
+        return {
+          totalDays: new Date(targetYear, targetMonth + 1, 0).getDate(),
+          presentDays: 0,
+          lateCheckIns: 0,
+          overtime: 0,
+          leaves: 0,
+          month: format(new Date(targetYear, targetMonth, 1), 'MMMM yyyy')
+        };
+      }
+      
       // Filter for the target month
       const monthlyRecords = records.filter(record => {
-        const recordDate = record.date.toDate ? record.date.toDate() : new Date(record.date);
-        return recordDate.getMonth() === targetMonth && recordDate.getFullYear() === targetYear;
+        const recordDate = getDateFromTimestamp(record.date);
+        return recordDate && 
+               recordDate.getMonth() === targetMonth && 
+               recordDate.getFullYear() === targetYear;
       });
       
       // Calculate statistics
@@ -487,8 +507,9 @@ export function useAttendance() {
       // Get leaves for the month
       const leaves = await getLeaveHistory();
       const monthlyLeaves = leaves.filter(leave => {
-        const leaveDate = leave.startDate.toDate ? leave.startDate.toDate() : new Date(leave.startDate);
-        return leaveDate.getMonth() === targetMonth && 
+        const leaveDate = getDateFromTimestamp(leave.startDate);
+        return leaveDate && 
+               leaveDate.getMonth() === targetMonth && 
                leaveDate.getFullYear() === targetYear && 
                leave.status === "approved";
       });

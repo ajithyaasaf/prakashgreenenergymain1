@@ -1,11 +1,9 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { DepartmentPolicy } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-
-// Define the department type to match schema
-type Department = "Sales" | "Marketing" | "CRE" | "Accounts" | "HR" | "Technical";
+import { DepartmentPolicy } from "@/types/department-policy";
+import { Department } from "@/types";
 
 export function useDepartmentPolicies() {
   const { toast } = useToast();
@@ -33,12 +31,12 @@ export function useDepartmentPolicies() {
       setLoading(true);
       try {
         if (data.id) {
-          return await apiRequest<DepartmentPolicy>(`/api/department-policies/${data.id}`, {
+          return await apiRequest(`/api/department-policies/${data.id}`, {
             method: "PATCH",
             body: JSON.stringify(data),
           });
         } else {
-          return await apiRequest<DepartmentPolicy>("/api/department-policies", {
+          return await apiRequest("/api/department-policies", {
             method: "POST",
             body: JSON.stringify(data),
           });
