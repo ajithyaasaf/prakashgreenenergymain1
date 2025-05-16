@@ -110,9 +110,9 @@ export type WorkLocation = 'office' | 'off-site';
 export interface Attendance {
   id: string;
   userId: string;
-  date: string | { toDate(): Date };
-  checkInTime: string | { toDate(): Date };
-  checkOutTime?: string | { toDate(): Date };
+  date: import('@/types/firebase-types').DateValue;
+  checkInTime: import('@/types/firebase-types').DateValue;
+  checkOutTime?: import('@/types/firebase-types').DateValue;
   workLocation?: WorkLocation;
   locationDetails?: string;
   offSiteReason?: string;
@@ -134,15 +134,15 @@ export interface Leave {
   id: string;
   userId: string;
   leaveType: LeaveType;
-  startDate: string | { toDate(): Date };
-  endDate: string | { toDate(): Date };
+  startDate: import('@/types/firebase-types').DateValue;
+  endDate: import('@/types/firebase-types').DateValue;
   reason?: string;
   status: LeaveStatus;
   approvedBy?: string;
   approverNotes?: string;
   escalatedTo?: string;
-  createdAt: string | { toDate(): Date };
-  updatedAt: string | { toDate(): Date };
+  createdAt: import('@/types/firebase-types').DateValue;
+  updatedAt: import('@/types/firebase-types').DateValue;
 }
 
 // Working hours types
