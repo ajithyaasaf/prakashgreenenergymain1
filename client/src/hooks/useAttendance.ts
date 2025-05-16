@@ -146,6 +146,19 @@ export function useAttendance() {
   // Check in with location information
   const checkIn = async (params: CheckInParams) => {
     if (!currentUser) return;
+    
+    // Ensure params is defined with default values if necessary
+    if (!params) {
+      toast({
+        title: "Error",
+        description: "Check-in parameters are missing",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Default to office if workLocation is not provided
+    const workLocation = params.workLocation || "office";
 
     try {
       setLoading(true);
@@ -166,7 +179,7 @@ export function useAttendance() {
       const policy = await getDepartmentPolicy();
       
       // Validate off-site work for departments that don't allow it
-      if (params.workLocation === "off-site" && 
+      if (workLocation === "off-site" && 
           department && 
           policy && 
           !policy.allowsOffSiteWork &&
@@ -180,7 +193,7 @@ export function useAttendance() {
       }
       
       // Validate required fields for Sales and Marketing off-site work
-      if (params.workLocation === "off-site" && 
+      if (workLocation === "off-site" && 
           ["Sales", "Marketing"].includes(department || "") && 
           (!params.locationDetails || !params.offSiteReason || !params.customerDetails)) {
         toast({
@@ -205,7 +218,7 @@ export function useAttendance() {
         userId: currentUser.uid,
         date: Timestamp.fromDate(new Date(now.getFullYear(), now.getMonth(), now.getDate())),
         checkInTime: serverTimestamp(),
-        workLocation: params.workLocation,
+        workLocation: workLocation, // Use our safe variable
         locationDetails: params.locationDetails || null,
         offSiteReason: params.offSiteReason || null,
         customerDetails: params.customerDetails || null,
