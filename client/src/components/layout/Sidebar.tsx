@@ -104,7 +104,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
 
   return (
     <aside 
-      className={`z-20 fixed inset-y-0 left-0 w-64 bg-white dark:bg-slate-800 shadow-lg transform transition-transform duration-300 lg:translate-x-0 ${
+      className={`z-30 fixed inset-y-0 left-0 w-[85%] max-w-[280px] sm:w-64 bg-white dark:bg-slate-800 shadow-lg transform transition-transform duration-300 lg:translate-x-0 ${
         open ? "translate-x-0" : "-translate-x-full"
       } lg:static lg:inset-0`}
     >

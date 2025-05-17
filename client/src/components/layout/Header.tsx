@@ -34,23 +34,25 @@ export default function Header({ toggleSidebar }: HeaderProps) {
 
   return (
     <header className="bg-white dark:bg-slate-800 shadow-sm z-10">
-      <div className="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Sidebar Toggle Button - Mobile Only */}
-        <button 
-          onClick={toggleSidebar}
-          className="lg:hidden text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white"
-        >
-          <i className="ri-menu-line text-2xl"></i>
-        </button>
+      <div className="px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        {/* Left Section - Sidebar Toggle on Mobile, Page Title on Desktop */}
+        <div className="flex items-center">
+          <button 
+            onClick={toggleSidebar}
+            className="lg:hidden text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white mr-2"
+          >
+            <i className="ri-menu-line text-xl"></i>
+          </button>
+          
+          {/* Page Title - Mobile shows smaller version */}
+          <h1 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-white">
+            {getPageTitle()}
+          </h1>
+        </div>
         
-        {/* Page Title - Desktop Only */}
-        <h1 className="text-xl font-semibold text-slate-800 dark:text-white hidden lg:block">
-          {getPageTitle()}
-        </h1>
-        
-        {/* Search, Dark Mode, and Profile Actions */}
-        <div className="flex items-center space-x-4">
-          {/* Search Input */}
+        {/* Right Section - Actions */}
+        <div className="flex items-center space-x-2 sm:space-x-4">
+          {/* Search Input - Hidden on mobile */}
           <div className="hidden md:block">
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -59,7 +61,7 @@ export default function Header({ toggleSidebar }: HeaderProps) {
               <input 
                 type="text" 
                 placeholder="Search..." 
-                className="form-input pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-700 border-0 rounded-lg text-sm w-64 focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-slate-600"
+                className="form-input pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-700 border-0 rounded-lg text-sm w-48 lg:w-64 focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-slate-600"
               />
             </div>
           </div>
@@ -67,24 +69,24 @@ export default function Header({ toggleSidebar }: HeaderProps) {
           {/* Dark Mode Toggle */}
           <button 
             onClick={toggleTheme}
-            className="h-9 w-9 rounded-lg flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700"
+            className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700"
           >
             {theme === "dark" ? (
-              <i className="ri-sun-line text-xl text-slate-300"></i>
+              <i className="ri-sun-line text-lg sm:text-xl text-slate-300"></i>
             ) : (
-              <i className="ri-moon-line text-xl text-slate-600"></i>
+              <i className="ri-moon-line text-lg sm:text-xl text-slate-600"></i>
             )}
           </button>
           
-          {/* Notifications */}
-          <button className="h-9 w-9 rounded-lg flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 relative">
-            <i className="ri-notification-3-line text-xl text-slate-600 dark:text-slate-300"></i>
+          {/* Notifications - Smaller on mobile */}
+          <button className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 relative">
+            <i className="ri-notification-3-line text-lg sm:text-xl text-slate-600 dark:text-slate-300"></i>
             <span className="absolute top-1 right-1.5 w-2 h-2 bg-danger-500 rounded-full"></span>
           </button>
           
-          {/* Help */}
-          <button className="h-9 w-9 rounded-lg flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700">
-            <i className="ri-question-line text-xl text-slate-600 dark:text-slate-300"></i>
+          {/* Help - Hidden on small mobile */}
+          <button className="hidden xs:flex h-8 w-8 sm:h-9 sm:w-9 rounded-lg items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700">
+            <i className="ri-question-line text-lg sm:text-xl text-slate-600 dark:text-slate-300"></i>
           </button>
         </div>
       </div>
