@@ -727,7 +727,7 @@ export default function InvoicesPage() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="">None</SelectItem>
+                            <SelectItem value="none">None</SelectItem>
                             {quotations.map((quotation) => (
                               <SelectItem key={quotation.id} value={quotation.id}>
                                 {quotation.quotationNumber} - {quotation.customer?.name}
@@ -1065,8 +1065,8 @@ export default function InvoicesPage() {
                       <div className="flex flex-col gap-2">
                         <Button 
                           onClick={() => updateInvoiceStatus(currentInvoice.id, "paid")}
-                          className="justify-start"
-                          variant="default" className="bg-green-500 hover:bg-green-600 text-white"
+                          className="justify-start bg-green-500 hover:bg-green-600 text-white"
+                          variant="default"
                         >
                           <i className="ri-check-line mr-2"></i>
                           Mark as Paid
@@ -1086,8 +1086,8 @@ export default function InvoicesPage() {
                       <div className="flex flex-col gap-2">
                         <Button 
                           onClick={() => updateInvoiceStatus(currentInvoice.id, "paid")}
-                          className="justify-start"
-                          variant="default" className="bg-green-500 hover:bg-green-600 text-white"
+                          className="justify-start bg-green-500 hover:bg-green-600 text-white"
+                          variant="default"
                         >
                           <i className="ri-check-line mr-2"></i>
                           Mark as Paid
