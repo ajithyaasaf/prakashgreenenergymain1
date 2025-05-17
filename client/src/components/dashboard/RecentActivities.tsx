@@ -22,7 +22,7 @@ export default function RecentActivities({ activities, loading = false }: Recent
       <div className="bg-white dark:bg-black/20 rounded-xl shadow-sm">
         <div className="p-6 border-b border-primary/10 dark:border-secondary/20">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-secondary dark:text-primary">Recent Activities</h3>
+            <h3 className="font-semibold text-black dark:text-primary">Recent Activities</h3>
             <div className="flex space-x-2">
               <div className="h-4 w-16 bg-primary/10 dark:bg-secondary/20 rounded animate-pulse"></div>
             </div>
@@ -51,13 +51,13 @@ export default function RecentActivities({ activities, loading = false }: Recent
       <div className="bg-white dark:bg-black/20 rounded-xl shadow-sm">
         <div className="p-6 border-b border-primary/10 dark:border-secondary/20">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-secondary dark:text-primary">Recent Activities</h3>
+            <h3 className="font-semibold text-black dark:text-primary">Recent Activities</h3>
           </div>
         </div>
         <div className="p-6 text-center">
           <div className="py-6">
             <i className="ri-calendar-event-line text-4xl text-primary/30 dark:text-secondary/30 mb-2"></i>
-            <p className="text-secondary/70 dark:text-primary/70">No recent activities found</p>
+            <p className="text-black/70 dark:text-primary/70">No recent activities found</p>
           </div>
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function RecentActivities({ activities, loading = false }: Recent
     <div className="bg-white dark:bg-black/20 rounded-xl shadow-sm">
       <div className="p-6 border-b border-primary/10 dark:border-secondary/20">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-secondary dark:text-primary">Recent Activities</h3>
+          <h3 className="font-semibold text-black dark:text-primary">Recent Activities</h3>
           <div className="flex space-x-2">
             <button className="text-sm text-primary hover:text-primary/80 dark:hover:text-primary/90">
               View All
@@ -85,7 +85,7 @@ export default function RecentActivities({ activities, loading = false }: Recent
                 <i className={`ri-${activity.icon}`}></i>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-secondary dark:text-primary font-medium">
+                <p className="text-sm text-black dark:text-primary font-medium">
                   {activity.title}
                 </p>
                 <div className="flex items-center mt-1">
