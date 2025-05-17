@@ -392,12 +392,12 @@ export default function QuotationsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Quotations</h1>
-          <p className="text-slate-500 dark:text-slate-400">Create and manage customer quotations</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">Quotations</h1>
+          <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400">Create and manage customer quotations</p>
         </div>
-        <Button onClick={openAddDialog}>
+        <Button onClick={openAddDialog} className="w-full sm:w-auto justify-center">
           <i className="ri-file-list-3-line mr-2"></i>
           Create Quotation
         </Button>
@@ -405,11 +405,11 @@ export default function QuotationsPage() {
 
       <Card>
         <CardHeader className="pb-3">
-          <div className="flex flex-col md:flex-row justify-between gap-4">
-            <CardTitle>Quotation List</CardTitle>
-            <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4">
+            <CardTitle className="text-lg sm:text-xl">Quotation List</CardTitle>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
-                <SelectTrigger className="w-[160px]">
+                <SelectTrigger className="w-full sm:w-[160px]">
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -421,7 +421,7 @@ export default function QuotationsPage() {
                   <SelectItem value="invoiced">Invoiced</SelectItem>
                 </SelectContent>
               </Select>
-              <div className="relative">
+              <div className="relative flex-1">
                 <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                 <Input
                   type="search"
@@ -443,8 +443,8 @@ export default function QuotationsPage() {
               ))}
             </div>
           ) : filteredQuotations.length > 0 ? (
-            <div className="overflow-x-auto -mx-6 px-6">
-              <Table className="min-w-full">
+            <div className="overflow-x-auto">
+              <Table className="w-full">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="whitespace-nowrap">Quotation #</TableHead>
@@ -452,7 +452,7 @@ export default function QuotationsPage() {
                     <TableHead className="hidden md:table-cell">Date</TableHead>
                     <TableHead>Amount</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead className="text-right">View</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -511,16 +511,16 @@ export default function QuotationsPage() {
 
       {/* Create Quotation Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Create New Quotation</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-lg sm:text-xl">Create New Quotation</DialogTitle>
+            <DialogDescription className="text-sm">
               Create a quotation by selecting a customer and adding products.
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmitQuotation)} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <form onSubmit={form.handleSubmit(onSubmitQuotation)} className="space-y-3 sm:space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <FormField
                   control={form.control}
                   name="customerId"
