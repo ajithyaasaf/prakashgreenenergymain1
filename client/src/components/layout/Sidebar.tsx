@@ -130,7 +130,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
             className={`flex items-center px-3 py-2.5 rounded-lg ${
               isActive("/dashboard")
                 ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
-                : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                : "text-black hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
             onMouseEnter={prefetchDashboard}
             onFocus={prefetchDashboard}
@@ -145,7 +145,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
             className={`flex items-center px-3 py-2.5 rounded-lg ${
               isActive("/customers")
                 ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
-                : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                : "text-black hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
             onMouseEnter={prefetchCustomers}
             onFocus={prefetchCustomers}
@@ -161,7 +161,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
               className={`flex items-center px-3 py-2.5 rounded-lg ${
                 isActive("/products")
                   ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
-                  : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                  : "text-black hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
               }`}
               onMouseEnter={prefetchProducts}
               onFocus={prefetchProducts}
@@ -177,7 +177,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
             className={`flex items-center px-3 py-2.5 rounded-lg ${
               isActive("/quotations")
                 ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
-                : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                : "text-black hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
             onMouseEnter={prefetchQuotations}
             onFocus={prefetchQuotations}
@@ -192,7 +192,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
             className={`flex items-center px-3 py-2.5 rounded-lg ${
               isActive("/invoices")
                 ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
-                : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                : "text-black hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
             onMouseEnter={prefetchInvoices}
             onFocus={prefetchInvoices}
@@ -203,7 +203,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
           
           {/* Attendance Links */}
           <div className="pt-2 pb-1">
-            <p className="px-3 text-xs font-medium text-secondary/80 uppercase dark:text-primary/80">Attendance</p>
+            <p className="px-3 text-xs font-medium text-black uppercase dark:text-primary/80">Attendance</p>
           </div>
           
           <Link 
@@ -211,7 +211,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
             className={`flex items-center px-3 py-2.5 rounded-lg ${
               isActive("/attendance")
                 ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
-                : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                : "text-black hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
             onMouseEnter={prefetchAttendance}
             onFocus={prefetchAttendance}
