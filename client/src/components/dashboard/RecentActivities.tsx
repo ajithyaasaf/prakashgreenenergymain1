@@ -89,14 +89,14 @@ export default function RecentActivities({ activities, loading = false }: Recent
                   {activity.title}
                 </p>
                 <div className="flex items-center mt-1">
-                  <span className="text-xs text-secondary/70 dark:text-primary/70">
+                  <span className="text-xs text-black/70 dark:text-primary/70">
                     <i className="ri-time-line mr-1"></i> {formatRelativeTime(activity.time)}
                   </span>
                   {activity.user && (
                     <>
                       <span className="mx-2 text-primary/20 dark:text-secondary/20">•</span>
-                      <span className="text-xs text-secondary/70 dark:text-primary/70">
-                        by <span className="font-medium text-secondary dark:text-primary">{activity.user}</span>
+                      <span className="text-xs text-black/70 dark:text-primary/70">
+                        by <span className="font-medium text-black dark:text-primary">{activity.user}</span>
                       </span>
                     </>
                   )}
