@@ -601,40 +601,39 @@ export default function InvoicesPage() {
             </div>
           ) : filteredInvoices.length > 0 ? (
             <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Invoice #</TableHead>
-                      <TableHead className="hidden sm:table-cell">Customer</TableHead>
-                      <TableHead className="hidden md:table-cell">Date</TableHead>
-                      <TableHead className="hidden lg:table-cell">Due Date</TableHead>
-                      <TableHead>Amount</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">View</TableHead>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Invoice #</TableHead>
+                    <TableHead className="hidden sm:table-cell">Customer</TableHead>
+                    <TableHead className="hidden md:table-cell">Date</TableHead>
+                    <TableHead className="hidden lg:table-cell">Due Date</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">View</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredInvoices.map((invoice) => (
+                    <TableRow key={invoice.id} className="cursor-pointer" onClick={() => viewInvoice(invoice)}>
+                      <TableCell className="font-medium">
+                        <div>{invoice.invoiceNumber}</div>
+                        <div className="text-xs text-slate-500 sm:hidden">{invoice.customer?.name || "Unknown"}</div>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">{invoice.customer?.name || "Unknown Customer"}</TableCell>
+                      <TableCell className="hidden md:table-cell">{formatDate(invoice.createdAt)}</TableCell>
+                      <TableCell className="hidden lg:table-cell">{invoice.dueDate ? formatDate(invoice.dueDate) : "-"}</TableCell>
+                      <TableCell>{formatCurrency(invoice.total)}</TableCell>
+                      <TableCell>{getStatusBadge(invoice.status)}</TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <i className="ri-eye-line"></i>
+                        </Button>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredInvoices.map((invoice) => (
-                      <TableRow key={invoice.id} className="cursor-pointer" onClick={() => viewInvoice(invoice)}>
-                        <TableCell className="font-medium">
-                          <div>{invoice.invoiceNumber}</div>
-                          <div className="text-xs text-slate-500 sm:hidden">{invoice.customer?.name || "Unknown"}</div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">{invoice.customer?.name || "Unknown Customer"}</TableCell>
-                        <TableCell className="hidden md:table-cell">{formatDate(invoice.createdAt)}</TableCell>
-                        <TableCell className="hidden lg:table-cell">{invoice.dueDate ? formatDate(invoice.dueDate) : "-"}</TableCell>
-                        <TableCell>{formatCurrency(invoice.total)}</TableCell>
-                        <TableCell>{getStatusBadge(invoice.status)}</TableCell>
-                        <TableCell className="text-right">
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                            <i className="ri-eye-line"></i>
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           ) : (
             <div className="text-center py-12">
