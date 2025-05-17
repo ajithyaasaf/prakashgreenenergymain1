@@ -112,6 +112,16 @@ export default function AttendanceCalendarView({
 
   // Custom day renderer for the calendar
   const renderDay = (day: Date) => {
+    // Validate the day parameter is a valid date
+    if (!day || !(day instanceof Date) || isNaN(day.getTime())) {
+      // Return a simple fallback for invalid dates
+      return (
+        <div className="relative h-9 w-9 p-0 font-normal aria-selected:opacity-100">
+          <span className="mb-1">-</span>
+        </div>
+      );
+    }
+    
     const { hasAttendance, hasLeave, hasOvertime, isLate, isWeekendDay } = getDayStatus(day);
 
     // Style based on status
