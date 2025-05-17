@@ -225,7 +225,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
             className={`flex items-center px-3 py-2.5 rounded-lg ${
               isActive("/attendance/calendar")
                 ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
-                : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                : "text-black hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
           >
             <TbCalendarTime className="mr-3 text-lg" />
@@ -240,7 +240,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 className={`flex items-center px-3 py-2.5 rounded-lg ${
                   isActive("/attendance-admin")
                     ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
-                    : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                    : "text-black hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
                 }`}
               >
                 <TbCalendarTime className="mr-3 text-lg" />
@@ -253,7 +253,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                   className={`flex items-center px-3 py-2.5 rounded-lg ${
                     isActive("/department-policies")
                       ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
-                      : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                      : "text-black hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
                   }`}
                 >
                   <TbSettings className="mr-3 text-lg" />
@@ -265,7 +265,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
           
           {/* Analytics Section */}
           <div className="pt-2 pb-1">
-            <p className="px-3 text-xs font-medium text-secondary/80 uppercase dark:text-primary/80">Analytics</p>
+            <p className="px-3 text-xs font-medium text-black uppercase dark:text-primary/80">Analytics</p>
           </div>
           
           {/* Attendance Overview - Admin and Master Admin */}
@@ -275,7 +275,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
               className={`flex items-center px-3 py-2.5 rounded-lg ${
                 isActive("/analytics/attendance-overview")
                   ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
-                  : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                  : "text-black hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
               }`}
             >
               <TbChartBar className="mr-3 text-lg" />
@@ -289,7 +289,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
             className={`flex items-center px-3 py-2.5 rounded-lg ${
               isActive("/analytics/personal-attendance")
                 ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
-                : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                : "text-black hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
             }`}
           >
             <TbChartPie className="mr-3 text-lg" />
@@ -300,7 +300,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
           {isMasterAdmin && (
             <>
               <div className="pt-2 pb-1">
-                <p className="px-3 text-xs font-medium text-secondary/80 uppercase dark:text-primary/80">Administration</p>
+                <p className="px-3 text-xs font-medium text-black uppercase dark:text-primary/80">Administration</p>
               </div>
               
               {/* User Management - Master Admin only */}
@@ -309,7 +309,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 className={`flex items-center px-3 py-2.5 rounded-lg ${
                   isActive("/user-management")
                     ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
-                    : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                    : "text-black hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
                 }`}
               >
                 <TbUserCog className="mr-3 text-lg" />
@@ -322,7 +322,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 className={`flex items-center px-3 py-2.5 rounded-lg ${
                   isActive("/attendance-settings")
                     ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary"
-                    : "text-secondary hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
+                    : "text-black hover:bg-primary/5 dark:text-primary/70 dark:hover:bg-secondary/10"
                 }`}
               >
                 <TbSettings className="mr-3 text-lg" />
