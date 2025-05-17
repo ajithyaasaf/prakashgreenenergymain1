@@ -530,16 +530,16 @@ export default function AttendancePage() {
       
       {/* Request Leave Dialog */}
       <Dialog open={isRequestLeaveOpen} onOpenChange={setIsRequestLeaveOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="max-w-[95vw] sm:max-w-md overflow-y-auto max-h-[90vh]">
           <DialogHeader>
-            <DialogTitle>Request Leave</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-lg sm:text-xl">Request Leave</DialogTitle>
+            <DialogDescription className="text-sm">
               Submit a leave request for approval by your manager.
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmitLeave)} className="space-y-6">
-              <div className="grid grid-cols-1 gap-4">
+            <form onSubmit={form.handleSubmit(onSubmitLeave)} className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 gap-3 sm:gap-4">
                 <FormField
                   control={form.control}
                   name="type"
@@ -551,7 +551,7 @@ export default function AttendancePage() {
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select leave type" />
                           </SelectTrigger>
                         </FormControl>
@@ -566,7 +566,7 @@ export default function AttendancePage() {
                   )}
                 />
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <FormField
                     control={form.control}
                     name="startDate"
@@ -578,7 +578,7 @@ export default function AttendancePage() {
                           selected={field.value}
                           onSelect={field.onChange}
                           disabled={disabledDays}
-                          className="rounded-md border"
+                          className="rounded-md border mx-auto w-full max-w-[300px]"
                         />
                         <FormMessage />
                       </FormItem>
@@ -596,7 +596,7 @@ export default function AttendancePage() {
                           selected={field.value}
                           onSelect={field.onChange}
                           disabled={disabledDays}
-                          className="rounded-md border"
+                          className="rounded-md border mx-auto w-full max-w-[300px]"
                         />
                         <FormMessage />
                       </FormItem>
@@ -613,7 +613,7 @@ export default function AttendancePage() {
                       <FormControl>
                         <Textarea
                           placeholder="Please provide a reason for your leave request"
-                          className="resize-none min-h-[100px]"
+                          className="resize-none min-h-[80px] sm:min-h-[100px]"
                           {...field}
                         />
                       </FormControl>
@@ -623,11 +623,21 @@ export default function AttendancePage() {
                 />
               </div>
               
-              <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setIsRequestLeaveOpen(false)}>
+              <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setIsRequestLeaveOpen(false)}
+                  className="w-full sm:w-auto order-2 sm:order-1"
+                >
                   Cancel
                 </Button>
-                <Button type="submit">Submit Request</Button>
+                <Button 
+                  type="submit"
+                  className="w-full sm:w-auto order-1 sm:order-2"
+                >
+                  Submit Request
+                </Button>
               </DialogFooter>
             </form>
           </Form>
