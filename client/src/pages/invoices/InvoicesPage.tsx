@@ -549,12 +549,12 @@ export default function InvoicesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Invoices</h1>
-          <p className="text-slate-500 dark:text-slate-400">Create and manage customer invoices</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">Invoices</h1>
+          <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400">Create and manage customer invoices</p>
         </div>
-        <Button onClick={openAddDialog}>
+        <Button onClick={openAddDialog} className="w-full sm:w-auto justify-center">
           <i className="ri-bill-line mr-2"></i>
           Create Invoice
         </Button>
@@ -562,11 +562,11 @@ export default function InvoicesPage() {
 
       <Card>
         <CardHeader className="pb-3">
-          <div className="flex flex-col md:flex-row justify-between gap-4">
-            <CardTitle>Invoice List</CardTitle>
-            <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4">
+            <CardTitle className="text-lg sm:text-xl">Invoice List</CardTitle>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
-                <SelectTrigger className="w-[160px]">
+                <SelectTrigger className="w-full sm:w-[160px]">
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -578,7 +578,7 @@ export default function InvoicesPage() {
                   <SelectItem value="cancelled">Cancelled</SelectItem>
                 </SelectContent>
               </Select>
-              <div className="relative">
+              <div className="relative flex-1">
                 <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                 <Input
                   type="search"
@@ -601,36 +601,40 @@ export default function InvoicesPage() {
             </div>
           ) : filteredInvoices.length > 0 ? (
             <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Invoice #</TableHead>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Due Date</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredInvoices.map((invoice) => (
-                    <TableRow key={invoice.id} className="cursor-pointer" onClick={() => viewInvoice(invoice)}>
-                      <TableCell className="font-medium">{invoice.invoiceNumber}</TableCell>
-                      <TableCell>{invoice.customer?.name || "Unknown Customer"}</TableCell>
-                      <TableCell>{formatDate(invoice.createdAt)}</TableCell>
-                      <TableCell>{invoice.dueDate ? formatDate(invoice.dueDate) : "-"}</TableCell>
-                      <TableCell>{formatCurrency(invoice.total)}</TableCell>
-                      <TableCell>{getStatusBadge(invoice.status)}</TableCell>
-                      <TableCell className="text-right">
-                        <Button variant="ghost" size="sm">
-                          <i className="ri-eye-line"></i>
-                        </Button>
-                      </TableCell>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Invoice #</TableHead>
+                      <TableHead className="hidden sm:table-cell">Customer</TableHead>
+                      <TableHead className="hidden md:table-cell">Date</TableHead>
+                      <TableHead className="hidden lg:table-cell">Due Date</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">View</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredInvoices.map((invoice) => (
+                      <TableRow key={invoice.id} className="cursor-pointer" onClick={() => viewInvoice(invoice)}>
+                        <TableCell className="font-medium">
+                          <div>{invoice.invoiceNumber}</div>
+                          <div className="text-xs text-slate-500 sm:hidden">{invoice.customer?.name || "Unknown"}</div>
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">{invoice.customer?.name || "Unknown Customer"}</TableCell>
+                        <TableCell className="hidden md:table-cell">{formatDate(invoice.createdAt)}</TableCell>
+                        <TableCell className="hidden lg:table-cell">{invoice.dueDate ? formatDate(invoice.dueDate) : "-"}</TableCell>
+                        <TableCell>{formatCurrency(invoice.total)}</TableCell>
+                        <TableCell>{getStatusBadge(invoice.status)}</TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <i className="ri-eye-line"></i>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </div>
           ) : (
             <div className="text-center py-12">
@@ -656,18 +660,18 @@ export default function InvoicesPage() {
 
       {/* Create Invoice Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="sm:max-w-3xl">
+        <DialogContent className="max-w-[95vw] sm:max-w-3xl overflow-y-auto max-h-[90vh]">
           <DialogHeader>
-            <DialogTitle>Create New Invoice</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-lg sm:text-xl">Create New Invoice</DialogTitle>
+            <DialogDescription className="text-sm">
               {isFromQuotation 
                 ? "Creating invoice from approved quotation." 
                 : "Create an invoice by selecting a customer and adding products."}
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmitInvoice)} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={form.handleSubmit(onSubmitInvoice)} className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 {!isFromQuotation && (
                   <FormField
                     control={form.control}
