@@ -14,8 +14,8 @@ import { format, isSameDay, isWeekend, getDate, addMonths, subMonths } from "dat
 import { getDateFromTimestamp } from "@/types/firebase-types";
 import { TbArrowLeft, TbArrowRight, TbCircleCheck, TbAlarm, TbClock, TbClockOff, TbMapPin, TbCalendarOff } from "react-icons/tb";
 
-// Import types from shared schema
-import { Attendance, Leave } from "@/shared/schema";
+// Import types 
+import { Attendance, Leave } from "@/types";
 
 // Interface for the component props
 interface AttendanceCalendarProps {
@@ -111,7 +111,8 @@ export default function AttendanceCalendarView({
   };
 
   // Custom day renderer for the calendar
-  const renderDay = (day: Date) => {
+  const renderDay = (props: any) => {
+    const day = props.date;
     // Validate the day parameter is a valid date
     if (!day || !(day instanceof Date) || isNaN(day.getTime())) {
       // Return a simple fallback for invalid dates
@@ -215,7 +216,7 @@ export default function AttendanceCalendarView({
                   <span className="font-medium">Check-in:</span>{" "}
                   <span className="ml-1">
                     {dayDetails.attendance.checkInTime
-                      ? format(dayDetails.attendance.checkInTime.toDate(), 'h:mm a')
+                      ? format(getDateFromTimestamp(dayDetails.attendance.checkInTime) || new Date(), 'h:mm a')
                       : 'N/A'}
                   </span>
                   {dayDetails.attendance.isLate && (
@@ -231,7 +232,7 @@ export default function AttendanceCalendarView({
                     <span className="font-medium">Check-out:</span>{" "}
                     <span className="ml-1">
                       {dayDetails.attendance.checkOutTime
-                        ? format(new Date(dayDetails.attendance.checkOutTime), 'h:mm a')
+                        ? format(getDateFromTimestamp(dayDetails.attendance.checkOutTime) || new Date(), 'h:mm a')
                         : 'N/A'}
                     </span>
                     {dayDetails.attendance.isOvertime && (
