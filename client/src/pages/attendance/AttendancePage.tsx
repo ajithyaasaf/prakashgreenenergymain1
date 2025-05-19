@@ -256,7 +256,49 @@ export default function AttendancePage() {
     if (!currentUser) return;
     
     try {
-      await addDoc(collection(firestore, "leaves"), {
+      // Validate leave balances before submitting
+      if (data.type === "casual") {
+        // Calculate business days (excluding weekends) in the selected date range
+        let currentDate = new Date(data.startDate);
+        const endDate = new Date(data.endDate);
+        let businessDays = 0;
+        
+        while (currentDate <= endDate) {
+          // Skip weekends (0 = Sunday, 6 = Saturday)
+          const dayOfWeek = currentDate.getDay();
+          if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+            businessDays++;
+          }
+          // Move to next day
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+        
+        // Check if enough casual leave balance is available
+        if (remainingCasualLeaves !== null && businessDays > remainingCasualLeaves) {
+          toast({
+            title: "Insufficient Leave Balance",
+            description: `You only have ${remainingCasualLeaves} casual leaves remaining this month, but your request requires ${businessDays} days.`,
+            variant: "destructive",
+          });
+          return;
+        }
+      } 
+      else if (data.type === "permission") {
+        // For permission leave, check hours balance
+        const requestedHours = data.durationHours || 1;
+        
+        if (remainingPermissionHours !== null && requestedHours > remainingPermissionHours) {
+          toast({
+            title: "Insufficient Permission Hours",
+            description: `You only have ${remainingPermissionHours} permission hours remaining this month, but your request requires ${requestedHours} hours.`,
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+      
+      // Add appropriate fields based on leave type
+      const leaveData: any = {
         userId: currentUser.uid,
         startDate: Timestamp.fromDate(data.startDate),
         endDate: Timestamp.fromDate(data.endDate),
@@ -266,7 +308,15 @@ export default function AttendancePage() {
         approvedBy: null,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-      });
+      };
+      
+      // Add duration hours for permission leave
+      if (data.type === "permission" && data.durationHours) {
+        leaveData.durationHours = data.durationHours;
+      }
+      
+      // Submit the leave request
+      await addDoc(collection(firestore, "leaves"), leaveData);
       
       toast({
         title: "Leave Request Submitted",
@@ -276,6 +326,7 @@ export default function AttendancePage() {
       setIsRequestLeaveOpen(false);
       form.reset();
       fetchLeaveHistory();
+      fetchRemainingLeaveBalances(); // Refresh leave balances after submission
     } catch (error) {
       console.error("Error submitting leave request:", error);
       toast({
@@ -316,16 +367,19 @@ export default function AttendancePage() {
         return <Badge variant="destructive">Sick Leave</Badge>;
       case "casual":
         return <Badge variant="default">Casual Leave</Badge>;
-      case "personal":
-        return <Badge variant="outline">Personal Leave</Badge>;
+      case "permission":
+        return <Badge variant="warning">Permission</Badge>;
+      case "vacation":
+        return <Badge variant="secondary">Vacation</Badge>;
       default:
         return <Badge variant="outline">{type}</Badge>;
     }
   };
   
-  const disabledDays = {
-    before: new Date(),
-  };
+  // Define disabled dates for the calendar
+  const disabledDays = [
+    { before: new Date() }
+  ];
 
   return (
     <div className="space-y-6">

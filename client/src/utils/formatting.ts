@@ -20,26 +20,17 @@ export function formatLargeNumber(num: number): string {
   }
 }
 
+import { DateValue, getDateFromTimestamp } from '@/types/firebase-types';
+
 // Format date to DD MMM YYYY
-export function formatDate(date: Date | string): string {
+export function formatDate(date: DateValue | null | undefined): string {
   if (!date) return "N/A";
   
   try {
-    // Handle Firestore Timestamp objects which might come through as objects with seconds/nanoseconds
-    if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
-      // Convert Firestore Timestamp to Date
-      const timestamp = date as any;
-      const milliseconds = timestamp.seconds * 1000 + Math.floor(timestamp.nanoseconds / 1000000);
-      date = new Date(milliseconds);
-    } else if (typeof date === 'string') {
-      date = new Date(date);
-    }
+    // Use the getDateFromTimestamp utility to handle various date formats
+    const d = getDateFromTimestamp(date);
     
-    // Now date should be a proper Date object
-    const d = date as Date;
-    
-    // Check if the date is valid
-    if (isNaN(d.getTime())) {
+    if (!d) {
       return "Invalid date";
     }
     
@@ -55,25 +46,14 @@ export function formatDate(date: Date | string): string {
 }
 
 // Format date to full format (Monday, 05 Jun 2023)
-export function formatDateFull(date: Date | string): string {
+export function formatDateFull(date: DateValue | null | undefined): string {
   if (!date) return "N/A";
   
   try {
-    // Handle Firestore Timestamp objects which might come through as objects with seconds/nanoseconds
-    if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
-      // Convert Firestore Timestamp to Date
-      const timestamp = date as any;
-      const milliseconds = timestamp.seconds * 1000 + Math.floor(timestamp.nanoseconds / 1000000);
-      date = new Date(milliseconds);
-    } else if (typeof date === 'string') {
-      date = new Date(date);
-    }
+    // Use the getDateFromTimestamp utility to handle various date formats
+    const d = getDateFromTimestamp(date);
     
-    // Now date should be a proper Date object
-    const d = date as Date;
-    
-    // Check if the date is valid
-    if (isNaN(d.getTime())) {
+    if (!d) {
       return "Invalid date";
     }
     
@@ -90,25 +70,14 @@ export function formatDateFull(date: Date | string): string {
 }
 
 // Format time to HH:MM AM/PM
-export function formatTime(date: Date | string): string {
+export function formatTime(date: DateValue | null | undefined): string {
   if (!date) return "N/A";
   
   try {
-    // Handle Firestore Timestamp objects which might come through as objects with seconds/nanoseconds
-    if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
-      // Convert Firestore Timestamp to Date
-      const timestamp = date as any;
-      const milliseconds = timestamp.seconds * 1000 + Math.floor(timestamp.nanoseconds / 1000000);
-      date = new Date(milliseconds);
-    } else if (typeof date === 'string') {
-      date = new Date(date);
-    }
+    // Use the getDateFromTimestamp utility to handle various date formats
+    const d = getDateFromTimestamp(date);
     
-    // Now date should be a proper Date object
-    const d = date as Date;
-    
-    // Check if the date is valid
-    if (isNaN(d.getTime())) {
+    if (!d) {
       return "Invalid time";
     }
     
@@ -124,25 +93,14 @@ export function formatTime(date: Date | string): string {
 }
 
 // Format date to relative time (e.g., "2 hours ago", "Yesterday")
-export function formatRelativeTime(date: Date | string): string {
+export function formatRelativeTime(date: DateValue | null | undefined): string {
   if (!date) return "N/A";
   
   try {
-    // Handle Firestore Timestamp objects which might come through as objects with seconds/nanoseconds
-    if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
-      // Convert Firestore Timestamp to Date
-      const timestamp = date as any;
-      const milliseconds = timestamp.seconds * 1000 + Math.floor(timestamp.nanoseconds / 1000000);
-      date = new Date(milliseconds);
-    } else if (typeof date === 'string') {
-      date = new Date(date);
-    }
+    // Use the getDateFromTimestamp utility to handle various date formats
+    const d = getDateFromTimestamp(date);
     
-    // Now date should be a proper Date object
-    const d = date as Date;
-    
-    // Check if the date is valid
-    if (isNaN(d.getTime())) {
+    if (!d) {
       return "Invalid date";
     }
     

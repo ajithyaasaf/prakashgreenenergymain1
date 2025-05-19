@@ -134,10 +134,12 @@ export interface Leave {
   id: string;
   userId: string;
   leaveType: LeaveType;
+  type: LeaveType;  // Alias for compatibility
   startDate: import('@/types/firebase-types').DateValue;
   endDate: import('@/types/firebase-types').DateValue;
   reason?: string;
   status: LeaveStatus;
+  durationHours?: number;  // For permission leaves
   approvedBy?: string;
   approverNotes?: string;
   escalatedTo?: string;
