@@ -47,6 +47,7 @@ import {
   TbInfoCircle,
   TbBellRinging,
   TbArrowRight,
+  TbCalendarPlus,
 } from "react-icons/tb";
 
 export default function DashboardPage() {

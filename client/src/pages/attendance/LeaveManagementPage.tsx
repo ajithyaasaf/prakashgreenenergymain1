@@ -118,7 +118,23 @@ export default function LeaveManagementPage() {
       const userLeavesList: Leave[] = [];
       
       for (const doc of querySnapshot.docs) {
-        const data = doc.data();
+        const data = doc.data() as {
+          userId: string;
+          userName?: string;
+          userRole?: string;
+          department?: string;
+          leaveType: LeaveType;
+          startDate: Timestamp;
+          endDate: Timestamp;
+          reason: string;
+          status: LeaveStatus;
+          approvedBy?: string;
+          rejectedBy?: string;
+          escalatedTo?: ApprovalRole;
+          approvalNotes?: string;
+          createdAt: Timestamp;
+        };
+        
         userLeavesList.push({
           id: doc.id,
           userId: data.userId,
@@ -200,7 +216,23 @@ export default function LeaveManagementPage() {
       const leavesList: Leave[] = [];
       
       for (const doc of querySnapshot.docs) {
-        const data = doc.data();
+        const data = doc.data() as {
+          userId: string;
+          userName?: string;
+          userRole?: string;
+          department?: string;
+          leaveType: LeaveType;
+          startDate: Timestamp;
+          endDate: Timestamp;
+          reason: string;
+          status: LeaveStatus;
+          approvedBy?: string;
+          rejectedBy?: string;
+          escalatedTo?: ApprovalRole;
+          approvalNotes?: string;
+          createdAt: Timestamp;
+        };
+        
         leavesList.push({
           id: doc.id,
           userId: data.userId,

@@ -38,6 +38,9 @@ const AttendanceSettingsPage = lazy(() => import("@/pages/admin/AttendanceSettin
 const UserManagementPage = lazy(() => import("@/pages/admin/UserManagementPage"));
 const AttendanceCalendarPage = lazy(() => import("@/pages/attendance/AttendanceCalendarPage"));
 const DepartmentPoliciesPage = lazy(() => import("@/pages/admin/DepartmentPoliciesPage"));
+const LeaveManagementPage = lazy(() => import("@/pages/attendance/LeaveManagementPage"));
+const MainAttendancePage = lazy(() => import("@/pages/attendance/MainAttendancePage"));
+const DashboardAttendancePage = lazy(() => import("@/pages/attendance/DashboardPage"));
 
 // This function conditionally prefetches related data to make navigation feel faster
 function usePrefetchOnHover() {
@@ -163,6 +166,11 @@ export default function AppRoutes() {
       <Route path="/attendance-admin" component={() => <PrivateRoute component={AttendanceAdminPage} roles={['admin', 'master_admin']} />} />
       <Route path="/analytics/attendance-overview" component={() => <PrivateRoute component={AttendanceOverviewPage} roles={['admin', 'master_admin']} />} />
       <Route path="/attendance/calendar" component={() => <PrivateRoute component={AttendanceCalendarPage} />} />
+      
+      {/* New Attendance Pages */}
+      <Route path="/attendance/leaves" component={() => <PrivateRoute component={LeaveManagementPage} />} />
+      <Route path="/attendance/main" component={() => <PrivateRoute component={MainAttendancePage} />} />
+      <Route path="/attendance/dashboard" component={() => <PrivateRoute component={DashboardAttendancePage} />} />
       
       {/* Master Admin Routes */}
       <Route path="/attendance-settings" component={() => <PrivateRoute component={AttendanceSettingsPage} roles={['master_admin']} />} />
