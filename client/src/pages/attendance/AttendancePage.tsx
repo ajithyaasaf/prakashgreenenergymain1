@@ -4,6 +4,7 @@ import { useAttendance } from "@/hooks/useAttendance";
 import { useToast } from "@/hooks/use-toast";
 import { formatDate, formatTime, formatDateFull } from "@/utils/formatting";
 import { Attendance, Leave } from "@/types";
+import { FirestoreDepartmentPolicy, getDateFromTimestamp } from "@/types/firebase-types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -177,7 +178,11 @@ export default function AttendancePage() {
       
       // Sort in JavaScript instead of using orderBy in the query
       const sortedData = attendanceData
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .sort((a, b) => {
+          const dateA = getDateFromTimestamp(a.date);
+          const dateB = getDateFromTimestamp(b.date);
+          return dateB && dateA ? dateB.getTime() - dateA.getTime() : 0;
+        })
         .slice(0, 10); // Take only the first 10 after sorting
       
       setRecentAttendance(sortedData);
@@ -478,8 +483,9 @@ export default function AttendancePage() {
                         <div className="text-lg font-medium">
                           {todayAttendance && todayAttendance.checkOutTime 
                             ? (() => {
-                                const checkIn = new Date(todayAttendance.checkInTime);
-                                const checkOut = new Date(todayAttendance.checkOutTime || "");
+                                const checkIn = getDateFromTimestamp(todayAttendance.checkInTime);
+                                const checkOut = getDateFromTimestamp(todayAttendance.checkOutTime);
+                                if (!checkIn || !checkOut) return "-";
                                 const diffHours = Math.floor((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60));
                                 const diffMinutes = Math.floor(((checkOut.getTime() - checkIn.getTime()) % (1000 * 60 * 60)) / (1000 * 60));
                                 return `${diffHours}h ${diffMinutes}m`;
