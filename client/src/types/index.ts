@@ -140,9 +140,10 @@ export interface Leave {
   reason?: string;
   status: LeaveStatus;
   durationHours?: number;  // For permission leaves
-  approvedBy?: string;
+  approvedBy?: string | null;
   approverNotes?: string;
   escalatedTo?: string;
+  escalatedFrom?: string; // Track escalation path
   createdAt: import('@/types/firebase-types').DateValue;
   updatedAt: import('@/types/firebase-types').DateValue;
 }

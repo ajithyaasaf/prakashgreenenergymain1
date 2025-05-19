@@ -1,228 +1,119 @@
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { formatDate } from "@/utils/formatting";
+import { getDateFromTimestamp } from "@/types/firebase-types";
+import { Leave, LeaveType } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
 import { firestore } from "@/firebase/config";
-import { useAuth } from "@/hooks/useAuth";
-import { doc, getDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
-import { Leave, LeaveStatus, UserRole } from "@/types";
-import { getDateFromTimestamp } from "@/types/firebase-types";
-import { format, differenceInHours, differenceInDays } from "date-fns";
-import { TbCalendarCheck, TbUserCircle, TbCalendarStats, TbInfoCircle, TbArrowUp, TbCheck, TbX } from "react-icons/tb";
+import { doc, updateDoc, getDoc, serverTimestamp } from "firebase/firestore";
 
-// Schema for leave approval form
-const leaveApprovalSchema = z.object({
-  action: z.enum(["approve", "reject", "escalate"]),
-  approverNotes: z.string().optional(),
-  escalateTo: z.string().optional(),
-});
-
-type LeaveApprovalFormValues = z.infer<typeof leaveApprovalSchema>;
+// Map user roles to escalation levels
+const escalationLevels = {
+  'team_lead': 'hr_manager',
+  'hr_manager': 'general_manager',
+  'general_manager': 'managing_director',
+  'managing_director': null
+};
 
 interface LeaveApprovalFormProps {
-  leaveId: string;
-  onApproved: () => void;
+  leave: Leave;
+  onActionComplete: () => void;
 }
 
-export default function LeaveApprovalForm({ leaveId, onApproved }: LeaveApprovalFormProps) {
+export default function LeaveApprovalForm({ leave, onActionComplete }: LeaveApprovalFormProps) {
+  const [notes, setNotes] = useState("");
+  const [loading, setLoading] = useState(false);
   const { currentUser } = useAuth();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
-  const [leaveRequest, setLeaveRequest] = useState<Leave | null>(null);
-  const [requesterName, setRequesterName] = useState<string | null>(null);
-  const [requesterRole, setRequesterRole] = useState<UserRole | null>(null);
-  const [availableManagers, setAvailableManagers] = useState<{id: string; name: string}[]>([]);
-  const [needsEscalation, setNeedsEscalation] = useState<boolean>(false);
 
-  // Define form with zod validation
-  const form = useForm<LeaveApprovalFormValues>({
-    resolver: zodResolver(leaveApprovalSchema),
-    defaultValues: {
-      action: "approve",
-      approverNotes: "",
-      escalateTo: "",
-    },
-  });
-
-  // Watch form fields
-  const watchAction = form.watch("action");
-
-  useEffect(() => {
-    if (!leaveId || !currentUser) return;
-
-    // Fetch leave request details
-    const fetchLeaveDetails = async () => {
-      setLoading(true);
-      try {
-        // Get leave request
-        const leaveDoc = await getDoc(doc(firestore, "leaves", leaveId));
-        if (!leaveDoc.exists()) {
-          toast({
-            title: "Error",
-            description: "Leave request not found",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        const leaveData = {
-          id: leaveDoc.id,
-          ...leaveDoc.data()
-        } as Leave;
-        setLeaveRequest(leaveData);
-        
-        // Get requester details
-        if (leaveData.userId) {
-          const userDoc = await getDoc(doc(firestore, "users", leaveData.userId));
-          if (userDoc.exists()) {
-            setRequesterName(userDoc.data().displayName || "Unknown");
-            setRequesterRole(userDoc.data().role as UserRole || "employee");
-          }
-        }
-        
-        // Check if current approver can handle this request or needs escalation
-        const currentUserRole = currentUser.role;
-        const userRole = userDoc.data().role as UserRole || "employee";
-        
-        // Need escalation if requester role is equal or higher than approver's role
-        if (
-          (userRole === "admin" && currentUserRole === "admin") ||
-          (userRole === "master_admin")
-        ) {
-          setNeedsEscalation(true);
-          
-          // Fetch available managers for escalation
-          const managersQuery = query(
-            collection(firestore, "users"),
-            where("role", "==", "master_admin")
-          );
-          
-          const managersSnapshot = await getDocs(managersQuery);
-          const managers = managersSnapshot.docs
-            .map(doc => ({
-              id: doc.id,
-              name: doc.data().displayName || doc.data().email
-            }))
-            .filter(manager => manager.id !== currentUser.uid); // Exclude self
-          
-          setAvailableManagers(managers);
-        }
-      } catch (error) {
-        console.error("Error fetching leave details:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load leave request details",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLeaveDetails();
-  }, [leaveId, currentUser, toast]);
-
-  // Format date range for display
-  const getFormattedDateRange = () => {
-    if (!leaveRequest) return "";
-    
-    const startDate = getDateFromTimestamp(leaveRequest.startDate);
-    const endDate = getDateFromTimestamp(leaveRequest.endDate);
-    
-    if (!startDate || !endDate) return "";
-    
-    if (leaveRequest.leaveType === "permission") {
-      // For permission, show hours
-      const hours = differenceInHours(endDate, startDate);
-      return `${format(startDate, "PPP")} (${hours} hour${hours !== 1 ? 's' : ''})`;
-    } else {
-      // For other leave types, show day range
-      const days = differenceInDays(endDate, startDate) + 1;
-      return `${format(startDate, "PPP")} to ${format(endDate, "PPP")} (${days} day${days !== 1 ? 's' : ''})`;
+  // Helper to get the display title based on leave type
+  const getLeaveTypeTitle = (type: LeaveType) => {
+    switch (type) {
+      case "casual": return "Casual Leave";
+      case "sick": return "Sick Leave";
+      case "permission": return "Permission";
+      case "vacation": return "Vacation Leave";
+      default: return type;
     }
   };
 
-  // Handle form submission
-  const onSubmit = async (data: LeaveApprovalFormValues) => {
-    if (!leaveRequest || !currentUser) return;
+  // Helper to get the badge for leave status
+  const getLeaveStatusBadge = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <Badge variant="secondary">Pending</Badge>;
+      case "approved":
+        return <Badge variant="success">Approved</Badge>;
+      case "rejected":
+        return <Badge variant="destructive">Rejected</Badge>;
+      case "escalated":
+        return <Badge variant="warning">Escalated</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  // Calculate business days (excluding weekends) between two dates
+  const calculateBusinessDays = (startDate: Date, endDate: Date): number => {
+    let count = 0;
+    let currentDate = new Date(startDate);
     
-    setLoading(true);
+    while (currentDate <= endDate) {
+      const dayOfWeek = currentDate.getDay();
+      // Skip weekends (0 = Sunday, 6 = Saturday)
+      if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+        count++;
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    return count;
+  };
+
+  const getLeaveDuration = () => {
+    // For permission leave, show hours
+    if (leave.type === "permission") {
+      return `${leave.durationHours || 1} hour(s)`;
+    }
+    
+    // For other leave types, calculate business days
+    const startDate = getDateFromTimestamp(leave.startDate);
+    const endDate = getDateFromTimestamp(leave.endDate);
+    
+    if (!startDate || !endDate) return "Invalid dates";
+    
+    const businessDays = calculateBusinessDays(startDate, endDate);
+    return `${businessDays} day(s)`;
+  };
+
+  const handleApprove = async () => {
+    if (!currentUser) return;
+    
     try {
-      const leaveRef = doc(firestore, "leaves", leaveRequest.id);
+      setLoading(true);
       
-      if (data.action === "approve") {
-        await updateDoc(leaveRef, {
-          status: "approved",
-          approvedBy: currentUser.uid,
-          approverNotes: data.approverNotes || null,
-          updatedAt: new Date()
-        });
-        
-        toast({
-          title: "Leave Approved",
-          description: "The leave request has been approved successfully",
-          variant: "default",
-        });
-      } 
-      else if (data.action === "reject") {
-        await updateDoc(leaveRef, {
-          status: "rejected",
-          approvedBy: currentUser.uid,
-          approverNotes: data.approverNotes || null,
-          updatedAt: new Date()
-        });
-        
-        toast({
-          title: "Leave Rejected",
-          description: "The leave request has been rejected",
-          variant: "default",
-        });
-      }
-      else if (data.action === "escalate") {
-        if (!data.escalateTo) {
-          toast({
-            title: "Error",
-            description: "Please select a manager to escalate this request to",
-            variant: "destructive",
-          });
-          setLoading(false);
-          return;
-        }
-        
-        await updateDoc(leaveRef, {
-          status: "escalated",
-          escalatedTo: data.escalateTo,
-          approverNotes: data.approverNotes || null,
-          updatedAt: new Date()
-        });
-        
-        toast({
-          title: "Leave Escalated",
-          description: "The leave request has been escalated to a higher authority",
-          variant: "default",
-        });
-      }
+      await updateDoc(doc(firestore, "leaves", leave.id), {
+        status: "approved",
+        approvedBy: currentUser.uid,
+        approverNotes: notes || null,
+        updatedAt: serverTimestamp(),
+      });
       
-      onApproved();
+      toast({
+        title: "Leave Approved",
+        description: "The leave request has been approved successfully.",
+      });
+      
+      onActionComplete();
     } catch (error) {
-      console.error("Error updating leave request:", error);
+      console.error("Error approving leave:", error);
       toast({
         title: "Error",
-        description: "Failed to update leave request",
+        description: "Failed to approve leave request. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -230,155 +121,197 @@ export default function LeaveApprovalForm({ leaveId, onApproved }: LeaveApproval
     }
   };
 
-  if (!leaveRequest) {
-    return (
-      <Card className="w-full max-w-lg mx-auto">
-        <CardContent className="pt-6">
-          <div className="flex justify-center items-center h-32">
-            <p className="text-muted-foreground">Loading leave request...</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
+  const handleReject = async () => {
+    if (!currentUser || !notes) {
+      toast({
+        title: "Notes Required",
+        description: "Please provide a reason for rejection.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      
+      await updateDoc(doc(firestore, "leaves", leave.id), {
+        status: "rejected",
+        approvedBy: null,
+        approverNotes: notes,
+        updatedAt: serverTimestamp(),
+      });
+      
+      toast({
+        title: "Leave Rejected",
+        description: "The leave request has been rejected.",
+      });
+      
+      onActionComplete();
+    } catch (error) {
+      console.error("Error rejecting leave:", error);
+      toast({
+        title: "Error",
+        description: "Failed to reject leave request. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEscalate = async () => {
+    if (!currentUser) return;
+    
+    try {
+      setLoading(true);
+      
+      // Get user details to determine who to escalate to
+      const userDoc = await getDoc(doc(firestore, "users", currentUser.uid));
+      
+      if (!userDoc.exists()) {
+        throw new Error("User not found");
+      }
+      
+      const userRole = userDoc.data().role;
+      const nextLevel = escalationLevels[userRole as keyof typeof escalationLevels];
+      
+      if (!nextLevel) {
+        toast({
+          title: "Escalation Error",
+          description: "You cannot escalate this request further.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+      
+      // Find the user with the next level role
+      // In a real system, you'd have a more sophisticated way to determine the exact person
+      const nextApproverQuery = await getDoc(doc(firestore, "escalation_paths", nextLevel));
+      let nextApproverId = null;
+      
+      if (nextApproverQuery.exists()) {
+        nextApproverId = nextApproverQuery.data().userId;
+      }
+      
+      if (!nextApproverId) {
+        throw new Error("Next approver not found");
+      }
+      
+      await updateDoc(doc(firestore, "leaves", leave.id), {
+        status: "escalated",
+        escalatedFrom: currentUser.uid,
+        escalatedTo: nextApproverId,
+        approverNotes: notes || null,
+        updatedAt: serverTimestamp(),
+      });
+      
+      toast({
+        title: "Leave Escalated",
+        description: "The leave request has been escalated to the next level.",
+      });
+      
+      onActionComplete();
+    } catch (error) {
+      console.error("Error escalating leave:", error);
+      toast({
+        title: "Error",
+        description: "Failed to escalate leave request. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <Card className="w-full max-w-lg mx-auto">
+    <Card className="shadow-sm">
       <CardHeader>
-        <CardTitle className="text-xl flex items-center">
-          <TbCalendarCheck className="mr-2" /> Leave Request Approval
+        <CardTitle className="text-xl flex items-center justify-between">
+          <span>{getLeaveTypeTitle(leave.type)}</span>
+          {getLeaveStatusBadge(leave.status)}
         </CardTitle>
-        <div className="text-sm flex items-center">
-          <TbUserCircle className="mr-1" />
-          <span className="font-medium">Requested by:</span> {requesterName || "Unknown"}
-        </div>
-        <div className="text-sm flex items-center">
-          <TbCalendarStats className="mr-1" />
-          <span className="font-medium">Leave period:</span> {getFormattedDateRange()}
-        </div>
-        <div className="mt-2 p-3 bg-muted/30 rounded-md">
-          <div className="text-sm mb-1">
-            <span className="font-medium">Type:</span> {leaveRequest.leaveType.charAt(0).toUpperCase() + leaveRequest.leaveType.slice(1)}
-          </div>
-          <div className="text-sm mb-2">
-            <span className="font-medium">Reason:</span>
-          </div>
-          <div className="text-sm p-2 bg-background rounded-sm border">
-            {leaveRequest.reason || "No reason provided"}
-          </div>
-        </div>
       </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="action"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Action</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex flex-col space-y-2"
-                    >
-                      {!needsEscalation && (
-                        <div className="flex items-center space-x-2 border rounded-md p-2 hover:bg-muted/30">
-                          <RadioGroupItem value="approve" id="approve" />
-                          <Label htmlFor="approve" className="flex items-center">
-                            <TbCheck className="mr-1 text-green-600" /> Approve
-                          </Label>
-                        </div>
-                      )}
-                      
-                      <div className="flex items-center space-x-2 border rounded-md p-2 hover:bg-muted/30">
-                        <RadioGroupItem value="reject" id="reject" />
-                        <Label htmlFor="reject" className="flex items-center">
-                          <TbX className="mr-1 text-red-600" /> Reject
-                        </Label>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2 border rounded-md p-2 hover:bg-muted/30">
-                        <RadioGroupItem value="escalate" id="escalate" />
-                        <Label htmlFor="escalate" className="flex items-center">
-                          <TbArrowUp className="mr-1 text-blue-600" /> Escalate
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <p className="text-sm text-muted-foreground">Employee</p>
+            <p className="font-medium">{leave.userName || "Employee Name"}</p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground">Department</p>
+            <p className="font-medium">{leave.departmentName || "Department"}</p>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <p className="text-sm text-muted-foreground">From</p>
+            <p className="font-medium">{formatDate(leave.startDate)}</p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground">To</p>
+            <p className="font-medium">{formatDate(leave.endDate)}</p>
+          </div>
+        </div>
+        
+        <div>
+          <p className="text-sm text-muted-foreground">Duration</p>
+          <p className="font-medium">{getLeaveDuration()}</p>
+        </div>
+        
+        <div>
+          <p className="text-sm text-muted-foreground">Reason</p>
+          <p className="p-3 bg-muted/50 rounded">{leave.reason || "No reason provided"}</p>
+        </div>
+        
+        {leave.status === "pending" && (
+          <div>
+            <p className="text-sm text-muted-foreground mb-1">Your Notes (required for rejection)</p>
+            <Textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Add any notes or comments about this leave request"
+              className="min-h-[80px]"
             />
-
-            {watchAction === "escalate" && (
-              <FormField
-                control={form.control}
-                name="escalateTo"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Escalate to</FormLabel>
-                    <FormControl>
-                      <select
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        {...field}
-                      >
-                        <option value="">Select a manager</option>
-                        {availableManagers.map(manager => (
-                          <option key={manager.id} value={manager.id}>
-                            {manager.name}
-                          </option>
-                        ))}
-                      </select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-
-            <FormField
-              control={form.control}
-              name="approverNotes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Notes</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Add any additional notes or comments" 
-                      className="resize-none" 
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="pt-4">
-              <Button 
-                type="submit" 
-                className="w-full" 
-                disabled={loading}
-              >
-                {loading ? "Processing..." : 
-                  watchAction === "approve" ? "Approve Leave" :
-                  watchAction === "reject" ? "Reject Leave" : "Escalate Request"
-                }
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-      <CardFooter className="text-sm text-muted-foreground border-t pt-4">
-        {needsEscalation && (
-          <div className="text-amber-600 text-xs flex items-center">
-            <TbInfoCircle className="mr-1" /> 
-            This request requires escalation to higher management due to requester's role
           </div>
         )}
-      </CardFooter>
+        
+        {leave.approverNotes && (
+          <div>
+            <p className="text-sm text-muted-foreground">Approver Notes</p>
+            <p className="p-3 bg-muted/50 rounded">{leave.approverNotes}</p>
+          </div>
+        )}
+      </CardContent>
+      
+      {leave.status === "pending" && (
+        <CardFooter className="flex justify-between">
+          <Button
+            variant="outline"
+            onClick={handleEscalate}
+            disabled={loading}
+          >
+            Escalate
+          </Button>
+          <div className="space-x-2">
+            <Button
+              variant="destructive"
+              onClick={handleReject}
+              disabled={loading || !notes}
+            >
+              Reject
+            </Button>
+            <Button
+              variant="default"
+              onClick={handleApprove}
+              disabled={loading}
+            >
+              Approve
+            </Button>
+          </div>
+        </CardFooter>
+      )}
     </Card>
   );
 }
