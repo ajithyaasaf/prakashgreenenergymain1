@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { firestore } from "@/firebase/config";
 import { collection, query, where, getDocs, doc, updateDoc, Timestamp, orderBy, limit } from "firebase/firestore";
 import { formatDate, formatTime } from "@/utils/formatting";
+import { format } from "date-fns";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Select,
@@ -85,75 +86,86 @@ export default function AttendanceAdminPage() {
     try {
       setLoading(true);
       
-      // Mock data for demonstration
-      const mockData: EmployeeAttendance[] = [
-        {
-          id: "emp1",
-          name: "Amit Sharma",
-          email: "amit.sharma@prakashenergy.com",
-          department: "Sales",
-          checkedIn: true,
-          checkInTime: "08:45",
-          status: "present",
-        },
-        {
-          id: "emp2",
-          name: "Priya Patel",
-          email: "priya.patel@prakashenergy.com",
-          department: "Engineering",
-          checkedIn: true,
-          checkInTime: "09:10",
-          status: "present",
-        },
-        {
-          id: "emp3",
-          name: "Rahul Mehta",
-          email: "rahul.mehta@prakashenergy.com",
-          department: "Support",
-          checkedIn: false,
-          status: "leave",
-        },
-        {
-          id: "emp4",
-          name: "Sanjay Kumar",
-          email: "sanjay.kumar@prakashenergy.com",
-          department: "Engineering",
-          checkedIn: false,
-          status: "absent",
-        },
-        {
-          id: "emp5",
-          name: "Divya Singh",
-          email: "divya.singh@prakashenergy.com",
-          department: "Sales",
-          checkedIn: true,
-          checkInTime: "08:30",
-          status: "present",
-        },
-        {
-          id: "emp6",
-          name: "Vijay Reddy",
-          email: "vijay.reddy@prakashenergy.com",
-          department: "Support",
-          checkedIn: true,
-          checkInTime: "10:15",
-          status: "present",
-        },
-        {
-          id: "emp7",
-          name: "Neha Gupta",
-          email: "neha.gupta@prakashenergy.com",
-          department: "Engineering",
-          checkedIn: false,
-          status: "unrecorded",
-        },
-      ];
+      // Get today's date (start and end of day)
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
       
+      // Get all users first
+      const usersQuery = query(collection(firestore, "users"));
+      const usersSnapshot = await getDocs(usersQuery);
+      const users: Record<string, {name: string, email: string, department: string}> = {};
+      
+      usersSnapshot.forEach(doc => {
+        const userData = doc.data();
+        users[doc.id] = {
+          name: userData.displayName || "Unknown",
+          email: userData.email || "Unknown",
+          department: userData.department || "Unknown"
+        };
+      });
+      
+      // Get today's attendance records
+      const attendanceQuery = query(
+        collection(firestore, "attendance"),
+        where("date", ">=", Timestamp.fromDate(today)),
+        where("date", "<", Timestamp.fromDate(tomorrow))
+      );
+      
+      const attendanceSnapshot = await getDocs(attendanceQuery);
+      const attendanceMap: Record<string, {checkedIn: boolean, checkInTime?: Date, status: 'present' | 'absent' | 'leave' | 'unrecorded'}> = {};
+      
+      attendanceSnapshot.forEach(doc => {
+        const data = doc.data();
+        attendanceMap[data.userId] = {
+          checkedIn: true,
+          checkInTime: data.checkInTime?.toDate(),
+          status: data.status === "checked_out" ? "present" : "present"
+        };
+      });
+      
+      // Get leave requests for today
+      const leaveQuery = query(
+        collection(firestore, "leaves"),
+        where("status", "==", "approved"),
+        where("startDate", "<=", Timestamp.fromDate(today)),
+        where("endDate", ">=", Timestamp.fromDate(today))
+      );
+      
+      const leaveSnapshot = await getDocs(leaveQuery);
+      leaveSnapshot.forEach(doc => {
+        const data = doc.data();
+        attendanceMap[data.userId] = {
+          checkedIn: false,
+          status: "leave"
+        };
+      });
+      
+      // Combine user and attendance data
+      const employeeAttendanceData: EmployeeAttendance[] = Object.keys(users).map(userId => {
+        const user = users[userId];
+        const attendance = attendanceMap[userId];
+        
+        return {
+          id: userId,
+          name: user.name,
+          email: user.email,
+          department: user.department,
+          checkedIn: attendance?.checkedIn || false,
+          checkInTime: attendance?.checkInTime ? format(attendance.checkInTime, "HH:mm") : undefined,
+          status: attendance?.status || "unrecorded"
+        };
+      });
+      
+      // Filter by department if needed
       if (department !== "all") {
-        const filtered = mockData.filter(emp => emp.department.toLowerCase() === department.toLowerCase());
+        const filtered = employeeAttendanceData.filter(emp => 
+          emp.department.toLowerCase() === department.toLowerCase()
+        );
         setEmployeeAttendance(filtered);
       } else {
-        setEmployeeAttendance(mockData);
+        setEmployeeAttendance(employeeAttendanceData);
       }
       
     } catch (error) {
@@ -172,81 +184,66 @@ export default function AttendanceAdminPage() {
     try {
       setLoading(true);
       
-      // Mock data for demonstration
-      const mockData: LeaveRequest[] = [
-        {
-          id: "leave1",
-          userId: "emp3",
-          userName: "Rahul Mehta",
-          startDate: "2023-05-15",
-          endDate: "2023-05-20",
-          reason: "Annual vacation with family",
-          type: "casual",
-          status: "approved",
-          createdAt: "2023-05-01",
-        },
-        {
-          id: "leave2",
-          userId: "emp2",
-          userName: "Priya Patel",
-          startDate: "2023-05-25",
-          endDate: "2023-05-26",
-          reason: "Medical appointment",
-          type: "sick",
-          status: "approved",
-          createdAt: "2023-05-10",
-        },
-        {
-          id: "leave3",
-          userId: "emp6",
-          userName: "Vijay Reddy",
-          startDate: "2023-06-05",
-          endDate: "2023-06-07",
-          reason: "Family function",
-          type: "personal",
-          status: "pending",
-          createdAt: "2023-05-18",
-        },
-        {
-          id: "leave4",
-          userId: "emp5",
-          userName: "Divya Singh",
-          startDate: "2023-06-01",
-          endDate: "2023-06-03",
-          reason: "Attending a workshop",
-          type: "personal",
-          status: "pending",
-          createdAt: "2023-05-20",
-        },
-        {
-          id: "leave5",
-          userId: "emp1",
-          userName: "Amit Sharma",
-          startDate: "2023-05-22",
-          endDate: "2023-05-22",
-          reason: "Not feeling well",
-          type: "sick",
-          status: "pending",
-          createdAt: "2023-05-21",
-        },
-      ];
+      // Get all users for name lookup
+      const usersQuery = query(collection(firestore, "users"));
+      const usersSnapshot = await getDocs(usersQuery);
+      const users: Record<string, {name: string, department: string}> = {};
       
-      let filtered = [...mockData];
+      usersSnapshot.forEach(doc => {
+        const userData = doc.data();
+        users[doc.id] = {
+          name: userData.displayName || "Unknown",
+          department: userData.department || "Unknown"
+        };
+      });
       
+      // Create basic leave query
+      let leaveQuery: any = query(
+        collection(firestore, "leaves"),
+        orderBy("createdAt", "desc")
+      );
+      
+      // Apply type filter if needed
       if (leaveType !== "all") {
-        filtered = filtered.filter(leave => leave.type === leaveType);
+        leaveQuery = query(
+          collection(firestore, "leaves"),
+          where("leaveType", "==", leaveType),
+          orderBy("createdAt", "desc")
+        );
       }
       
-      // Sort by created date (newest first)
-      filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      // Fetch leave requests
+      const leaveSnapshot = await getDocs(leaveQuery);
+      const leaveList: LeaveRequest[] = [];
       
-      // Ensure each item has the correct status type
-      const typedFiltered: LeaveRequest[] = filtered.map(item => ({
-        ...item,
-        status: item.status as 'pending' | 'approved' | 'rejected'
-      }));
+      for (const docSnapshot of leaveSnapshot.docs) {
+        const data = docSnapshot.data() as {
+          userId: string;
+          leaveType: string;
+          startDate: Timestamp;
+          endDate: Timestamp;
+          reason: string;
+          status: 'pending' | 'approved' | 'rejected';
+          createdAt: Timestamp;
+        };
+        
+        const userId = data.userId;
+        const user = users[userId] || { name: "Unknown", department: "Unknown" };
+        
+        leaveList.push({
+          id: docSnapshot.id,
+          userId: userId,
+          userName: user.name,
+          startDate: data.startDate ? format(data.startDate.toDate(), "yyyy-MM-dd") : "",
+          endDate: data.endDate ? format(data.endDate.toDate(), "yyyy-MM-dd") : "",
+          reason: data.reason || "",
+          type: data.leaveType || "casual",
+          status: data.status,
+          createdAt: data.createdAt ? format(data.createdAt.toDate(), "yyyy-MM-dd") : "",
+        });
+      }
       
-      setLeaveRequests(typedFiltered);
+      setLeaveRequests(leaveList);
       
     } catch (error) {
       console.error("Error fetching leave requests:", error);
@@ -263,13 +260,13 @@ export default function AttendanceAdminPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "present":
-        return <Badge variant="success">Present</Badge>;
+        return <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Present</Badge>;
       case "absent":
-        return <Badge variant="destructive">Absent</Badge>;
+        return <Badge className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">Absent</Badge>;
       case "leave":
-        return <Badge variant="secondary">On Leave</Badge>;
+        return <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300">On Leave</Badge>;
       case "unrecorded":
-        return <Badge variant="outline">Not Recorded</Badge>;
+        return <Badge className="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-300">Not Recorded</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -278,11 +275,11 @@ export default function AttendanceAdminPage() {
   const getLeaveStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
-        return <Badge variant="secondary">Pending</Badge>;
+        return <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">Pending</Badge>;
       case "approved":
-        return <Badge variant="success">Approved</Badge>;
+        return <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Approved</Badge>;
       case "rejected":
-        return <Badge variant="destructive">Rejected</Badge>;
+        return <Badge className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">Rejected</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -291,11 +288,13 @@ export default function AttendanceAdminPage() {
   const getLeaveTypeBadge = (type: string) => {
     switch (type) {
       case "sick":
-        return <Badge variant="destructive">Sick Leave</Badge>;
+        return <Badge className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">Sick Leave</Badge>;
       case "casual":
-        return <Badge variant="default">Casual Leave</Badge>;
-      case "personal":
-        return <Badge variant="outline">Personal Leave</Badge>;
+        return <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">Casual Leave</Badge>;
+      case "permission":
+        return <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300">Permission</Badge>;
+      case "vacation":
+        return <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Vacation</Badge>;
       default:
         return <Badge variant="outline">{type}</Badge>;
     }
@@ -311,16 +310,17 @@ export default function AttendanceAdminPage() {
     if (!selectedLeaveRequest) return;
     
     try {
-      // In a real app, update in Firestore
-      // const leaveRef = doc(firestore, "leaves", selectedLeaveRequest.id);
-      // await updateDoc(leaveRef, {
-      //   status: action,
-      //   approvedBy: currentUser?.uid,
-      //   approvalNotes: notes,
-      //   updatedAt: serverTimestamp(),
-      // });
+      // Update the leave request in Firestore
+      const leaveRef = doc(firestore, "leaves", selectedLeaveRequest.id);
+      await updateDoc(leaveRef, {
+        status: action === 'approve' ? 'approved' : 'rejected',
+        [action === 'approve' ? 'approvedBy' : 'rejectedBy']: currentUser?.uid,
+        [action === 'approve' ? 'approvedByName' : 'rejectedByName']: currentUser?.displayName,
+        approvalNotes: notes,
+        updatedAt: Timestamp.now(),
+      });
       
-      // For demo, update locally
+      // Update the local state for immediate UI feedback
       const updatedRequests: LeaveRequest[] = leaveRequests.map(request => {
         if (request.id === selectedLeaveRequest.id) {
           return {
