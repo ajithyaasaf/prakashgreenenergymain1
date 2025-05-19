@@ -49,9 +49,31 @@ const leaveSchema = z.object({
   }),
   reason: z.string().min(10, "Reason must be at least 10 characters"),
   type: z.enum(["casual", "permission", "sick", "vacation"]),
-}).refine(data => data.endDate >= data.startDate, {
+  durationHours: z.number().min(1).max(8).optional(),
+})
+.refine(data => data.endDate >= data.startDate, {
   message: "End date must be on or after start date",
   path: ["endDate"],
+})
+.refine(data => {
+  // For permission leave, durationHours is required
+  if (data.type === "permission") {
+    return data.durationHours !== undefined;
+  }
+  return true;
+}, {
+  message: "Duration hours is required for permission leave",
+  path: ["durationHours"]
+})
+.refine(data => {
+  // For permission leave, start and end date should be the same
+  if (data.type === "permission") {
+    return data.startDate.toDateString() === data.endDate.toDateString();
+  }
+  return true;
+}, {
+  message: "Permission leave must be for a single day",
+  path: ["endDate"]
 });
 
 type LeaveFormValues = z.infer<typeof leaveSchema>;
@@ -633,7 +655,13 @@ export default function AttendancePage() {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
+                          onSelect={(date) => {
+                            field.onChange(date);
+                            // If this is a permission leave, auto-set end date to match start date
+                            if (form.getValues("type") === "permission") {
+                              form.setValue("endDate", date);
+                            }
+                          }}
                           disabled={disabledDays}
                           className="rounded-md border mx-auto w-full max-w-[300px]"
                         />
@@ -652,7 +680,14 @@ export default function AttendancePage() {
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
-                          disabled={disabledDays}
+                          disabled={
+                            // For permission leave, end date should be locked to start date
+                            form.getValues("type") === "permission" 
+                              ? [...disabledDays, (date) => 
+                                  date.toDateString() !== form.getValues("startDate")?.toDateString()
+                                ] 
+                              : disabledDays
+                          }
                           className="rounded-md border mx-auto w-full max-w-[300px]"
                         />
                         <FormMessage />
@@ -660,6 +695,35 @@ export default function AttendancePage() {
                     )}
                   />
                 </div>
+                
+                {/* Duration hours field - only visible for permission leave */}
+                {form.watch("type") === "permission" && (
+                  <FormField
+                    control={form.control}
+                    name="durationHours"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Hours Requested <span className="text-amber-600">*</span></FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min={1} 
+                            max={8}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                            value={field.value || 1}
+                            className="w-full"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                        {remainingPermissionHours !== null && (
+                          <div className="text-xs text-muted-foreground mt-1">
+                            You have {remainingPermissionHours} hours remaining this month
+                          </div>
+                        )}
+                      </FormItem>
+                    )}
+                  />
+                )}
                 
                 <FormField
                   control={form.control}
