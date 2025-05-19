@@ -117,7 +117,7 @@ export function CheckInForm({ onSuccess, onCancel }: { onSuccess?: () => void; o
             toast({
               title: "Warning",
               description: "Your department doesn't allow off-site work. Please contact your supervisor.",
-              variant: "warning",
+              variant: "destructive",
             });
           }
         } catch (error) {
@@ -194,7 +194,7 @@ export function CheckInForm({ onSuccess, onCancel }: { onSuccess?: () => void; o
   if (loadingLocation) {
     return (
       <div className="flex justify-center items-center p-8">
-        <Spinner size="lg" />
+        <Spinner className="h-6 w-6" />
         <span className="ml-2">Checking your location...</span>
       </div>
     );

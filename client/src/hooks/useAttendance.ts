@@ -20,6 +20,7 @@ interface CheckInParams {
 interface CheckOutParams {
   lateReason?: string;
   overtimeReason?: string;
+  photoUrl?: string;
 }
 
 interface LeaveRequestParams {

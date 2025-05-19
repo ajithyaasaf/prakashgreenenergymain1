@@ -308,7 +308,7 @@ export default function AttendanceCalendarView({
                   <span className="font-medium w-24">Period:</span>
                   <span>
                     {dayDetails.leave.startDate && dayDetails.leave.endDate 
-                      ? `${format(new Date(dayDetails.leave.startDate), 'MMM d')} - ${format(new Date(dayDetails.leave.endDate), 'MMM d')}`
+                      ? `${format(getDateFromTimestamp(dayDetails.leave.startDate) || new Date(), 'MMM d')} - ${format(getDateFromTimestamp(dayDetails.leave.endDate) || new Date(), 'MMM d')}`
                       : 'N/A'}
                   </span>
                 </div>
