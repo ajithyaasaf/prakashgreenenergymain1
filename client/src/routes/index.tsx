@@ -157,7 +157,7 @@ export default function AppRoutes() {
       <Route path="/customers" component={() => <PrivateRoute component={CustomersPage} />} />
       <Route path="/quotations" component={() => <PrivateRoute component={QuotationsPage} />} />
       <Route path="/invoices" component={() => <PrivateRoute component={InvoicesPage} />} />
-      <Route path="/attendance" component={() => <PrivateRoute component={AttendancePage} />} />
+      <Route path="/attendance" component={() => <PrivateRoute component={MainAttendancePage} />} />
       <Route path="/settings" component={() => <PrivateRoute component={SettingsPage} />} />
       <Route path="/analytics/personal-attendance" component={() => <PrivateRoute component={PersonalAttendancePage} />} />
       
@@ -167,10 +167,7 @@ export default function AppRoutes() {
       <Route path="/analytics/attendance-overview" component={() => <PrivateRoute component={AttendanceOverviewPage} roles={['admin', 'master_admin']} />} />
       <Route path="/attendance/calendar" component={() => <PrivateRoute component={AttendanceCalendarPage} />} />
       
-      {/* New Attendance Pages */}
-      <Route path="/attendance/leaves" component={() => <PrivateRoute component={LeaveManagementPage} />} />
-      <Route path="/attendance/main" component={() => <PrivateRoute component={MainAttendancePage} />} />
-      <Route path="/attendance/dashboard" component={() => <PrivateRoute component={DashboardAttendancePage} />} />
+      {/* Remove duplicate routes since we've updated the main attendance route */}
       
       {/* Master Admin Routes */}
       <Route path="/attendance-settings" component={() => <PrivateRoute component={AttendanceSettingsPage} roles={['master_admin']} />} />
