@@ -372,7 +372,7 @@ export default function MainAttendancePage() {
       
       {/* Check-out Dialog */}
       <Dialog open={isCheckOutDialogOpen} onOpenChange={setIsCheckOutDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Check Out</DialogTitle>
           </DialogHeader>
