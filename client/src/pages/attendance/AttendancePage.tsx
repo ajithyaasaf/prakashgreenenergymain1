@@ -48,7 +48,7 @@ const leaveSchema = z.object({
     required_error: "Please select an end date",
   }),
   reason: z.string().min(10, "Reason must be at least 10 characters"),
-  type: z.enum(["sick", "casual", "personal"]),
+  type: z.enum(["casual", "permission", "sick", "vacation"]),
 }).refine(data => data.endDate >= data.startDate, {
   message: "End date must be on or after start date",
   path: ["endDate"],
@@ -69,13 +69,17 @@ export default function AttendancePage() {
   const [isRequestLeaveOpen, setIsRequestLeaveOpen] = useState(false);
   const today = new Date();
   
+  const [remainingCasualLeaves, setRemainingCasualLeaves] = useState<number | null>(null);
+  const [remainingPermissionHours, setRemainingPermissionHours] = useState<number | null>(null);
+  const [departmentPolicy, setDepartmentPolicy] = useState<any | null>(null);
+  
   const form = useForm<LeaveFormValues>({
     resolver: zodResolver(leaveSchema),
     defaultValues: {
       startDate: today,
       endDate: today,
       reason: "",
-      type: "personal",
+      type: "casual",
     },
   });
   
@@ -84,8 +88,26 @@ export default function AttendancePage() {
       fetchTodayAttendance();
       fetchRecentAttendance();
       fetchLeaveHistory();
+      fetchDepartmentPolicy();
+      calculateRemainingLeaveBalances();
     }
   }, [currentUser]);
+  
+  // Fetch department policy for the current user
+  const fetchDepartmentPolicy = async () => {
+    if (!currentUser) return;
+    
+    try {
+      const { getDepartmentPolicy, getUserDepartment } = useAttendance();
+      const userDept = await getUserDepartment();
+      if (userDept) {
+        const policy = await getDepartmentPolicy();
+        setDepartmentPolicy(policy);
+      }
+    } catch (error) {
+      console.error("Error fetching department policy:", error);
+    }
+  };
   
   const fetchTodayAttendance = async () => {
     try {

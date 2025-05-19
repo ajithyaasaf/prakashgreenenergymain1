@@ -74,6 +74,121 @@ export function useAttendance() {
       return null;
     }
   };
+  
+  // Calculate remaining casual leave balance for the current month
+  const getRemainingCasualLeaveBalance = async (): Promise<number | null> => {
+    if (!currentUser) return null;
+    
+    try {
+      // Get department policy to determine max allowed casual leaves
+      const policy = await getDepartmentPolicy();
+      if (!policy) return null;
+      
+      const maxCasualLeaves = policy.maxMonthlyCasualLeaves || 1; // Default to 1 if not specified
+      
+      // Get current month's casual leave count
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      
+      const leavesQuery = query(
+        collection(firestore, "leaves"),
+        where("userId", "==", currentUser.uid),
+        where("leaveType", "==", "casual")
+      );
+      
+      const querySnapshot = await getDocs(leavesQuery);
+      let usedLeaves = 0;
+      
+      querySnapshot.docs.forEach(doc => {
+        const leaveData = doc.data();
+        
+        // Only count approved or pending leaves (not rejected)
+        if (leaveData.status === 'rejected') return;
+        
+        const startDate = getDateFromTimestamp(leaveData.startDate);
+        const endDate = getDateFromTimestamp(leaveData.endDate);
+        
+        if (!startDate || !endDate) return;
+        
+        // Check if the leave overlaps with current month
+        const leaveStartsInThisMonth = startDate >= startOfMonth && startDate <= endOfMonth;
+        const leaveEndsInThisMonth = endDate >= startOfMonth && endDate <= endOfMonth;
+        const leaveSpansThisMonth = startDate <= startOfMonth && endDate >= endOfMonth;
+        
+        if (leaveStartsInThisMonth || leaveEndsInThisMonth || leaveSpansThisMonth) {
+          // Calculate business days between start and end dates (excluding weekends)
+          let currentDate = new Date(Math.max(startDate.getTime(), startOfMonth.getTime()));
+          const lastDate = new Date(Math.min(endDate.getTime(), endOfMonth.getTime()));
+          
+          while (currentDate <= lastDate) {
+            // Skip weekends (0 = Sunday, 6 = Saturday)
+            const dayOfWeek = currentDate.getDay();
+            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+              usedLeaves++;
+            }
+            
+            // Move to next day
+            currentDate.setDate(currentDate.getDate() + 1);
+          }
+        }
+      });
+      
+      return Math.max(0, maxCasualLeaves - usedLeaves);
+    } catch (error) {
+      console.error("Error calculating remaining casual leave balance:", error);
+      return null;
+    }
+  };
+  
+  // Calculate remaining permission hours for the current month
+  const getRemainingPermissionHours = async (): Promise<number | null> => {
+    if (!currentUser) return null;
+    
+    try {
+      // Get department policy to determine max allowed permission hours
+      const policy = await getDepartmentPolicy();
+      if (!policy) return null;
+      
+      const maxPermissionHours = policy.maxMonthlyPermissionHours || 2; // Default to 2 if not specified
+      
+      // Get current month's permission leaves
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      
+      const leavesQuery = query(
+        collection(firestore, "leaves"),
+        where("userId", "==", currentUser.uid),
+        where("leaveType", "==", "permission")
+      );
+      
+      const querySnapshot = await getDocs(leavesQuery);
+      let usedHours = 0;
+      
+      querySnapshot.docs.forEach(doc => {
+        const leaveData = doc.data();
+        
+        // Only count approved or pending leaves (not rejected)
+        if (leaveData.status === 'rejected') return;
+        
+        const startDate = getDateFromTimestamp(leaveData.startDate);
+        
+        if (!startDate) return;
+        
+        // Check if permission falls within current month
+        if (startDate >= startOfMonth && startDate <= endOfMonth) {
+          // For permission leaves, we assume each permission is for hours specified
+          usedHours += leaveData.durationHours || 1; // Default to 1 hour if not specified
+        }
+      });
+      
+      return Math.max(0, maxPermissionHours - usedHours);
+    } catch (error) {
+      console.error("Error calculating remaining permission hours:", error);
+      return null;
+    }
+  };
 
   const getTodayAttendance = async (): Promise<Attendance | null> => {
     if (!currentUser) return null;
