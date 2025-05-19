@@ -163,7 +163,7 @@ export function CheckOutForm({ onSuccess, onCancel }: { onSuccess?: () => void; 
   if (loadingLocation) {
     return (
       <div className="flex justify-center items-center p-8">
-        <Spinner size="lg" />
+        <Spinner />
         <span className="ml-2">Checking your location...</span>
       </div>
     );
@@ -192,14 +192,14 @@ export function CheckOutForm({ onSuccess, onCancel }: { onSuccess?: () => void; 
         </Card>
         
         {locationError && (
-          <Alert variant="warning" className="mb-4">
+          <Alert className="mb-4">
             <TbAlertCircle className="h-4 w-4" />
             <AlertDescription>{locationError}</AlertDescription>
           </Alert>
         )}
         
         {isOvertime && overtimeInfo && (
-          <Alert variant={policy?.overtimeAllowed ? "info" : "warning"} className="mb-4">
+          <Alert className="mb-4">
             <TbInfoCircle className="h-4 w-4" />
             <AlertDescription>
               <div className="font-medium">

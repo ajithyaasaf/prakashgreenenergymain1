@@ -30,6 +30,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { LeaveApprovalDialog } from "@/components/attendance/LeaveApprovalDialog";
+import { LeaveRequestForm } from "@/components/leave/LeaveRequestForm";
+import { LeaveApprovalWorkflow } from "@/components/leave/LeaveApprovalWorkflow";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { 
@@ -695,6 +697,26 @@ export default function LeaveManagementPage() {
           loading={approvalLoading}
         />
       )}
+      
+      {/* New Leave Request Dialog */}
+      <Dialog open={isNewRequestOpen} onOpenChange={setIsNewRequestOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Request Leave</DialogTitle>
+          </DialogHeader>
+          <LeaveRequestForm 
+            onSuccess={() => {
+              setIsNewRequestOpen(false);
+              fetchUserLeaves();
+              toast({
+                title: "Leave Request Submitted",
+                description: "Your leave request has been submitted successfully and is pending approval.",
+              });
+            }}
+            onCancel={() => setIsNewRequestOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

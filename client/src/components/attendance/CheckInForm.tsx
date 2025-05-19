@@ -218,7 +218,7 @@ export function CheckInForm({ onSuccess, onCancel }: { onSuccess?: () => void; o
         </Card>
         
         {isBeforeOfficeHours && (
-          <Alert variant="warning" className="mb-4">
+          <Alert className="mb-4">
             <TbAlertCircle className="h-4 w-4" />
             <AlertDescription>
               Check-in is only available starting 30 minutes before {requiredCheckInTime}.
@@ -228,7 +228,7 @@ export function CheckInForm({ onSuccess, onCancel }: { onSuccess?: () => void; o
         )}
         
         {isLate && (
-          <Alert variant="warning" className="mb-4">
+          <Alert className="mb-4">
             <TbAlertCircle className="h-4 w-4" />
             <AlertDescription>
               You are attempting to check in after {requiredCheckInTime}.
@@ -238,17 +238,14 @@ export function CheckInForm({ onSuccess, onCancel }: { onSuccess?: () => void; o
         )}
         
         {locationError && (
-          <Alert variant="warning" className="mb-4">
+          <Alert className="mb-4">
             <TbAlertCircle className="h-4 w-4" />
             <AlertDescription>{locationError}</AlertDescription>
           </Alert>
         )}
         
         {isWithinOffice === false && (
-          <Alert 
-            variant={allowsOffSiteWork ? "info" : "warning"} 
-            className="mb-4"
-          >
+          <Alert className="mb-4">
             <TbMapPin className="h-4 w-4" />
             <AlertDescription>
               {allowsOffSiteWork 
