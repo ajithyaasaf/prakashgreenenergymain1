@@ -213,6 +213,17 @@ export function useAttendance() {
         requiredTime.setHours(requiredHour, requiredMinute, 0, 0);
         
         isLate = now > requiredTime;
+        
+        // Validate late check-in reason if required
+        if (isLate && !params.lateReason) {
+          toast({
+            title: "Reason Required",
+            description: "You must provide a reason for checking in late",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
       }
       
       await addDoc(collection(firestore, "attendance"), {
@@ -224,7 +235,11 @@ export function useAttendance() {
         offSiteReason: params.offSiteReason || null,
         customerDetails: params.customerDetails || null,
         isLate: isLate,
+        lateReason: isLate ? params.lateReason : null,
+        department: department,
         status: "checked_in",
+        requiredCheckInTime: policy ? policy.requiredCheckInTime : "09:00",
+        requiredCheckOutTime: policy ? policy.requiredCheckOutTime : "18:00",
       });
       
       toast({
@@ -279,6 +294,8 @@ export function useAttendance() {
       // Check if it's past required check-out time for the department
       let isLateCheckout = false;
       let isOvertime = false;
+      let overtimeHours = 0;
+      let overtimeMinutes = 0;
       
       if (policy) {
         const [requiredHour, requiredMinute] = policy.requiredCheckOutTime.split(":").map(Number);
@@ -287,28 +304,62 @@ export function useAttendance() {
         
         isLateCheckout = now > requiredTime;
         
-        // For technical team, after required time is considered overtime
-        if (department === "Technical" && isLateCheckout) {
-          isOvertime = true;
+        // Calculate overtime duration if applicable
+        if (isLateCheckout) {
+          // Calculate overtime in hours and minutes
+          const diffMs = now.getTime() - requiredTime.getTime();
+          overtimeHours = Math.floor(diffMs / (1000 * 60 * 60));
+          overtimeMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
           
-          // Technical team overtime requires reason
-          if (isOvertime && !params?.overtimeReason) {
-            toast({
-              title: "Reason Required",
-              description: "Technical team must provide a reason for overtime",
-              variant: "destructive",
-            });
-            setLoading(false);
-            return;
+          // Check if department allows overtime
+          if (policy.overtimeAllowed) {
+            isOvertime = true;
+            
+            // Check if user is from Technical department
+            if (department === "Technical") {
+              // Technical team overtime requires reason
+              if (!params?.overtimeReason) {
+                toast({
+                  title: "Reason Required",
+                  description: "Technical team must provide a reason for overtime",
+                  variant: "destructive",
+                });
+                setLoading(false);
+                return;
+              }
+            } else {
+              // For other departments that allow overtime
+              if (!params?.overtimeReason) {
+                toast({
+                  title: "Reason Required",
+                  description: "You must provide a reason for overtime work",
+                  variant: "destructive",
+                });
+                setLoading(false);
+                return;
+              }
+            }
+          } else {
+            // Department doesn't allow overtime, but still checking out late
+            if (!params?.lateReason) {
+              toast({
+                title: "Reason Required",
+                description: "You must provide a reason for checking out after your scheduled end time",
+                variant: "destructive",
+              });
+              setLoading(false);
+              return;
+            }
           }
         }
       }
       
-      // Late check-out for other departments requires reason
-      if (isLateCheckout && !isOvertime && !params?.lateReason) {
+      // Validate CRE, Accounts, HR off-site checkout
+      if (["CRE", "Accounts", "HR"].includes(department || "") && 
+          existingAttendance.workLocation === "off-site") {
         toast({
-          title: "Reason Required",
-          description: "You must provide a reason for checking out after your scheduled end time",
+          title: "Office Check-out Required",
+          description: "Your department requires you to be in the office for check-out",
           variant: "destructive",
         });
         setLoading(false);
@@ -321,6 +372,9 @@ export function useAttendance() {
         overtimeReason: params?.overtimeReason || null,
         isLateCheckout: isLateCheckout,
         isOvertime: isOvertime,
+        overtimeHours: isOvertime ? overtimeHours : 0,
+        overtimeMinutes: isOvertime ? overtimeMinutes : 0,
+        totalOvertimeMinutes: isOvertime ? (overtimeHours * 60 + overtimeMinutes) : 0,
         status: "checked_out",
       });
       
