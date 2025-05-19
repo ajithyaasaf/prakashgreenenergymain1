@@ -204,6 +204,7 @@ export default function UserManagementPage() {
       email: user.email || "",
       displayName: user.displayName || "",
       role: user.role,
+      department: user.department as any,
     });
     setIsEditUserOpen(true);
   };
@@ -422,6 +423,7 @@ export default function UserManagementPage() {
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Role</TableHead>
+                    <TableHead>Department</TableHead>
                     <TableHead>Joined Date</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -432,6 +434,7 @@ export default function UserManagementPage() {
                       <TableCell className="font-medium">{user.displayName}</TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{getRoleBadge(user.role)}</TableCell>
+                      <TableCell>{user.department || "-"}</TableCell>
                       <TableCell>{formatDate(user.createdAt || "")}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
@@ -547,8 +550,59 @@ export default function UserManagementPage() {
                 )}
               />
               
+              <FormField
+                control={userForm.control}
+                name="department"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Department</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a department" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {departments.map((dept) => (
+                          <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      Assign the user to a department for proper permissions
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              {isAddUserOpen && (
+                <FormField
+                  control={userForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Initial Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} placeholder="Temporary password" />
+                      </FormControl>
+                      <FormDescription>
+                        A password reset link will be sent to the user's email
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+              
               <DialogFooter>
-                <Button type="submit">Add User</Button>
+                <Button type="submit" disabled={submitting}>
+                  {submitting ? <Spinner className="mr-2 h-4 w-4" /> : null}
+                  Add User
+                </Button>
               </DialogFooter>
             </form>
           </Form>
@@ -622,8 +676,40 @@ export default function UserManagementPage() {
                   )}
                 />
                 
+                <FormField
+                  control={userForm.control}
+                  name="department"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Department</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a department" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {departments.map((dept) => (
+                            <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Assign the user to a department
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
                 <DialogFooter>
-                  <Button type="submit">Update User</Button>
+                  <Button type="submit" disabled={submitting}>
+                    {submitting ? <Spinner className="mr-2 h-4 w-4" /> : null}
+                    Update User
+                  </Button>
                 </DialogFooter>
               </form>
             </Form>
