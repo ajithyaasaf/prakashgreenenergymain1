@@ -1,7 +1,7 @@
-import React from "react";
+import * as React from "react";
 import { cn } from "@/lib/utils";
 
-interface SpinnerProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface SpinnerProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function Spinner({ className, ...props }: SpinnerProps) {
   return (
