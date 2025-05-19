@@ -1,0 +1,83 @@
+•	Role-based permissions: Master_Admin, Admin, and role-specific employees
+•	First registrant becomes an employee; admins assign departments later
+•	Department options: CRE, Accounts, HR, Sales and Marketing, Technical team
+•	User profiles with personal details and role information
+
+All departments should be completely flexibily add delete updata manahge by master admin 
+he can set office location using geo fencing 
+check in button only enable after the specified time 
+when they check out from outside office they need to provide photo not able to upload they need to take at the current moment and upload it 
+
+master admin has the power to allow or disallow application access to below departments and roles
+Customer Management Module
+•	Add customer form with fields for:
+o	Name (required)
+o	Address (with multi-line support)
+o	Email (with validation)
+o	Location (with optional map integration)
+o	Customer Scope (detailed text area)
+•	Customer listing with:
+o	Sortable/filterable table
+o	Search functionality by name/email/location
+o	Options to Edit/Delete/Update/View
+o	Confirmation dialogs for all destructive actions
+o	Detailed view in modern modal window
+Product Management Module
+•	Add product form with fields for:
+o	Product Name
+o	Types (dropdown/multi-select)
+o	Voltage (V)
+o	Rating
+o	Make
+o	Quantity with validation
+o	Unit
+o	Price
+•	Product listing with quantity management
+•	Edit/update/delete functionality
+•	Stock alerts when inventory runs low
+Quotation & Invoice System
+•	Material selection from product list
+•	Quantity limit validation against database
+•	Downloadable PDF generation with:
+o	Customer details (name, location, number)
+o	Company information and branding
+o	Product listings with costs
+o	Warranty information
+•	Two invoice types: customer version and company version
+•	Professional templates matching industry standards
+Attendance System
+•	Location tracking with two options:
+o	Office location (default)
+o	Field/customer site location
+•	For field selection:
+o	Capture location details
+o	Record customer visited (selection from database)
+o	Reason for visit required
+•	Check-in enforcement:
+o	9:30 AM standard time
+o	Reason required for field visits
+•	Check-out rules:
+o	6:30 PM for office staff (CRE, Accounts, HR)
+o	7:30 PM for field staff (Sales, Marketing, Technical)
+o	Reason required for delayed checkout
+o	OT reason capture for technical team
+•	Permission allowance: 2 hours monthly
+•	Reports generation:
+o	Daily attendance reports
+o	Weekly summaries
+o	Monthly reports exportable as Excel
+o	OT calculation reports for payroll
+Leave Management System
+•	Leave policy enforcement:
+o	1 casual leave per month
+o	Sundays automatically marked as holidays
+•	Leave application form with:
+o	Date range selection
+o	Reason field
+o	Supporting document upload option
+•	Approval workflow:
+o	Leave balance display before submission
+o	Three-tiered approval system
+o	Approvers: TL, HR, GM, MD (configurable)
+o	Action buttons: Approve, Escalate, Reject
+o	Notification system for status changes
