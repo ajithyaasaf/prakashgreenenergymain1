@@ -1,12 +1,29 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { firestore } from "@/firebase/config";
-import { collection, query, orderBy, getDocs, doc, updateDoc, deleteDoc, addDoc, serverTimestamp } from "firebase/firestore";
+import { firestore, auth } from "@/firebase/config";
+import { 
+  collection, 
+  query, 
+  orderBy, 
+  getDocs, 
+  doc, 
+  updateDoc, 
+  deleteDoc, 
+  addDoc, 
+  serverTimestamp,
+  setDoc 
+} from "firebase/firestore";
+import { 
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  updateProfile
+} from "firebase/auth";
 import { formatDate } from "@/utils/formatting";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Table,
   TableBody,
@@ -30,6 +47,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import {
   Select,
@@ -44,11 +62,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { User, UserRole } from "@/types";
 import { ROLES } from "@/utils/permissions";
+import { Department } from "@/types/department-policy";
 
 const userSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   displayName: z.string().min(2, "Name must be at least 2 characters"),
   role: z.enum(["employee", "admin", "master_admin"]),
+  department: z.string().optional(),
+  password: z.string().min(6, "Password must be at least 6 characters").optional(),
 });
 
 type UserFormValues = z.infer<typeof userSchema>;
@@ -58,8 +79,10 @@ export default function UserManagementPage() {
   const { toast } = useToast();
   
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [users, setUsers] = useState<User[]>([]);
+  const [departments, setDepartments] = useState<Department[]>([]);
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [isEditUserOpen, setIsEditUserOpen] = useState(false);
   const [isDeleteUserOpen, setIsDeleteUserOpen] = useState(false);
@@ -71,73 +94,66 @@ export default function UserManagementPage() {
       email: "",
       displayName: "",
       role: "employee",
+      department: undefined,
+      password: "",
     },
   });
   
   useEffect(() => {
     if (currentUser) {
       fetchUsers();
+      fetchDepartments();
     }
   }, [currentUser]);
+  
+  // Function to fetch department list from Firebase
+  const fetchDepartments = async () => {
+    try {
+      const departmentsRef = collection(firestore, "departmentPolicies");
+      const querySnapshot = await getDocs(departmentsRef);
+      
+      const departmentsList: Department[] = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.department) {
+          departmentsList.push(data.department as Department);
+        }
+      });
+      
+      setDepartments(departmentsList);
+    } catch (error) {
+      console.error("Error fetching departments:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load departments",
+        variant: "destructive",
+      });
+    }
+  };
   
   const fetchUsers = async () => {
     try {
       setLoading(true);
       
-      // Mock data for demonstration
-      const mockData: User[] = [
-        {
-          uid: "user1",
-          email: "prakash.kumar@prakashenergy.com",
-          displayName: "Prakash Kumar",
-          role: "master_admin",
-          createdAt: "2022-01-01",
-        },
-        {
-          uid: "user2",
-          email: "amit.sharma@prakashenergy.com",
-          displayName: "Amit Sharma",
-          role: "admin",
-          createdAt: "2022-02-15",
-        },
-        {
-          uid: "user3",
-          email: "priya.patel@prakashenergy.com",
-          displayName: "Priya Patel",
-          role: "admin",
-          createdAt: "2022-03-10",
-        },
-        {
-          uid: "user4",
-          email: "rahul.mehta@prakashenergy.com",
-          displayName: "Rahul Mehta",
-          role: "employee",
-          createdAt: "2022-04-05",
-        },
-        {
-          uid: "user5",
-          email: "sanjay.kumar@prakashenergy.com",
-          displayName: "Sanjay Kumar",
-          role: "employee",
-          createdAt: "2022-05-20",
-        },
-        {
-          uid: "user6",
-          email: "divya.singh@prakashenergy.com",
-          displayName: "Divya Singh",
-          role: "employee",
-          createdAt: "2022-06-15",
-        },
-        {
-          uid: "user7",
-          email: "vijay.reddy@prakashenergy.com",
-          displayName: "Vijay Reddy",
-          role: "employee",
-          createdAt: "2022-07-01",
-        },
-      ];
+      // Get real users from Firebase
+      const usersRef = collection(firestore, "users");
+      const q = query(usersRef, orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
       
-      setUsers(mockData);
+      const userData: User[] = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        userData.push({
+          uid: doc.id,
+          email: data.email,
+          displayName: data.displayName,
+          role: data.role || "employee",
+          department: data.department,
+          createdAt: data.createdAt ? new Date(data.createdAt.seconds * 1000).toISOString() : new Date().toISOString(),
+        });
+      });
+      
+      setUsers(userData);
     } catch (error) {
       console.error("Error fetching users:", error);
       toast({
@@ -199,31 +215,69 @@ export default function UserManagementPage() {
   
   const onSubmitAddUser = async (data: UserFormValues) => {
     try {
-      // In a real app, we would create a user in Firebase Auth and then add user to Firestore
-      // For this demo, we'll just add to our local state
-      const newUser: User = {
-        uid: `user${users.length + 1}`,
+      setSubmitting(true);
+      
+      if (!data.password) {
+        toast({
+          title: "Error",
+          description: "Password is required when adding a new user",
+          variant: "destructive",
+        });
+        setSubmitting(false);
+        return;
+      }
+      
+      // 1. Create user in Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      const newUser = userCredential.user;
+      
+      // 2. Update display name if provided
+      if (data.displayName) {
+        await updateProfile(newUser, {
+          displayName: data.displayName
+        });
+      }
+      
+      // 3. Add user to Firestore with role and department info
+      await setDoc(doc(firestore, "users", newUser.uid), {
+        uid: newUser.uid,
         email: data.email,
         displayName: data.displayName,
         role: data.role,
+        department: data.department,
+        createdAt: serverTimestamp(),
+      });
+      
+      // 4. Send password reset email so user can set their own password
+      await sendPasswordResetEmail(auth, data.email);
+      
+      // 5. Add to local state and show success message
+      const createdUser: User = {
+        uid: newUser.uid,
+        email: data.email,
+        displayName: data.displayName,
+        role: data.role,
+        department: data.department as Department | undefined,
         createdAt: new Date().toISOString(),
       };
       
-      setUsers([...users, newUser]);
+      setUsers([...users, createdUser]);
       
       toast({
         title: "User Added",
-        description: "The user has been added successfully",
+        description: "The user has been added successfully and will receive a password reset email",
       });
       
       setIsAddUserOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error adding user:", error);
       toast({
         title: "Error",
-        description: "Failed to add user",
+        description: error.message || "Failed to add user",
         variant: "destructive",
       });
+    } finally {
+      setSubmitting(false);
     }
   };
   
@@ -231,15 +285,33 @@ export default function UserManagementPage() {
     if (!selectedUser) return;
     
     try {
-      // In a real app, we would update the user in Firestore
-      // For this demo, we'll just update our local state
+      setSubmitting(true);
+      
+      // Update user in Firestore
+      const userRef = doc(firestore, "users", selectedUser.uid);
+      
+      // Build the update object
+      const updateData: Record<string, any> = {
+        displayName: data.displayName,
+        role: data.role,
+      };
+      
+      // Only update department if it's provided
+      if (data.department) {
+        updateData.department = data.department;
+      }
+      
+      // Update the user document in Firestore
+      await updateDoc(userRef, updateData);
+      
+      // Update local state
       const updatedUsers = users.map(user => {
         if (user.uid === selectedUser.uid) {
           return {
             ...user,
-            email: data.email,
             displayName: data.displayName,
             role: data.role,
+            department: data.department as Department | undefined || user.department,
           };
         }
         return user;
@@ -253,13 +325,15 @@ export default function UserManagementPage() {
       });
       
       setIsEditUserOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating user:", error);
       toast({
         title: "Error",
-        description: "Failed to update user",
+        description: error.message || "Failed to update user",
         variant: "destructive",
       });
+    } finally {
+      setSubmitting(false);
     }
   };
   
@@ -267,24 +341,34 @@ export default function UserManagementPage() {
     if (!selectedUser) return;
     
     try {
-      // In a real app, we would delete the user from Firestore and possibly disable in Firebase Auth
-      // For this demo, we'll just remove from our local state
+      setSubmitting(true);
+      
+      // Delete from Firestore first
+      const userRef = doc(firestore, "users", selectedUser.uid);
+      await deleteDoc(userRef);
+      
+      // Note: We're not deleting the user from Firebase Auth as it requires admin SDK
+      // In a production app, you'd use Firebase Admin SDK or Cloud Functions to delete the auth user
+      
+      // Update local state
       const updatedUsers = users.filter(user => user.uid !== selectedUser.uid);
       setUsers(updatedUsers);
       
       toast({
         title: "User Deleted",
-        description: "The user has been deleted successfully",
+        description: "The user has been removed from the system",
       });
       
       setIsDeleteUserOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting user:", error);
       toast({
         title: "Error",
-        description: "Failed to delete user",
+        description: error.message || "Failed to delete user",
         variant: "destructive",
       });
+    } finally {
+      setSubmitting(false);
     }
   };
   
