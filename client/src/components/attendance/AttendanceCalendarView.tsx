@@ -215,7 +215,7 @@ export default function AttendanceCalendarView({
                   <span className="font-medium">Check-in:</span>{" "}
                   <span className="ml-1">
                     {dayDetails.attendance.checkInTime
-                      ? format(new Date(dayDetails.attendance.checkInTime), 'h:mm a')
+                      ? format(dayDetails.attendance.checkInTime.toDate(), 'h:mm a')
                       : 'N/A'}
                   </span>
                   {dayDetails.attendance.isLate && (
