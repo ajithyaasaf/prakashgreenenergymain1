@@ -125,21 +125,28 @@ export default function AttendanceAdminPage() {
         };
       });
       
-      // Get leave requests for today
+      // Get leave requests for today - simplified query to avoid composite index requirement
       const leaveQuery = query(
         collection(firestore, "leaves"),
-        where("status", "==", "approved"),
-        where("startDate", "<=", Timestamp.fromDate(today)),
-        where("endDate", ">=", Timestamp.fromDate(today))
+        where("status", "==", "approved")
       );
       
       const leaveSnapshot = await getDocs(leaveQuery);
       leaveSnapshot.forEach(doc => {
         const data = doc.data();
-        attendanceMap[data.userId] = {
-          checkedIn: false,
-          status: "leave"
-        };
+        
+        // Get date ranges and check if the leave is for today
+        const startDate = data.startDate?.toDate();
+        const endDate = data.endDate?.toDate();
+        
+        // If leave dates overlap with today
+        if (startDate && endDate && 
+            startDate <= tomorrow && endDate >= today) {
+          attendanceMap[data.userId] = {
+            checkedIn: false,
+            status: "leave"
+          };
+        }
       });
       
       // Combine user and attendance data
@@ -237,7 +244,7 @@ export default function AttendanceAdminPage() {
           startDate: data.startDate ? format(data.startDate.toDate(), "yyyy-MM-dd") : "",
           endDate: data.endDate ? format(data.endDate.toDate(), "yyyy-MM-dd") : "",
           reason: data.reason || "",
-          type: data.leaveType || "casual",
+          type: data.type || "permission", // Using the field name from your Firebase document
           status: data.status,
           createdAt: data.createdAt ? format(data.createdAt.toDate(), "yyyy-MM-dd") : "",
         });

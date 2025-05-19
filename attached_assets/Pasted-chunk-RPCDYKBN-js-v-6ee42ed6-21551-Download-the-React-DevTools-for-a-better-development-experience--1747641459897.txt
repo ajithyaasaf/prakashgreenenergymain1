@@ -1,0 +1,49 @@
+chunk-RPCDYKBN.js?v=6ee42ed6:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+3AttendanceAdminPage.tsx:172 Error fetching attendance data: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solar-energy-56bc8/firestore/indexes?create_composite=ClFwcm9qZWN0cy9zb2xhci1lbmVyZ3ktNTZiYzgvZGF0YWJhc2VzLyhkZWZhdWx0KS9jb2xsZWN0aW9uR3JvdXBzL2xlYXZlcy9pbmRleGVzL18QARoKCgZzdGF0dXMQARoLCgdlbmREYXRlEAEaDQoJc3RhcnREYXRlEAEaDAoIX19uYW1lX18QAQ .
+The query contains range and inequality filters on multiple fields, please refer to the documentation for index selection best practices: https://cloud.google.com/firestore/docs/query-data/multiple-range-fields.
+fetchTodayAttendance @ AttendanceAdminPage.tsx:172
+AttendanceAdminPage.tsx:172 Error fetching attendance data: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solar-energy-56bc8/firestore/indexes?create_composite=ClFwcm9qZWN0cy9zb2xhci1lbmVyZ3ktNTZiYzgvZGF0YWJhc2VzLyhkZWZhdWx0KS9jb2xsZWN0aW9uR3JvdXBzL2xlYXZlcy9pbmRleGVzL18QARoKCgZzdGF0dXMQARoLCgdlbmREYXRlEAEaDQoJc3RhcnREYXRlEAEaDAoIX19uYW1lX18QAQ .
+The query contains range and inequality filters on multiple fields, please refer to the documentation for index selection best practices: https://cloud.google.com/firestore/docs/query-data/multiple-range-fields.
+fetchTodayAttendance @ AttendanceAdminPage.tsx:172
+setTimeout
+pu @ firebase_firestore.js?v=6ee42ed6:14893
+next @ firebase_firestore.js?v=6ee42ed6:14884
+Ca @ firebase_firestore.js?v=6ee42ed6:13746
+pa @ firebase_firestore.js?v=6ee42ed6:13723
+__PRIVATE_eventManagerOnWatchChange @ firebase_firestore.js?v=6ee42ed6:13671
+__PRIVATE_syncEngineEmitNewSnapsAndNotifyLocalStore @ firebase_firestore.js?v=6ee42ed6:14432
+await in __PRIVATE_syncEngineEmitNewSnapsAndNotifyLocalStore
+__PRIVATE_syncEngineApplyRemoteEvent @ firebase_firestore.js?v=6ee42ed6:14269
+await in __PRIVATE_syncEngineApplyRemoteEvent
+__PRIVATE_raiseWatchSnapshot @ firebase_firestore.js?v=6ee42ed6:13210
+__PRIVATE_onWatchStreamChange @ firebase_firestore.js?v=6ee42ed6:13211
+await in __PRIVATE_onWatchStreamChange
+onNext @ firebase_firestore.js?v=6ee42ed6:12837
+(anonymous) @ firebase_firestore.js?v=6ee42ed6:12796
+(anonymous) @ firebase_firestore.js?v=6ee42ed6:12816
+(anonymous) @ firebase_firestore.js?v=6ee42ed6:15854
+(anonymous) @ firebase_firestore.js?v=6ee42ed6:15885
+Promise.then
+Yu @ firebase_firestore.js?v=6ee42ed6:15885
+enqueue @ firebase_firestore.js?v=6ee42ed6:15854
+enqueueAndForget @ firebase_firestore.js?v=6ee42ed6:15836
+(anonymous) @ firebase_firestore.js?v=6ee42ed6:12816
+(anonymous) @ firebase_firestore.js?v=6ee42ed6:12796
+i_ @ firebase_firestore.js?v=6ee42ed6:12431
+(anonymous) @ firebase_firestore.js?v=6ee42ed6:12569
+(anonymous) @ firebase_firestore.js?v=6ee42ed6:12532
+ab @ firebase_firestore.js?v=6ee42ed6:946
+F2 @ firebase_firestore.js?v=6ee42ed6:916
+Z2.ta @ firebase_firestore.js?v=6ee42ed6:2536
+Rb @ firebase_firestore.js?v=6ee42ed6:1415
+M2.Y @ firebase_firestore.js?v=6ee42ed6:1280
+M2.ca @ firebase_firestore.js?v=6ee42ed6:1211
+ab @ firebase_firestore.js?v=6ee42ed6:946
+F2 @ firebase_firestore.js?v=6ee42ed6:916
+Wc @ firebase_firestore.js?v=6ee42ed6:1950
+h.bb @ firebase_firestore.js?v=6ee42ed6:1945
+h.Ea @ firebase_firestore.js?v=6ee42ed6:1942
+Lc @ firebase_firestore.js?v=6ee42ed6:1842
+h.Pa @ firebase_firestore.js?v=6ee42ed6:1809
+7AttendanceAdminPage.tsx:172 Error fetching attendance data: FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solar-energy-56bc8/firestore/indexes?create_composite=ClFwcm9qZWN0cy9zb2xhci1lbmVyZ3ktNTZiYzgvZGF0YWJhc2VzLyhkZWZhdWx0KS9jb2xsZWN0aW9uR3JvdXBzL2xlYXZlcy9pbmRleGVzL18QARoKCgZzdGF0dXMQARoLCgdlbmREYXRlEAEaDQoJc3RhcnREYXRlEAEaDAoIX19uYW1lX18QAQ .
+The query contains range and inequality filters on multiple fields, please refer to the documentation for index selection best practices: https://cloud.google.com/firestore/docs/query-data/multiple-range-fields
