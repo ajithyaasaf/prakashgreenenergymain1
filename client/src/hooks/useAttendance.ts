@@ -723,6 +723,8 @@ export function useAttendance() {
     getDepartmentPolicy,
     getMonthlyAttendanceStats,
     checkLeaveEligibility,
+    getRemainingCasualLeaveBalance,
+    getRemainingPermissionHours,
     refetchAttendance
   };
 }

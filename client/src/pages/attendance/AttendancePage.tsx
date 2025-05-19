@@ -89,9 +89,25 @@ export default function AttendancePage() {
       fetchRecentAttendance();
       fetchLeaveHistory();
       fetchDepartmentPolicy();
-      calculateRemainingLeaveBalances();
+      fetchRemainingLeaveBalances();
     }
   }, [currentUser]);
+  
+  // Function to fetch leave balances
+  const fetchRemainingLeaveBalances = async () => {
+    if (!currentUser) return;
+    
+    try {
+      const { getRemainingCasualLeaveBalance, getRemainingPermissionHours } = useAttendance();
+      const casualLeaves = await getRemainingCasualLeaveBalance();
+      const permissionHours = await getRemainingPermissionHours();
+      
+      setRemainingCasualLeaves(casualLeaves);
+      setRemainingPermissionHours(permissionHours);
+    } catch (error) {
+      console.error("Error fetching leave balances:", error);
+    }
+  };
   
   // Fetch department policy for the current user
   const fetchDepartmentPolicy = async () => {
@@ -558,6 +574,24 @@ export default function AttendancePage() {
             <DialogDescription className="text-sm">
               Submit a leave request for approval by your manager.
             </DialogDescription>
+            
+            {/* Display leave balances */}
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded border border-amber-200 dark:border-amber-800">
+                <div className="text-xs text-amber-700 dark:text-amber-400 mb-1">Casual Leaves</div>
+                <div className="font-medium text-amber-800 dark:text-amber-300 flex items-center">
+                  <span className="text-lg mr-1">{remainingCasualLeaves !== null ? remainingCasualLeaves : '-'}</span>
+                  <span className="text-xs">remaining this month</span>
+                </div>
+              </div>
+              <div className="p-2 bg-blue-50 dark:bg-blue-950/30 rounded border border-blue-200 dark:border-blue-800">
+                <div className="text-xs text-blue-700 dark:text-blue-400 mb-1">Permission Hours</div>
+                <div className="font-medium text-blue-800 dark:text-blue-300 flex items-center">
+                  <span className="text-lg mr-1">{remainingPermissionHours !== null ? remainingPermissionHours : '-'}</span>
+                  <span className="text-xs">hours remaining</span>
+                </div>
+              </div>
+            </div>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmitLeave)} className="space-y-4 sm:space-y-6">
@@ -580,7 +614,8 @@ export default function AttendancePage() {
                         <SelectContent>
                           <SelectItem value="sick">Sick Leave</SelectItem>
                           <SelectItem value="casual">Casual Leave</SelectItem>
-                          <SelectItem value="personal">Personal Leave</SelectItem>
+                          <SelectItem value="permission">Permission Leave</SelectItem>
+                          <SelectItem value="vacation">Vacation Leave</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
