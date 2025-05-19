@@ -14,6 +14,7 @@ interface CheckInParams {
   locationDetails?: string;
   offSiteReason?: string;
   customerDetails?: string;
+  lateReason?: string;
 }
 
 interface CheckOutParams {

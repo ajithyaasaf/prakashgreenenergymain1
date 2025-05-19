@@ -24,9 +24,26 @@ import { TbPin, TbMapPin, TbUser, TbBuilding, TbBuildingStore } from "react-icon
 // Schema for check-in form
 const checkInSchema = z.object({
   workLocation: z.enum(["office", "off-site"]).default("office"),
-  locationDetails: z.string().optional(),
-  offSiteReason: z.string().optional(),
-  customerDetails: z.string().optional(),
+  locationDetails: z.string()
+    .optional()
+    .refine(val => val === undefined || val.trim().length > 0, {
+      message: "Location details are required for off-site work",
+    }),
+  offSiteReason: z.string()
+    .optional()
+    .refine(val => val === undefined || val.trim().length > 0, {
+      message: "Reason for off-site work is required",
+    }),
+  customerDetails: z.string()
+    .optional()
+    .refine(val => val === undefined || val.trim().length > 0, {
+      message: "Customer details are required for sales/marketing off-site work",
+    }),
+  lateReason: z.string()
+    .optional()
+    .refine(val => val === undefined || val.trim().length > 0, {
+      message: "Reason for late check-in is required",
+    }),
 });
 
 type CheckInFormValues = z.infer<typeof checkInSchema>;
@@ -36,6 +53,8 @@ export default function AttendanceCheckInForm() {
   const [department, setDepartment] = useState<Department | null>(null);
   const [policy, setPolicy] = useState<FirestoreDepartmentPolicy | null>(null);
   const [showOffSiteFields, setShowOffSiteFields] = useState<boolean>(false);
+  const [isLateCheckIn, setIsLateCheckIn] = useState<boolean>(false);
+  const [requiredCheckInTime, setRequiredCheckInTime] = useState<string>("09:00");
 
   // Define form with zod validation
   const form = useForm<CheckInFormValues>({
@@ -45,6 +64,7 @@ export default function AttendanceCheckInForm() {
       locationDetails: "",
       offSiteReason: "",
       customerDetails: "",
+      lateReason: "",
     },
   });
 
@@ -57,6 +77,21 @@ export default function AttendanceCheckInForm() {
       if (userDept) {
         const deptPolicy = await getDepartmentPolicy();
         setPolicy(deptPolicy);
+        
+        if (deptPolicy) {
+          setRequiredCheckInTime(deptPolicy.requiredCheckInTime);
+          
+          // Check if current time is past the required check-in time
+          const now = new Date();
+          const [requiredHour, requiredMinute] = deptPolicy.requiredCheckInTime.split(":").map(Number);
+          const requiredTime = new Date();
+          requiredTime.setHours(requiredHour, requiredMinute, 0, 0);
+          
+          // If current time is past required time, it's a late check-in
+          if (now > requiredTime) {
+            setIsLateCheckIn(true);
+          }
+        }
       }
     };
     
@@ -70,6 +105,7 @@ export default function AttendanceCheckInForm() {
       locationDetails: data.locationDetails,
       offSiteReason: data.offSiteReason,
       customerDetails: data.customerDetails,
+      lateReason: isLateCheckIn ? data.lateReason : undefined,
     });
   };
 
@@ -129,6 +165,29 @@ export default function AttendanceCheckInForm() {
                 </FormItem>
               )}
             />
+            
+            {isLateCheckIn && (
+              <FormField
+                control={form.control}
+                name="lateReason"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center text-red-500">
+                      <span>Late Check-in Reason*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Please provide a reason for checking in after your scheduled start time" 
+                        className="resize-none" 
+                        {...field}
+                        required
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             {showOffSiteFields && (
               <>
