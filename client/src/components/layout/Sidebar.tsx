@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { getInitials } from "@/utils/formatting";
 import { PERMISSIONS, hasPermission } from "@/utils/permissions";
 import { useToast } from "@/hooks/use-toast";
-import logoImage from "@/assets/logo.png";
+import logoImage from "@/assets/new-logo.png";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { firestoreQueryUtils } from "@/hooks/useFirestoreQuery";
