@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, isSupported } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 
 // Firebase configuration
@@ -22,7 +22,25 @@ const app = initializeApp(firebaseConfig);
 // Initialize services
 export const auth = getAuth(app);
 export const firestore = getFirestore(app);
-export const analytics = getAnalytics(app);
 export const storage = getStorage(app);
+
+// Initialize analytics only if supported in the current environment
+export let analytics = null;
+// Initialize analytics conditionally
+const initializeAnalytics = async () => {
+  try {
+    if (await isSupported()) {
+      analytics = getAnalytics(app);
+      console.log("Firebase Analytics initialized successfully");
+    } else {
+      console.log("Firebase Analytics not supported in this environment");
+    }
+  } catch (error) {
+    console.error("Error initializing Firebase Analytics:", error);
+  }
+};
+
+// Call the function but don't wait for it
+initializeAnalytics();
 
 export default app;
